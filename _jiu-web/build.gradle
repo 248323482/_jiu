@@ -1,0 +1,19 @@
+archivesBaseName = '_jiu-web'
+dependencies{
+    compile project(':_jiu-croe')
+    compile ('org.springframework.boot:spring-boot-starter-thymeleaf')
+}
+buildscript {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+        maven { url "https://repo.spring.io/release" }
+        mavenCentral()
+        jcenter()
+        mavenLocal()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'org.springframework.boot'

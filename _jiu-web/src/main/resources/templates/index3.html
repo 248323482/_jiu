@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>不懂i丨</title>
+	<link rel="icon" type="image/x-icon" href="/images/favicon.ico"/>
+	<link rel="stylesheet" type="text/css" href="/css/normalize.css"/>
+	<link rel="stylesheet" type="text/css" href="/css/demo.css"/>
+
+	<!--必要样式-->
+	<link rel="stylesheet" type="text/css" href="/css/component.css"/>
+
+	<!--[if IE]>
+	<script src="/js/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+<div class="container demo-3">
+	<div class="content">
+		<div id="large-header" class="large-header">
+			<canvas id="demo-canvas"></canvas>
+			<h1 class="main-title" onclick="jump()" style="cursor: pointer">Start.</h1>
+		</div>
+	</div>
+</div><!-- /container -->
+<script src="js/TweenLite.min.js"></script>
+<script src="js/EasePack.min.js"></script>
+<script src="js/rAF.js"></script>
+<script src="js/demo-3.js"></script>
+<audio  controls="controls" autoplay="autoplay" preload="preload" style="display: none" id="bgmusic" src="js/lk.flac">
+	Your browser does not support the audio element.
+</audio>
+
+
+<script>
+    var bgmusic = document.getElementById('bgmusic');
+    function once(){
+        bgmusic.play();
+        window.removeEventListener('touchstart', once, false);
+    }
+    
+
+    bgmusic.addEventListener('canplay', function(){
+        this.play();
+    }, false);
+    window.addEventListener('load', function(){
+        window.addEventListener('touchstart', once, false);
+    }, false);
+
+
+function jump(){
+    window.location.href="https:www.taobao.com";
+}
+
+</script>
+</body>
+</html>
