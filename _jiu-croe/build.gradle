@@ -1,5 +1,8 @@
-archivesBaseName = '_jiu-croe'
+archivesBaseName = 'jiu-croe'
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile("com.google.guava:guava:28.0-jre")
+    compile("org.springframework.boot:spring-boot-starter-aop")
+    compile("commons-beanutils:commons-beanutils:1.9.3")
 }

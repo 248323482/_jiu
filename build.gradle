@@ -116,7 +116,7 @@ subprojects {
         //ORM
         compile("org.mybatis:mybatis:${mybatisVersion}")
 
-        //compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}")
+        compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}")
 
         //lombok插件
         compile("org.projectlombok:lombok:${lombokVersion}")
@@ -149,7 +149,6 @@ subprojects {
         //httpclient
         compile("org.apache.httpcomponents:httpclient:4.5.6")
         compile("org.apache.httpcomponents:httpcore:4.4.11")
-
         //测试
         testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
 
