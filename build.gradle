@@ -1,11 +1,6 @@
 
 //编译构建时的配置
 buildscript {
-
-    ext{
-        springBootVersion='2.0.5.RELEASE' //springBootVersion是自己定义的变量 里面写的是springboot插件的版本
-        springCloudVersion = 'Finchley.SR1'
-    }
     repositories {
         mavenLocal()
         mavenCentral()
@@ -19,25 +14,27 @@ buildscript {
     }
     dependencies {
         classpath "io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE"
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE"
+
+
     }
+
 }
+
+
 
 
 allprojects {
     group = 'com.jiu' //分组
-    version = '0.0.1-SNAPSHOT' //版本号
-    ext{
-        springBootVersion='2.0.5.RELEASE'
-    }
+    version = '1.0' //版本号
     apply plugin: 'java'
     apply plugin: 'idea'
+    apply plugin: 'maven'
 }
-
-
 //统一所有子项目的配置
 subprojects {
     ext {
+        springBootVersion='2.0.5.RELEASE'
         mysqlConnectorVersion = '5.1.44'
         gradleDockerVersion = '1.2'
         ehcacheVersion = '2.10.4'
@@ -60,6 +57,17 @@ subprojects {
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
+
+    build.doLast {
+        def rootPath = rootProject.buildDir.getPath() + "/distributions"
+        copy {
+            from buildDir.getPath() + "/distributions" into rootPath
+        }
+    }
+    clean.doFirst {
+        delete "${buildDir}/../out"
+    }
+
     repositories {
         mavenLocal()
         mavenCentral()
@@ -74,7 +82,7 @@ subprojects {
     dependencyManagement {
         imports {
             mavenBom 'org.springframework.cloud:spring-cloud-config:2.0.0.M8'
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1"
         }
     }
 
@@ -95,14 +103,8 @@ subprojects {
         //替代tomcat
         compile 'org.springframework.boot:spring-boot-starter-undertow'
 
-
-
-
-
         //模板引擎
      //   compile("org.springframework.boot:spring-boot-starter-freemarker:${springBootVersion}")
-
-
 
         //缓存
         compile("net.sf.ehcache:ehcache:${ehcacheVersion}")

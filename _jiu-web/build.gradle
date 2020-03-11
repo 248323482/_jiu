@@ -1,8 +1,79 @@
 archivesBaseName = 'jiu-web'
+apply plugin: 'application'
+mainClassName = "com.jiu.Application"
 dependencies{
     compile project(':_jiu-croe')
     compile ('org.springframework.boot:spring-boot-starter-thymeleaf')
 }
+ext {
+    runJars=archivesBaseName + "-" + version + ".jar"
+    runJarsPlaceHolder="{{RUN_JAR}}"
+    mainClassPlaceHolder="{{MAIN_CLASS}}"
+}
+
+jar {
+    doFirst {
+        manifest {
+            if (!configurations.compile.isEmpty()) {
+                attributes(
+                        'Class-Path': configurations.compile.collect{it.getName()}.join(' '),
+                        'Main-Class': mainClassName)
+            }
+        }
+    }
+}
+
+
+sourceSets {
+    main {
+    }
+}
+processResources {
+    exclude(
+            // "**/**"
+    )
+}
+
+task moveOutFromJar(type: Copy) {
+    sourceSets.main.resources.srcDirs.each {
+        from it
+        into buildDir.getPath() + "/config"
+    }
+}
+
+processResources.dependsOn moveOutFromJar
+
+
+
+distributions {
+    main {
+        contents {
+            from ("script/shutdown.sh") {
+                into "bin"
+                fileMode = 0755
+            }
+            from (buildDir.getPath() + "/config") {
+                into "config"
+            }
+
+            from ("plugins") {
+                into "plugins"
+            }
+        }
+    }
+}
+
+startScripts {
+    doLast {
+        unixScript.text = resources.text.fromFile('script/unixStart.sh').asString()
+                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
+        windowsScript.text = resources.text.fromFile('script/windowsStart.bat').asString()
+                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
+    }
+}
+
+
+/**
 buildscript {
     repositories {
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
@@ -33,3 +104,4 @@ task buildDocker(type: Docker, dependsOn: build) {
         }
     }
 }
+ **/
