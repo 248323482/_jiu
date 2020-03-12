@@ -4,6 +4,7 @@ mainClassName = "com.jiu.Application"
 dependencies{
     compile project(':_jiu-croe')
     compile ('org.springframework.boot:spring-boot-starter-thymeleaf')
+    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
 }
 ext {
     runJars=archivesBaseName + "-" + version + ".jar"

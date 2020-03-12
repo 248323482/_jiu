@@ -1,5 +1,6 @@
 archivesBaseName = 'jiu-croe'
-
+// 通过implementation依赖的库只能自己库本身访问   
+// implementation "org.springframework.boot:spring-boot-starter-web:${springVersion}"
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile("com.google.guava:guava:28.0-jre")
