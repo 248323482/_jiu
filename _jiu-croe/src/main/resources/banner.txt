@@ -2,5 +2,8 @@ ________                                          .__   ___________
 \______ \   _______    ____   _____      _____    |__|  \__    ___/
  |    |  \  \_  __ \ _/ __ \  \__  \    /     \   |  |    |    |   
  |    `   \  |  | \/ \  ___/   / __ \_ |  Y Y  \  |  |    |    |   
-/_______  /  |__|     \___  > (____  / |__|_|  /  |__| /\ |____|   
-        \/                \/       \/        \/        \/          
+/_______  /  |__|     \___  > (____  / |__|_|  /  |__| /\ |____|
+        \/                \/       \/        \/        \/
+        Application Version: @project.description@ - @project.version@
+        Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
+        ${AnsiColor.DEFAULT}

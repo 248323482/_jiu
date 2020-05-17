@@ -1,8 +1,30 @@
 package com.jiu.exception;
 
-public class BaseException  extends  Exception{
+/**
+ * 异常接口类
+ *
+ * @author zuihou
+ * @version 1.0,
+ */
+public interface BaseException {
 
-    public BaseException(String message) {
-        super(message);
-    }
+    /**
+     * 统一参数验证异常码
+     */
+    int BASE_VALID_PARAM = -9;
+
+    /**
+     * 返回异常信息
+     *
+     * @return
+     */
+    String getMessage();
+
+    /**
+     * 返回异常编码
+     *
+     * @return
+     */
+    int getCode();
+
 }

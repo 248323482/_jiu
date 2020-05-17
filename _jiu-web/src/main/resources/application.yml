@@ -2,4 +2,4 @@ server:
   port: 80
 spring:
   application:
-    name: Faquir-SystemDemo
+    name: jiu
