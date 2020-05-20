@@ -47,7 +47,7 @@ subprojects {
         commonsIOVersion = '2.4'
         commonsLangversion = '3.7'
         commonsCodecVersion = '1.11'
-        fastJsonVersion = '1.2.41'
+        fastJsonVersion = '1.2.62'
         swagger2Version='2.9.2'
     }
 
@@ -110,14 +110,6 @@ subprojects {
         compile("net.sf.ehcache:ehcache:${ehcacheVersion}")
 
 
-
-
-
-        //ORM
-     //   compile("org.mybatis:mybatis:${mybatisVersion}")
-
-    //    compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:${mybatisStarterVersion}")
-
         //lombok插件
         compile("org.projectlombok:lombok:${lombokVersion}")
 
@@ -151,6 +143,14 @@ subprojects {
         compile("org.apache.httpcomponents:httpcore:4.4.11")
         //测试
         testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.3'
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.3'
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.3'
+        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.10.3'
+        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.10.3'
+        compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: '2.10.3'
+
 
 
 

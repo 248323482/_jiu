@@ -1,6 +1,5 @@
 package com.jiu;
 
-import com.jiu.utils.SpringUtils;
 import com.jiu.validator.config.EnableFormValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
@@ -23,7 +22,6 @@ public class FileServerApplication {
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(FileServerApplication.class, args);
         Environment env = application.getEnvironment();
-        SpringUtils.setApplicationContext(application);
         log.info("\n----------------------------------------------------------\n\t" +
                         "应用 '{}' 运行成功! 访问连接:\n\t" +
                         "Swagger文档: \t\thttp://{}:{}/doc.html\n\t" +
