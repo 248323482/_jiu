@@ -38,6 +38,8 @@ spring:
   application:
     name: jiu
   datasource:
+    initialization-mode: always
+    schema: classpath:schema.sql
     druid:
       enable: true
       # 从这里开始(druid)，中间的这段配置用于 zuihou.database.multiTenantType != DATASOURCE 时
@@ -66,8 +68,6 @@ spring:
             commentAllow: true
             multiStatementAllow: true
             noneBaseStatementAllow: true
-      # 从这里结束(druid)，中间的这段配置用于 zuihou.database.multiTenantType != DATASOURCE 时
-
       # 以下的2段配置，同时适用于所有模式
       web-stat-filter:  # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
         enabled: true
