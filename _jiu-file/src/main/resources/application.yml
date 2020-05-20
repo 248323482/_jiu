@@ -30,6 +30,11 @@ server:
 
 
 spring:
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+      enabled: true
   application:
     name: jiu
   datasource:

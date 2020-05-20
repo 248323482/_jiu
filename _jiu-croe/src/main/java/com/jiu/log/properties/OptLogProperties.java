@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @NoArgsConstructor
 public class OptLogProperties {
-    public static final String PREFIX = "zuihou.log";
+    public static final String PREFIX = "jiu.log";
 
     /**
      * 是否启用
@@ -22,5 +22,5 @@ public class OptLogProperties {
     /**
      * 日志存储类型
      */
-    private OptLogType type = OptLogType.DB;
+    private OptLogType type = OptLogType.LOGGER;
 }

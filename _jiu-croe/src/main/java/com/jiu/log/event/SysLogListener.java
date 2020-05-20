@@ -3,7 +3,6 @@ package com.jiu.log.event;
 
 import com.jiu.context.BaseContextHandler;
 import com.jiu.log.entity.OptLogDTO;
-import com.jiu.log.monitor.PointUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -30,7 +29,6 @@ public class SysLogListener {
         OptLogDTO sysLog = (OptLogDTO) event.getSource();
         BaseContextHandler.setTenant(sysLog.getTenantCode());
         consumer.accept(sysLog);
-        PointUtil.info("","",sysLog.toString());
     }
 
 }

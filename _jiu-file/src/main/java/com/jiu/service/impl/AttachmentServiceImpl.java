@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
@@ -53,7 +54,7 @@ import java.util.stream.Collectors;
 public class AttachmentServiceImpl extends SuperServiceImpl<AttachmentMapper, Attachment> implements AttachmentService {
     @Autowired
     private DatabaseProperties databaseProperties;
-    //@Resource
+    @Resource
     private FileStrategy fileStrategy;
     @Autowired
     private FileServerProperties fileProperties;

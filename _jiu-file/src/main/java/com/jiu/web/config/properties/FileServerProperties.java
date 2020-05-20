@@ -12,7 +12,6 @@ import java.io.File;
 
 
 /**
- * @author zuihou
  */
 @Setter
 @Getter
@@ -29,7 +28,7 @@ public class FileServerProperties {
     /**
      * 文件访问前缀
      */
-    private String uriPrefix = "http://127.0.0.1:80/";
+    private String uriPrefix = "http://127.0.0.1:80/image/";
     /**
      * 文件存储路径
      */

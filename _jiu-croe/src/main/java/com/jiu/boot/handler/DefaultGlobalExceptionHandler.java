@@ -1,9 +1,9 @@
 package com.jiu.boot.handler;
 
 import cn.hutool.core.util.StrUtil;
-import com.jiu.exception.code.ExceptionCode;
 import com.jiu.base.R;
 import com.jiu.exception.BizException;
+import com.jiu.exception.code.ExceptionCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.mybatis.spring.MyBatisSystemException;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
@@ -229,5 +230,11 @@ public abstract class DefaultGlobalExceptionHandler {
         log.warn("DataIntegrityViolationException:", ex);
         return R.result(ExceptionCode.SQL_EX.getCode(), EMPTY, ExceptionCode.SQL_EX.getMsg()).setPath(request.getRequestURI());
     }
-
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public R handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,HttpServletRequest request) {
+        log.warn("上传文件过大 ex={}", ex);
+        return  R.result(ExceptionCode.OPERATION_EX.getCode(), EMPTY, ExceptionCode.OPERATION_EX.getMsg()).setPath(request.getRequestURI());
+    }
 }
+
+

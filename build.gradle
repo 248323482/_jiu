@@ -150,6 +150,7 @@ subprojects {
         compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.10.3'
         compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.10.3'
         compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: '2.10.3'
+        compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
 
 
 
