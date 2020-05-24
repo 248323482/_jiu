@@ -9,7 +9,7 @@ dependencies {
     implementation("cn.hutool:hutool-all:5.2.3")
     //implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("org.lionsoul:ip2region:1.7")
-    implementation("com.github.xiaoymin:knife4j-spring-boot-starter:2.0.1")
+    implementation("com.github.xiaoymin:knife4j-spring-boot-starter:2.0.2")
     //implementation("io.springfox:springfox-bean-validators:2.9.2")
     implementation("org.slf4j:slf4j-api:2.0.0-alpha1")
     implementation("io.github.openfeign:feign-okhttp:10.2.3")
@@ -31,6 +31,8 @@ dependencies {
     compile group: 'com.alibaba', name: 'druid', version: '1.1.22'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
+    compile group: 'org.web3j', name: 'core', version: '4.5.17'
+
 
 
 
