@@ -1,10 +1,20 @@
 package com.jiu.wallet.btc;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.jiu.wallet.btc.utils.ByteUtil;
 import com.jiu.wallet.btc.utils.Hash;
 import com.jiu.wallet.btc.utils.NumericUtil;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.bitcoinj.core.*;
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -16,9 +26,7 @@ import org.bitcoinj.script.ScriptBuilder;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +34,8 @@ import java.util.List;
 @EqualsAndHashCode
 @Accessors(chain = true)
 @Data
+@Slf4j
+@Builder
 public class BitcoinTransaction {
     private String to;
 
@@ -49,7 +59,13 @@ public class BitcoinTransaction {
     // 2730 sat
     private final static long DUST_THRESHOLD = 2730;
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString(callSuper = true)
+    @EqualsAndHashCode
+    @Accessors(chain = true)
     @Data
+    @Builder
     public static class UTXO {
         private String txHash;
         private int vout;
@@ -65,20 +81,25 @@ public class BitcoinTransaction {
         //可交易金額
         long totalAmount = 0;
         for (UTXO output : getOutputs()) {
+            if (totalAmount >= (amount + fee)) {
+                //余额足够,跳出累加
+                break;
+            }
             totalAmount += output.getAmount();
         }
         if (totalAmount < getAmount()) {
             throw new RuntimeException("余额不足");
         }
-        //转出地址金额转换
+        //转出
         tran.addOutput(Coin.valueOf(getAmount()), Address.fromBase58(network, getTo()));
-        //改变后的金额
+        //找零金额
         long changeAmount = totalAmount - (getAmount() + getFee());
-        //把剩余金额转入到地址
         if (changeAmount >= DUST_THRESHOLD) {
+            //转入到找零地址
             tran.addOutput(Coin.valueOf(changeAmount), changeAddress);
         }
         for (UTXO output : getOutputs()) {
+            //添加input
             tran.addInput(Sha256Hash.wrap(output.getTxHash()), output.getVout(), new Script(NumericUtil.hexToBytes(output.getScriptPubKey())));
         }
         for (int i = 0; i < getOutputs().size(); i++) {
@@ -90,7 +111,7 @@ public class BitcoinTransaction {
             } else if (output.getAddress().equals(ECKey.fromPrivate(privateKey, false).toAddress(network).toBase58())) {
                 ecKey = ECKey.fromPrivate(privateKey, false);
             } else {
-                throw new Exception("私钥不存在");
+                throw new Exception("otxo验证失败");
             }
             TransactionInput transactionInput = tran.getInput(i);
             Script scriptPubKey = ScriptBuilder.createOutputScript(Address.fromBase58(network, output.getAddress()));
@@ -108,8 +129,10 @@ public class BitcoinTransaction {
         }
         //将signedHex  广播到链上
         String signedHex = NumericUtil.bytesToHex(tran.bitcoinSerialize());
+        log.info("sgin : " + signedHex);
         //交易ID
         String txHash = NumericUtil.beBigEndianHex(Hash.sha256(Hash.sha256(signedHex)));
+        log.info("txId : " + txHash);
     }
 
 
@@ -293,5 +316,85 @@ public class BitcoinTransaction {
                 prvKeys.add(externalChangeKey.getPrivKey());
             }
         }
+    }
+
+    /**
+     * @param Hash
+     * @return 推送裸交易到主网
+     */
+    public static String publishTx(String Hash) {
+        HashMap<String, String> map = Maps.newHashMap();
+        map.put("rawhex", Hash);
+        HttpRequest post = HttpUtil.createPost("https://chain.api.btc.com/v3/tools/tx-publish");
+        post.body(JSON.toJSONString(map));
+        HttpResponse execute = post.execute();
+        return execute.body();
+    }
+
+    /**
+     * 获取可以交易的bitcoin 流水
+     * @param address 比特币地址
+     * @return
+     */
+    public static List<UTXO> getUnspent(String address) {
+        List<UTXO> utxos = Lists.newArrayList();
+        String url = "https://insight.bitpay.com/api/addr/" + address + "/utxo";
+        try {
+            String httpGet = HttpUtil.createGet(url).execute().body();//
+            if (StringUtils.equals("No free outputs to spend", httpGet)) {
+                return utxos;
+            }
+            JSONArray unspentOutputs = JSONObject.parseArray(httpGet);
+            List<Map> outputs = JSONObject.parseArray(unspentOutputs.toJSONString(), Map.class);
+            if (outputs == null || outputs.size() == 0) {
+                System.out.println("交易异常，余额不足");
+            }
+            for (int i = 0; i < outputs.size(); i++) {
+                Map outputsMap = outputs.get(i);
+                String address_ = outputsMap.get("address").toString();
+                String tx_hash = outputsMap.get("txid").toString();
+                String tx_output_n = outputsMap.get("vout").toString();
+                String script = outputsMap.get("scriptPubKey").toString();
+                String value = outputsMap.get("satoshis").toString();
+                UTXO utxo = new UTXO(tx_hash,Integer.valueOf(tx_output_n),Long.valueOf(value),address_,script,"",0L);
+                utxos.add(utxo);
+            }
+            return utxos;
+        } catch (Exception e) {
+            return utxos;
+        }
+
+    }
+
+    /**
+     * bitcoin 私钥转换
+     * @param networkParameters
+     * @param privateKey
+     * @return
+     */
+    public static ECKey getECKey(NetworkParameters networkParameters,String privateKey){
+        DumpedPrivateKey dumpedPrivateKey = DumpedPrivateKey.fromBase58(networkParameters, privateKey);
+        return dumpedPrivateKey.getKey();
+    }
+    public static Long getFee(long amount, List<UTXO> utxos) {
+        String str = HttpUtil.createGet("https://bitcoinfees.earn.com/api/v1/fees/recommended").execute().body();
+        Long feeRate = ((JSONObject)JSONObject.parseObject(str)).getLong("fastestFee"); //最新的矿工费率
+        Long utxoAmount = 0L;
+        Long fee = 0L;
+        Long utxoSize = 0L;
+        for (UTXO us : utxos) {
+            utxoSize++;
+            if (utxoAmount >= (amount + fee)) {
+                break;
+            } else {
+                utxoAmount += us.getAmount();
+                fee = (utxoSize * 148 * 34  + 10) * feeRate;
+            }
+        }
+        return fee;
+    }
+
+    public static void main(String[] args) {
+        System.err.println(getFee(100000000L,getUnspent("3GQMRgbpMxEjYdiauFtgEaDPS8Fkc8n6jL")));
     }
 }
