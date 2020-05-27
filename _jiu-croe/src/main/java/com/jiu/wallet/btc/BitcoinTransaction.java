@@ -268,12 +268,12 @@ public class BitcoinTransaction {
                 TransactionOutput changeOutput = new TransactionOutput(this.network, null, Coin.valueOf(changeAmount), changeAddress);
                 changeOutput.bitcoinSerialize(stream);
             }
-            Utils.uint64ToByteStreamLE(BigInteger.valueOf(amount), stream);
-            stream.write(new VarInt(targetScriptPubKey.length).encode());
-            stream.write(targetScriptPubKey);
-            Utils.uint64ToByteStreamLE(BigInteger.valueOf(changeAmount), stream);
-            stream.write(new VarInt(changeScriptPubKey.length).encode());
-            stream.write(changeScriptPubKey);
+//            Utils.uint64ToByteStreamLE(BigInteger.valueOf(amount), stream);
+//            stream.write(new VarInt(targetScriptPubKey.length).encode());
+//            stream.write(targetScriptPubKey);
+//            Utils.uint64ToByteStreamLE(BigInteger.valueOf(changeAmount), stream);
+//            stream.write(new VarInt(changeScriptPubKey.length).encode());
+//            stream.write(changeScriptPubKey);
             hashOutputs = Sha256Hash.hashTwice(stream.toByteArray());
             // calc hash sequence
             stream = new UnsafeByteArrayOutputStream();
@@ -423,12 +423,12 @@ public class BitcoinTransaction {
                 TransactionOutput changeOutput = new TransactionOutput(this.network, null, Coin.valueOf(changeAmount), changeAddress);
                 changeOutput.bitcoinSerialize(stream);
             }
-            Utils.uint64ToByteStreamLE(BigInteger.valueOf(amount), stream);
-            stream.write(new VarInt(targetScriptPubKey.length).encode());
-            stream.write(targetScriptPubKey);
-            Utils.uint64ToByteStreamLE(BigInteger.valueOf(changeAmount), stream);
-            stream.write(new VarInt(changeScriptPubKey.length).encode());
-            stream.write(changeScriptPubKey);
+//            Utils.uint64ToByteStreamLE(BigInteger.valueOf(amount), stream);
+//            stream.write(new VarInt(targetScriptPubKey.length).encode());
+//            stream.write(targetScriptPubKey);
+//            Utils.uint64ToByteStreamLE(BigInteger.valueOf(changeAmount), stream);
+//            stream.write(new VarInt(changeScriptPubKey.length).encode());
+//            stream.write(changeScriptPubKey);
             hashOutputs = Sha256Hash.hashTwice(stream.toByteArray());
             // calc hash sequence
             stream = new UnsafeByteArrayOutputStream();
