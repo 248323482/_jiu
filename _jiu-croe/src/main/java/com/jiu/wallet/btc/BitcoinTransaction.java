@@ -58,7 +58,7 @@ public class BitcoinTransaction {
     private List<BigInteger> prvKeys;
     private BigInteger prvKey;
     // 2730 sat
-    private final static long DUST_THRESHOLD = 2730;
+    protected final static long DUST_THRESHOLD = 2730;
 
     @NoArgsConstructor
     @AllArgsConstructor
