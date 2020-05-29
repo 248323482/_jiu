@@ -439,6 +439,7 @@ public class BitcoinTransaction {
             // calc witnesses and redemScripts
             List<byte[]> witnesses = new ArrayList<>();
             List<String> redeemScripts = new ArrayList<>();
+            List<BigInteger> temp_Key = new ArrayList<>();
             for (int i = 0; i < getOutputs().size(); i++) {
                 UTXO utxo = getOutputs().get(i);
                 ECKey key =null;
@@ -525,7 +526,7 @@ public class BitcoinTransaction {
                 if (idx == 0) {
                     for (int i = 0; i < witnesses.size(); i++) {
                         //Metadata.FROM_WIF.equals(wallet.getMetadata().getSource())
-                        ECKey ecKey = ECKey.fromPrivate(prvKey);
+                        ECKey ecKey = ECKey.fromPrivate(temp_Key.get(i));
                         byte[] wit = witnesses.get(i);
                         stream.write(new VarInt(2).encode());
                         stream.write(new VarInt(wit.length).encode());
