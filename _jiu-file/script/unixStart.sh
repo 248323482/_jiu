@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# zhangkewei
+# jiu
 # 后台启动脚本
 
 PRG="$0"

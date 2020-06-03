@@ -5,8 +5,7 @@ import com.jiu.wallet.btc.rpc.Bitcoin;
 import com.jiu.wallet.btc.rpc.BitcoinRPCClient;
 import com.jiu.wallet.event.WalletListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-@Configuration
+//@Configuration
 public class WalletAutoConfiguration {
 
     /**

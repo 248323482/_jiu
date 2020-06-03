@@ -32,6 +32,7 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
     compile group: 'org.web3j', name: 'core', version: '4.5.17'
+    compile 'org.bitcoinj:bitcoinj-core:0.14.3'
 
 
 

@@ -11,13 +11,11 @@ import org.bitcoinj.crypto.TransactionSignature;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.script.ScriptBuilder;
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString(callSuper = true)
 @EqualsAndHashCode
 @Accessors(chain = true)
 @Data
 @Slf4j
-@Builder
 public class UsdtTransaction  extends BitcoinTransaction {
 
     public void signUsdtTransaction() throws Exception {

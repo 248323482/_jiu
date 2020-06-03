@@ -19,7 +19,7 @@ public class MyRabbitMqConfiguration {
     @EnableAutoConfiguration(exclude = {RabbitAutoConfiguration.class})
     public static class RabbitMqConfiguration {
         public RabbitMqConfiguration() {
-            log.warn("检测到jiu.rabbitmq.enabled=false，排除了 RabbitMQ");
+            log.warn("RabbitMQ 未开启。。。。取消注入");
         }
     }
 

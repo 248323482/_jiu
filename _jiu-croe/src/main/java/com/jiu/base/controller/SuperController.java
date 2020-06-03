@@ -31,7 +31,7 @@ import java.lang.reflect.ParameterizedType;
  * @param <UpdateDTO> 修改参数
  */
 public abstract class SuperController<S extends SuperService<Entity>, Id extends Serializable, Entity, PageDTO, SaveDTO, UpdateDTO> extends SuperSimpleController<S, Entity>
-implements  SaveController<Entity, SaveDTO>, UpdateController<Entity, UpdateDTO>, DeleteController<Entity, Id>, PoiController<Entity, PageDTO>, QueryController<Entity, Id, PageDTO> {
+implements  SaveController<Entity, SaveDTO>, UpdateController<Entity, UpdateDTO>, DeleteController<Entity, Id>, PoiController<Entity, PageDTO>, QueryController<Entity, Id, PageDTO>,SseController<Entity, Id, PageDTO> {
 
 
     @Override

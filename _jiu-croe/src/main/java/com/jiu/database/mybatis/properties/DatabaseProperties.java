@@ -37,7 +37,7 @@ public class DatabaseProperties {
     /**
      * 是否启用数据权限
      */
-    private Boolean isDataScope = true;
+    private Boolean isDataScope = false;
     /**
      * 事务超时时间
      */

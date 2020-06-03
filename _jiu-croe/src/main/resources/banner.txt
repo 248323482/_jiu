@@ -4,6 +4,6 @@ ________                                          .__   ___________
  |    `   \  |  | \/ \  ___/   / __ \_ |  Y Y  \  |  |    |    |   
 /_______  /  |__|     \___  > (____  / |__|_|  /  |__| /\ |____|
         \/                \/       \/        \/        \/
-        Application Version: @project.description@ - @project.version@
+        Application Version: Jiu
         Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
         ${AnsiColor.DEFAULT}
