@@ -1,26 +1,27 @@
 package com.jiu.base.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 public interface SseController <Entity, Id extends Serializable, PageDTO> extends PageController<Entity, PageDTO> {
     static Map<String, SseEmitter> sseCache = new ConcurrentHashMap<>();
     @GetMapping(path = "subscribe")
-    default SseEmitter push(String id) throws  Exception{
+    default SseEmitter push(String id,String[] events) throws  Exception{
         // 超时时间设置为1小时
-        SseEmitter sseEmitter = new SseEmitter(3600_000L);
+        SseEmitter sseEmitter = new SseEmitter(60*3*1000L);
         sseCache.put(id, sseEmitter);
         //超时
         sseEmitter.onTimeout(() -> sseTimeOutCall(id) );
         //初始化数据组装
-        sseEmitter.send(builder());
+        sseEmitter.send(builder(events,id));
         sseEmitter.onCompletion(() -> sseSuccessCall(id));
         //心跳线程
         heartbeat(sseEmitter,id);
@@ -59,8 +60,7 @@ public interface SseController <Entity, Id extends Serializable, PageDTO> extend
                     Thread.sleep(2000);
                     SseEmitter.SseEventBuilder builder = SseEmitter
                             .event()
-                            .name("heartbeat")
-                            .data(new Date().getTime());
+                            .comment("heartbeat");
                     try {
                         sseEmitter.send(builder);
                     }catch (Exception e){
@@ -80,8 +80,6 @@ public interface SseController <Entity, Id extends Serializable, PageDTO> extend
     default  void  sseTimeOutCall(String id){
         SseEmitter sseEmitter = sseCache.get(id);
         sseCache.remove(id);
-        sseEmitter=null;
-        System.gc();
     }
 
     /**
@@ -92,18 +90,24 @@ public interface SseController <Entity, Id extends Serializable, PageDTO> extend
     default  void  sseSuccessCall(String id){
         SseEmitter sseEmitter = sseCache.get(id);
         sseCache.remove(id);
-        sseEmitter=null;
-        System.gc();
     }
 
     /**
-     * builder  init  SseEmitter
+     * builder  init  SseEmitter  注册 events
      */
-    default  SseEmitter.SseEventBuilder builder(){
+    default  SseEmitter.SseEventBuilder builder(String [] events,String id){
+        Map<String,Object>  restMap = Maps.newHashMap();
+        restMap.put("events",events);
+        //状态订阅
+        restMap.put("status","subscribed");
+        //订阅标识
+        restMap.put("id",id);
+
         SseEmitter.SseEventBuilder builder = SseEmitter
-                .event()
-                .name("init")
-                .data("初始化数据中订单数据。。。。。。");
+                .event().comment("")//.reconnectTime(2000)
+                //订阅
+                .name("connect")
+                .data(JSON.toJSONString(restMap));
         return  builder;
     }
 }
