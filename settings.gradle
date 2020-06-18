@@ -1,5 +1,4 @@
 rootProject.name = "_jiu"
 include "_jiu-croe"
 include "_jiu-file"
-include "_jiu-test"
 
