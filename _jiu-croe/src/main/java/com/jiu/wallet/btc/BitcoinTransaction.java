@@ -35,7 +35,6 @@ import java.util.*;
 @Accessors(chain = true)
 @Data
 @Slf4j
-@Builder
 public class BitcoinTransaction {
     private String to;
 
@@ -66,7 +65,6 @@ public class BitcoinTransaction {
     @EqualsAndHashCode
     @Accessors(chain = true)
     @Data
-    @Builder
     public static class UTXO {
         private String txHash;
         private int vout;
@@ -655,7 +653,4 @@ public class BitcoinTransaction {
         return fee;
     }
 
-    public static void main(String[] args) {
-        System.err.println(getFee(100000000L,getUnspent("3GQMRgbpMxEjYdiauFtgEaDPS8Fkc8n6jL")));
-    }
 }

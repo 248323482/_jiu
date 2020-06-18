@@ -17,8 +17,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
-@EqualsAndHashCode
 @Accessors(chain = true)
 public class BtcWallet extends AbstractWallet {
     private Bitcoin bitcoin;

@@ -1,8 +1,3 @@
-group = "com.jiu" //分组
-version = "1.0" //版本号
-apply plugin: "java"
-sourceCompatibility = 1.8
-
 //编译构建时的配置
 buildscript {
     ext {
@@ -28,6 +23,8 @@ buildscript {
 }
 
 allprojects {
+    group = "com.jiu" //分组
+    version = "1.0" //版本号
     //指定编码格式
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
@@ -52,13 +49,14 @@ subprojects {
     apply plugin: "idea"
     apply plugin: "maven"
     //spring boot 插件
-    apply plugin: "org.springframework.boot"
     apply plugin: "io.spring.dependency-management"
+    //apply plugin: "org.springframework.boot"
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
     ext {
-        mysqlConnectorVersion = "5.1.44"
         gradleDockerVersion = "1.2"
         ehcacheVersion = "2.10.4"
-        mysqlConnectorVersion = "5.1.44"
+        mysqlConnectorVersion = "8.0.19"
         lombokVersion = "1.16.18"
         mybatisVersion = "3.4.5"
         mybatisStarterVersion = "1.3.0"
@@ -92,17 +90,21 @@ subprojects {
         delete "${buildDir}/../out"
     }
 
+
+
+
+
     dependencies {
         compile "com.alibaba.nacos:nacos-client:1.3.0"
         //web
-        compile("org.springframework.boot:spring-boot-starter-web") {
+        compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
             //使用undertow来代替tomacat
             exclude module: "spring-boot-starter-tomcat"
         }
         //替代tomcat
-        compile "org.springframework.boot:spring-boot-starter-undertow"
+        compile "org.springframework.boot:spring-boot-starter-undertow:${springBootVersion}"
         //configuration
-        compile "org.springframework.boot:spring-boot-configuration-processor"
+        compile "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
         //缓存
         compile "net.sf.ehcache:ehcache:${ehcacheVersion}"
         //lombok插件
@@ -120,9 +122,9 @@ subprojects {
         //fast-json
         compile "com.alibaba:fastjson:${fastJsonVersion}"
         //thymeleft
-        compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+        implementation "org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}"
         // 关闭thymeleft强校验
-        compile "net.sourceforge.nekohtml:nekohtml:1.9.22"
+        implementation "net.sourceforge.nekohtml:nekohtml:1.9.22"
         //swagger2
         compile "io.springfox:springfox-swagger2:${swagger2Version}"
         //httpclient
@@ -141,6 +143,6 @@ subprojects {
 
 
     }
-
+    
 
 }

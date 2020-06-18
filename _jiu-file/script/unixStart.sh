@@ -10,7 +10,6 @@ JAR_PATH=$APP_HOME/lib
 _EXECJAVA=${JAVA_HOME}/bin/java
 [ -z "$JAVA_HOME" ] && _EXECJAVA=java
 JVM_OPTS=" -Xms256M -Xmx256M -Dapp.home=$APP_HOME/"
-
 if [ "$1" = "debug" ]; then
     if [ -z "$2" ]; then
         DEBUG_PORT=5555

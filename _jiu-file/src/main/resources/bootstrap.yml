@@ -21,7 +21,7 @@ spring:
       config:
         server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
         file-extension: yml
-       # namespace: ${jiu.nacos.namespace}
+        namespace: ${jiu.nacos.namespace}
         shared-configs:
           - dataId: common.yml
             refresh: true
@@ -30,7 +30,7 @@ spring:
         enabled: true
       discovery:
         server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
-      #  namespace: ${jiu.nacos.namespace}
+        namespace: ${jiu.nacos.namespace}
         metadata:
           management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
 logging:
@@ -39,6 +39,8 @@ logging:
     name: ${logging.file.path}/${spring.application.name}/root.log
   level.com.alibaba.nacos.client.config.impl: error
   level.com.jiu.database.parsers: debug
+  config: classpath:logback-spring.xml
+
 
 
 
