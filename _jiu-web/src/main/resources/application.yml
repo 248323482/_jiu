@@ -1,5 +1,0 @@
-server:
-  port: 88
-spring:
-  application:
-    name: jiu
