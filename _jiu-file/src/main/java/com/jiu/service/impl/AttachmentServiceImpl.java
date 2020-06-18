@@ -9,7 +9,7 @@ import com.jiu.dao.AttachmentMapper;
 import com.jiu.database.mybatis.auth.DataScope;
 import com.jiu.database.mybatis.conditions.Wraps;
 import com.jiu.database.mybatis.conditions.query.LbqWrapper;
-import com.jiu.database.mybatis.properties.DatabaseProperties;
+import com.jiu.database.properties.DatabaseProperties;
 import com.jiu.entity.Attachment;
 import com.jiu.entity.File;
 import com.jiu.entity.domain.FileDO;

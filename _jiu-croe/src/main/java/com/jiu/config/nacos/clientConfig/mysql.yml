@@ -1,52 +1,33 @@
+# mysql 个性化配置， 不同的环境，需要配置不同的链接信息，只需要将这段信息复制到具体环境的配置文件中进行修改即可
 jiu:
-  file:
-    type: LOCAL
   mysql:
-    ip: 127.0.0.1
+    enabled: true
+    ip: budongi.club
     port: 3306
-    driverClassName: com.mysql.jdbc.Driver #com.mysql.cj.jdbc.Driver
-    database: 222
+    driverClassName: com.mysql.cj.jdbc.Driver
+    database: jiu
     username: root
-    password: 123456
-    url: jdbc:mysql://${zuihou.mysql.ip}:${zuihou.mysql.port}/${zuihou.mysql.database}?serverTimezone=CTT&characterEncoding=utf8&useUnicode=true&useSSL=false&autoReconnect=true&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    password: 88888888
+    url: jdbc:mysql://${jiu.mysql.ip}:${jiu.mysql.port}/${jiu.mysql.database}?serverTimezone=CTT&characterEncoding=utf8&useUnicode=true&useSSL=false&autoReconnect=true&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
   database:      # 数据库配置请看DatabaseProperties类上的注释
     isNotWrite: false
-    tenantDatabasePrefix: zuihou_base
+    tenantDatabasePrefix: jiu
     multiTenantType: SCHEMA
     isBlockAttack: false  # 是否启用 攻击 SQL 阻断解析器
     worker-id: 0
     data-center-id: 0
     isSeata: false
 
-
-
-
-
-server:
-  port: 80
-
-
-
-
-
+# mysql 通用配置
 spring:
-  servlet:
-    multipart:
-      max-request-size: 100MB
-      max-file-size: 100MB
-      enabled: true
-  application:
-    name: jiu
   datasource:
-    initialization-mode: always
-    schema: classpath*:schema.sql
     druid:
       enable: true
       # 从这里开始(druid)，中间的这段配置用于 zuihou.database.multiTenantType != DATASOURCE 时
       username: ${jiu.mysql.username}
       password: ${jiu.mysql.password}
       driver-class-name: ${jiu.mysql.driverClassName}
-      url: jdbc:mysql://${jiu.mysql.ip}:${jiu.mysql.port}/${jiu.mysql.database}?serverTimezone=CTT&characterEncoding=utf8&useUnicode=true&useSSL=false&autoReconnect=true&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+      url: ${jiu.mysql.url}
       db-type: mysql
       initialSize: 10
       minIdle: 10
@@ -82,10 +63,6 @@ spring:
         reset-enable: true    #允许清空统计数据
         login-username: jiu
         login-password: jiu
-
-
-
-
 mybatis-plus:
   mapper-locations:
     - classpath*:mapper_**/**/*Mapper.xml
@@ -104,8 +81,3 @@ mybatis-plus:
     cache-enabled: false
     #配置JdbcTypeForNull, oracle数据库必须配置
     jdbc-type-for-null: 'null'
-
-logging:
-  file:
-    path: /logs
-    name: ${logging.file.path}/${spring.application.name}/root.log

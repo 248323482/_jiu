@@ -1,13 +1,8 @@
-package com.jiu.database.mybatis.properties;
+package com.jiu.database.properties;
 
 import lombok.Getter;
 
 /**
- * 多租户类型
- * <p>
- * NONE、COLUMN、SCHEMA 模式开源
- * <p>
- * DATASOURCE 模式收费，购买咨询作者
  *
  */
 @Getter

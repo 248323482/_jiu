@@ -2,6 +2,9 @@ package com.jiu.database.datasource;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ArrayUtil;
+import io.seata.rm.datasource.DataSourceProxy;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
@@ -12,13 +15,16 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
-import com.jiu.database.mybatis.properties.DatabaseProperties;
+import com.jiu.database.properties.DatabaseProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.scripting.LanguageDriver;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeHandler;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
@@ -26,11 +32,18 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.interceptor.*;
 import org.springframework.util.Assert;
@@ -45,7 +58,7 @@ import java.util.*;
 
 /**
  * 数据库& 事务& MyBatis & Mp 配置
- * zuihou.database.multiTenantType != DATASOURCE时， 子类需要继承它，并让程序启动时加载
+ * jiu.database.multiTenantType != DATASOURCE时， 子类需要继承它，并让程序启动时加载
  * <p>
  * 注意：BaseDatabaseConfiguration 和 DynamicDataSourceAutoConfiguration 只能同时加载一个
  * <p>
@@ -54,8 +67,15 @@ import java.util.*;
 
  */
 @Slf4j
+@EnableConfigurationProperties({MybatisPlusProperties.class})
+@MapperScan(
+        basePackages = {"com.jiu"},
+        annotationClass = Repository.class,
+        sqlSessionFactoryRef = BaseDatabaseConfiguration.DATABASE_PREFIX + "SqlSessionFactory")
+@ConditionalOnExpression("!'DATASOURCE'.equals('${jiu.database.multiTenantType}')")
 public abstract class BaseDatabaseConfiguration implements InitializingBean {
 
+    final static String DATABASE_PREFIX = "master";
     /**
      * 测试环境
      */
@@ -104,6 +124,43 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
         this.mybatisPlusPropertiesCustomizers = mybatisPlusPropertiesCustomizerProvider.getIfAvailable();
         this.applicationContext = applicationContext;
     }
+
+
+    @Bean(DATABASE_PREFIX + "SqlSessionTemplate")
+    public SqlSessionTemplate getSqlSessionTemplate(@Qualifier(DATABASE_PREFIX + "SqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+        ExecutorType executorType = this.properties.getExecutorType();
+        if (executorType != null) {
+            return new SqlSessionTemplate(sqlSessionFactory, executorType);
+        } else {
+            return new SqlSessionTemplate(sqlSessionFactory);
+        }
+    }
+
+    /**
+     * 数据源信息
+     *
+     * @return
+     */
+    @Primary
+    @Bean(name = DATABASE_PREFIX + "DruidDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.druid")
+    public DataSource druidDataSource() {
+        return DruidDataSourceBuilder.create().build();
+    }
+
+
+    @Bean(DATABASE_PREFIX + "DataSource")
+    public DataSource dataSourceProxy(@Qualifier(DATABASE_PREFIX + "DruidDataSource") DataSource dataSource) {
+        DataSource dataSourceWrapper = dataSource;
+        if (ArrayUtil.contains(DEV_PROFILES, this.profiles)) {
+           // dataSourceWrapper = new P6DataSource(dataSource);
+        }
+        if (databaseProperties.getIsSeata()) {
+            dataSourceWrapper = new DataSourceProxy(dataSourceWrapper);
+        }
+        return dataSourceWrapper;
+    }
+
 
     protected TransactionAttributeSource transactionAttributeSource() {
         /*当前存在事务就使用当前事务，当前不存在事务就创建一个新的事务*/
@@ -165,8 +222,8 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
                     "Cannot find config location: " + resource + " (please add config file or check your Mybatis configuration)");
         }
     }
-
-    protected SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+    @Bean(DATABASE_PREFIX + "SqlSessionFactory")
+    protected SqlSessionFactory sqlSessionFactory(@Qualifier(DATABASE_PREFIX + "DataSource")DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         factory.setVfs(SpringBootVFS.class);

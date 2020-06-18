@@ -43,7 +43,7 @@ import static com.jiu.utils.DateUtils.DEFAULT_MONTH_FORMAT_SLASH;
 
 @EnableConfigurationProperties(FileServerProperties.class)
 @Configuration
-@ConditionalOnProperty(name = "jiu.file.type", havingValue = "LOCAL")
+@ConditionalOnProperty(name = "jiu.file.type", havingValue = "LOCAL",matchIfMissing = true)
 @Slf4j
 public class LocalAutoConfigure {
 

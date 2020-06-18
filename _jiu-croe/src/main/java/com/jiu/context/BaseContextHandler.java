@@ -141,7 +141,7 @@ public class BaseContextHandler {
 
 
     public static String getTenant() {
-        return StringUtils.isBlank(get(BaseContextConstants.JWT_KEY_TENANT, String.class))?"jiu":get(BaseContextConstants.JWT_KEY_TENANT, String.class);
+        return StringUtils.isBlank(get(BaseContextConstants.JWT_KEY_TENANT, String.class))?"":get(BaseContextConstants.JWT_KEY_TENANT, String.class);
     }
 
     public static String getClientId() {

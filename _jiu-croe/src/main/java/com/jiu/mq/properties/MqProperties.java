@@ -6,10 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 
 /**
- * 操作日志配置类
- *
- * @author zuihou
- * @date 2020年03月09日15:00:47
  */
 @Data
 @NoArgsConstructor
@@ -20,6 +16,6 @@ public class MqProperties {
     /**
      * 是否启用
      */
-    private Boolean enabled = true;
+    private Boolean enabled = false;
 
 }

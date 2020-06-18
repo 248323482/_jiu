@@ -1,4 +1,4 @@
-package com.jiu.database.mybatis.properties;
+package com.jiu.database.properties;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.jiu.database.mybatis.properties.MultiTenantType.SCHEMA;
+import static com.jiu.database.properties.MultiTenantType.SCHEMA;
 
 
 /**
@@ -37,7 +37,7 @@ public class DatabaseProperties {
     /**
      * 是否启用数据权限
      */
-    private Boolean isDataScope = false;
+    private Boolean isDataScope = true;
     /**
      * 事务超时时间
      */
@@ -73,7 +73,7 @@ public class DatabaseProperties {
     /**
      * 事务扫描基础包
      */
-    private String transactionScanPackage = "com.jiu";
+    private String transactionScanPackage = "com.github.zuihou";
 
     @Data
     public static class Id {

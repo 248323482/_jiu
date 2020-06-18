@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -43,7 +44,6 @@ import static com.jiu.utils.DateUtils.*;
 
 /**
  * 基础配置类
- *
  */
 //@AutoConfigureBefore(JacksonAutoConfiguration.class)
 public abstract class BaseConfig {
@@ -119,6 +119,17 @@ public abstract class BaseConfig {
                 .deserializerByType(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)))
                 .deserializerByType(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)))
                 .deserializerByType(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
+    }
+
+    /**
+     * 设置value 为空不做反应
+     * @return
+     */
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
+        propertySourcesPlaceholderConfigurer.setIgnoreUnresolvablePlaceholders(true);
+        return propertySourcesPlaceholderConfigurer;
     }
 
     /**

@@ -104,15 +104,16 @@ public class DefaultConstraintExtractImpl implements IConstraintExtract {
         }
 
         ConstraintLocation con = metaConstraint.getLocation();
+
         String domainName = con.getDeclaringClass().getSimpleName().toLowerCase();
-        String fieldName = con.getMember().getName();
+        String fieldName = "";//con.getMember().getName();
         String key = domainName + fieldName;
         FieldValidatorDesc desc = fieldValidatorDescs.get(domainName + fieldName);
         if (desc == null) {
             desc = new FieldValidatorDesc();
             desc.setDomainName(domainName);
             desc.setFieldName(fieldName);
-            desc.setFieldType(getType(((Field) con.getMember()).getType()));
+            //desc.setFieldType(getType(((Field) con.getMember()).getType()));
             desc.setConstraints(new ArrayList<>(5));
             fieldValidatorDescs.put(key, desc);
         }

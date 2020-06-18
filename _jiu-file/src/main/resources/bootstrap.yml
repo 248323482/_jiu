@@ -1,0 +1,44 @@
+jiu:
+  log-path: /logs
+  name: file-server
+  port: 80
+  nacos:
+    ip: budongi.club
+    port: 8848
+    namespace: jiu_dev
+
+server:
+  port: ${jiu.port}
+
+
+spring:
+  application:
+    name: ${jiu.name}
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+        file-extension: yml
+       # namespace: ${jiu.nacos.namespace}
+        shared-configs:
+          - dataId: common.yml
+            refresh: true
+          - dataId: mysql.yml
+            refresh: true
+        enabled: true
+      discovery:
+        server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+      #  namespace: ${jiu.nacos.namespace}
+        metadata:
+          management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
+logging:
+  file:
+    path: ${jiu.log-path}
+    name: ${logging.file.path}/${spring.application.name}/root.log
+  level.com.alibaba.nacos.client.config.impl: error
+  level.com.jiu.database.parsers: debug
+
+
+

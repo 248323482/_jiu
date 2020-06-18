@@ -1,6 +1,13 @@
+group = "com.jiu" //分组
+version = "1.0" //版本号
+apply plugin: "java"
+sourceCompatibility = 1.8
 
 //编译构建时的配置
 buildscript {
+    ext {
+        springBootVersion = "2.2.5.RELEASE"
+    }
     repositories {
         mavenLocal()
         mavenCentral()
@@ -12,51 +19,68 @@ buildscript {
         maven { url "https://repo.spring.io/libs-milestone" }
         jcenter()
     }
+    //打包
     dependencies {
         classpath "io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE"
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.0.5.RELEASE"
-
-
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 
 }
 
-
-
-
 allprojects {
-    group = 'com.jiu' //分组
-    version = '1.0' //版本号
-    apply plugin: 'java'
-    apply plugin: 'idea'
-    apply plugin: 'maven'
+    //指定编码格式
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://mvnrepository.com/" }
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url "https://repo.spring.io/libs-milestone" }
+        maven { url "https://repo.spring.io/release" }
+        jcenter()
+    }
+
+
 }
 //统一所有子项目的配置
 subprojects {
+    apply plugin: "java"
+    apply plugin: "idea"
+    apply plugin: "maven"
+    //spring boot 插件
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
     ext {
-        springBootVersion='2.0.5.RELEASE'
-        mysqlConnectorVersion = '5.1.44'
-        gradleDockerVersion = '1.2'
-        ehcacheVersion = '2.10.4'
-        mysqlConnectorVersion = '5.1.44'
-        lombokVersion = '1.16.18'
-        mybatisVersion = '3.4.5'
-        mybatisStarterVersion = '1.3.0'
-        hikariCPVersion = '2.5.1'
-        commonMapperVersion = '3.4.4'
-        commonsIOVersion = '2.4'
-        commonsLangversion = '3.7'
-        commonsCodecVersion = '1.11'
-        fastJsonVersion = '1.2.62'
-        swagger2Version='2.9.2'
+        mysqlConnectorVersion = "5.1.44"
+        gradleDockerVersion = "1.2"
+        ehcacheVersion = "2.10.4"
+        mysqlConnectorVersion = "5.1.44"
+        lombokVersion = "1.16.18"
+        mybatisVersion = "3.4.5"
+        mybatisStarterVersion = "1.3.0"
+        hikariCPVersion = "2.5.1"
+        commonMapperVersion = "3.4.4"
+        commonsIOVersion = "2.4"
+        commonsLangversion = "3.7"
+        commonsCodecVersion = "1.11"
+        fastJsonVersion = "1.2.62"
+        swagger2Version = "2.9.2"
+        jacksonVersion= "2.10.3"
+    }
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR3"
+            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:2.2.1.RELEASE"
+        }
+    }
+    jar {
+        manifest.attributes provider: "gradle"
     }
 
-    apply plugin: 'io.spring.dependency-management'
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
 
     build.doLast {
         def rootPath = rootProject.buildDir.getPath() + "/distributions"
@@ -68,114 +92,55 @@ subprojects {
         delete "${buildDir}/../out"
     }
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url "http://mvnrepository.com/" }
-        maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
-        maven { url "https://repo.spring.io/snapshot" }
-        maven { url "https://repo.spring.io/milestone" }
-        maven { url "https://repo.spring.io/libs-milestone" }
-        maven { url "https://repo.spring.io/release" }
-        jcenter()
-    }
-    dependencyManagement {
-        imports {
-            mavenBom 'org.springframework.cloud:spring-cloud-config:2.0.0.M8'
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1"
-        }
-    }
-
-    jar {
-        manifest.attributes provider: 'gradle'
-    }
-
-
-
-
     dependencies {
-
+        compile "com.alibaba.nacos:nacos-client:1.3.0"
         //web
-        compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}"){
+        compile("org.springframework.boot:spring-boot-starter-web") {
             //使用undertow来代替tomacat
-            exclude module:"spring-boot-starter-tomcat"
+            exclude module: "spring-boot-starter-tomcat"
         }
         //替代tomcat
-        compile 'org.springframework.boot:spring-boot-starter-undertow'
-
-        //模板引擎
-     //   compile("org.springframework.boot:spring-boot-starter-freemarker:${springBootVersion}")
-
+        compile "org.springframework.boot:spring-boot-starter-undertow"
+        //configuration
+        compile "org.springframework.boot:spring-boot-configuration-processor"
         //缓存
-        compile("net.sf.ehcache:ehcache:${ehcacheVersion}")
-
-
+        compile "net.sf.ehcache:ehcache:${ehcacheVersion}"
         //lombok插件
-        compile("org.projectlombok:lombok:${lombokVersion}")
-
+        compile "org.projectlombok:lombok:${lombokVersion}"
         //
-        compile 'com.lmax:disruptor:3.3.6'
-
-
+        compile "com.lmax:disruptor:3.3.6"
         //热部署
-        compile("org.springframework.boot:spring-boot-devtools:${springBootVersion}")
+        compile "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
         //commons-io
-        compile("commons-io:commons-io:${commonsIOVersion}")
-
+        compile "commons-io:commons-io:${commonsIOVersion}"
         //commons-lang3
-        compile("org.apache.commons:commons-lang3:${commonsLangversion}")
-
+        compile "org.apache.commons:commons-lang3:${commonsLangversion}"
         //commons-codec
-        compile("commons-codec:commons-codec:${commonsCodecVersion}")
-
+        compile "commons-codec:commons-codec:${commonsCodecVersion}"
         //fast-json
-        compile("com.alibaba:fastjson:${fastJsonVersion}")
+        compile "com.alibaba:fastjson:${fastJsonVersion}"
         //thymeleft
-        compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+        compile "org.springframework.boot:spring-boot-starter-thymeleaf"
         // 关闭thymeleft强校验
-        compile("net.sourceforge.nekohtml:nekohtml:1.9.22")
+        compile "net.sourceforge.nekohtml:nekohtml:1.9.22"
         //swagger2
-        compile("io.springfox:springfox-swagger2:${swagger2Version}")
-
-
+        compile "io.springfox:springfox-swagger2:${swagger2Version}"
         //httpclient
-        compile("org.apache.httpcomponents:httpclient:4.5.6")
-        compile("org.apache.httpcomponents:httpcore:4.4.11")
+        compile "org.apache.httpcomponents:httpclient:4.5.6"
+        compile "org.apache.httpcomponents:httpcore:4.4.11"
         //测试
-        testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
-
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.3'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.3'
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.3'
-        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.10.3'
-        compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.10.3'
-        compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-parameter-names', version: '2.10.3'
-        compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
-
-
-
+        testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+        //jackson
+        compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+        compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+        compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+        compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
+        compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"
+        compile "com.fasterxml.jackson.module:jackson-module-parameter-names:${jacksonVersion}"
 
 
 
     }
-
-
-
-
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

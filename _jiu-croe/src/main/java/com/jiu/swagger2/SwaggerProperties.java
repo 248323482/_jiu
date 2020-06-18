@@ -12,8 +12,6 @@ import java.util.Map;
  * swagger2 属性配置
  * 必须配置 prefix ，才能有提示
  *
- * @author zuihou
- * @date 2018/11/18 9:17
  */
 @Data
 @ConfigurationProperties(prefix = SwaggerProperties.PREFIX)
@@ -70,7 +68,7 @@ public class SwaggerProperties {
     /**
      * swagger会解析的包路径
      **/
-    private String basePackage = "com.jiu.zuihou";
+    private String basePackage = "com.jiu";
     private String basePath = "/";
     /**
      * SpringSecurity 全局统一鉴权配置
