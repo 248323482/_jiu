@@ -21,4 +21,6 @@ public class ApplicationLoggerInitializer implements ApplicationContextInitializ
         // nacos的日志文件路径
         System.setProperty("nacos.logging.path", String.format("%s/%s", logBase, appName));
     }
+
+
 }

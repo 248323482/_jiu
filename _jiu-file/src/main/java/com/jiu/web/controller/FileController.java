@@ -16,6 +16,7 @@ import com.jiu.utils.BeanPlusUtil;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ import java.util.List;
 @Slf4j
 @Api(value = "文件表", tags = "文件表")
 public class FileController extends SuperController<FileService, Long, File, FilePageReqDTO, FolderSaveDTO, FileUpdateDTO> {
+    private static org.slf4j.Logger logger= LoggerFactory.getLogger(FileController.class);
     @Autowired
     private FileRestManager fileRestManager;
 
@@ -45,7 +47,11 @@ public class FileController extends SuperController<FileService, Long, File, Fil
     public void query(PageParams<FilePageReqDTO> params, IPage<File> page, Long defSize) {
         fileRestManager.page(page, params.getModel());
     }
+    @RequestMapping("test")
+    public void test(){
+        logger.info("test");
 
+    }
     @Override
     public R<File> handlerSave(FolderSaveDTO model) {
         FolderDTO folder = baseService.saveFolder(model);

@@ -34,12 +34,8 @@ spring:
         metadata:
           management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
 logging:
-  file:
-    path: ${jiu.log-path}
-    name: ${logging.file.path}/${spring.application.name}/root.log
-  level.com.alibaba.nacos.client.config.impl: error
-  level.com.jiu.database.parsers: debug
-  config: classpath:logback-spring.xml
+  config: classpath:log4j2-spring.xml
+
 
 
 

@@ -12,7 +12,12 @@ dependencies{
     compile("org.springframework.boot:spring-boot-starter-web") {
         //使用undertow来代替tomacat
         exclude module: "spring-boot-starter-tomcat"
+        exclude module: "spring-boot-starter-logging"
+        exclude module: "log4j-to-slf4j"
+        exclude module: "log4j-api"
+        exclude module: "logback-classic"
     }
+
     //替代tomcat
     compile "org.springframework.boot:spring-boot-starter-undertow"
 }
