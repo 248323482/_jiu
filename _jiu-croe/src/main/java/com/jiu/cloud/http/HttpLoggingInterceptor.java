@@ -24,7 +24,7 @@ import static okhttp3.internal.platform.Platform.INFO;
  * a stable logging format, use your own interceptor.
  *
  */
-public final class HttpLoggingInterceptor implements Interceptor {
+public  class HttpLoggingInterceptor implements Interceptor {
     private static final Charset UTF8 = StandardCharsets.UTF_8;
     /**
      * Returns true if the body in question probably contains human readable text. Uses a small sample
