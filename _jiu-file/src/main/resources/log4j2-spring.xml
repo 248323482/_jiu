@@ -178,6 +178,7 @@
     <logger name="org.hibernate" level="WARN" />
     <logger name="org.apache.http" level="INFO" />
     <logger name="com.alibaba.druid" level="WARN" />
+    <logger name="com.plumelog.trace.aspect" level="WARN" />
     <logger name="com.mysql.jdbc" level="debug" />
     <logger name="com.alibaba.nacos.client.config" level="WARN" />
     <!-- 日志输出级别 -->
