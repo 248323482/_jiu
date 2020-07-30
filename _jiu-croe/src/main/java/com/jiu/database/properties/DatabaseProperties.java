@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.jiu.database.properties.MultiTenantType.SCHEMA;
 
 
 /**
@@ -48,10 +47,6 @@ public class DatabaseProperties {
      */
     private String tenantDatabasePrefix = "jiu";
 
-    /**
-     * 多租户模式
-     */
-    private MultiTenantType multiTenantType = SCHEMA;
     /**
      * 租户id 列名
      */

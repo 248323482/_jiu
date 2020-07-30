@@ -17,7 +17,6 @@ import com.jiu.database.mybatis.typehandler.LeftLikeTypeHandler;
 import com.jiu.database.mybatis.typehandler.RightLikeTypeHandler;
 import com.jiu.database.parsers.DynamicTableNameParser;
 import com.jiu.database.properties.DatabaseProperties;
-import com.jiu.database.properties.MultiTenantType;
 import com.jiu.database.servlet.TenantWebMvcConfigurer;
 import com.jiu.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +53,7 @@ public class BaseMybatisConfiguration {
     @Slf4j
     @Configuration
     @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
-  // @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, DruidDataSourceAutoConfigure.class})
+    // @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, DruidDataSourceAutoConfigure.class})
     public static class DataSourceConfiguration {
         public DataSourceConfiguration() {
             log.warn("DataSource 已开启........");
@@ -70,7 +69,6 @@ public class BaseMybatisConfiguration {
     @ConditionalOnMissingBean
     @ConditionalOnProperty(name = "jiu.database.isNotWrite", havingValue = "true")
     public WriteInterceptor getWriteInterceptor() {
-
         log.warn("数据禁止写入........[{}}",databaseProperties.getIsNotWrite());
         return new WriteInterceptor();
     }
@@ -91,8 +89,7 @@ public class BaseMybatisConfiguration {
 
 
     /**
-     * 分页插件，自动识别数据库类型
-     * 多租户，请参考官网【插件扩展】
+     * 分页插件，自动识别数据库类型*
      */
     @Order(5)
     @Bean
@@ -105,35 +102,32 @@ public class BaseMybatisConfiguration {
             // 攻击 SQL 阻断解析器 加入解析链
             sqlParserList.add(new BlockAttackSqlParser());
         }
+        //动态表名加后缀
+        //        DynamicTableNameParser dynamicTableNameParser = new DynamicTableNameParser();
+        //            sqlParserList.add(dynamicTableNameParser);
 
-        log.info("已为您开启{}租户模式", databaseProperties.getMultiTenantType().getDescribe());
-        //动态"表名" 插件 来实现 租户schema切换 加入解析链
-        if (MultiTenantType.SCHEMA.eq(this.databaseProperties.getMultiTenantType())) {
-            DynamicTableNameParser dynamicTableNameParser = new DynamicTableNameParser();
-            sqlParserList.add(dynamicTableNameParser);
-        } else if (MultiTenantType.COLUMN.eq(this.databaseProperties.getMultiTenantType())) {
-            TenantSqlParser tenantSqlParser = new TenantSqlParser();
-            tenantSqlParser.setTenantHandler(new TenantHandler() {
-                @Override
-                public Expression getTenantId(boolean where) {
-                    // 该 where 条件 3.2.0 版本开始添加的，用于分区是否为在 where 条件中使用
-                    // 如果是in/between之类的多个tenantId的情况，参考下方示例
-                    return new StringValue(BaseContextHandler.getTenant());
-                }
-
-                @Override
-                public String getTenantIdColumn() {
-                    return databaseProperties.getTenantIdColumn();
-                }
-
-                @Override
-                public boolean doTableFilter(String tableName) {
-                    // 这里可以判断是否过滤表
-                    return false;
-                }
-            });
-            sqlParserList.add(tenantSqlParser);
-        }
+        //动态字段添加字段
+        //        TenantSqlParser tenantSqlParser = new TenantSqlParser();
+        //        tenantSqlParser.setTenantHandler(new TenantHandler() {
+        //            @Override
+        //            public Expression getTenantId(boolean where) {
+        //                // 该 where 条件 3.2.0 版本开始添加的，用于分区是否为在 where 条件中使用
+        //                // 如果是in/between之类的多个tenantId的情况，参考下方示例
+        //                return new StringValue(BaseContextHandler.getTenant());
+        //            }
+        //
+        //            @Override
+        //            public String getTenantIdColumn() {
+        //                return databaseProperties.getTenantIdColumn();
+        //            }
+        //
+        //            @Override
+        //            public boolean doTableFilter(String tableName) {
+        //                // 这里可以判断是否过滤表
+        //                return false;
+        //            }
+        //        });
+        //        sqlParserList.add(tenantSqlParser);
 
         paginationInterceptor.setSqlParserList(sqlParserList);
         return paginationInterceptor;

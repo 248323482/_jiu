@@ -17,6 +17,7 @@ dependencies {
     compile "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config"
     //<!-- seata-all 1.0.0 SeataHystrixConcurrencyStrategy 和 本项目中 ThreadLocalHystrixConcurrencyStrategy 冲突，导致事务回滚失效 -->
     compile"io.seata:seata-all:1.0.0"
+    compile "p6spy:p6spy:3.9.1"
     compile "com.baomidou:mybatis-plus-boot-starter:3.3.1"
     compile "cn.hutool:hutool-core:5.3.0"
     implementation "org.apache.poi:poi:4.1.1"

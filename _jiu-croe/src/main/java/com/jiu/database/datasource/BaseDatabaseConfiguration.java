@@ -3,6 +3,7 @@ package com.jiu.database.datasource;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ArrayUtil;
+import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
@@ -70,21 +71,15 @@ import java.util.*;
 @EnableConfigurationProperties({MybatisPlusProperties.class})
 @MapperScan(
         basePackages = {"com.jiu"},
-        annotationClass = Repository.class,
-        sqlSessionFactoryRef = BaseDatabaseConfiguration.DATABASE_PREFIX + "SqlSessionFactory")
-@ConditionalOnExpression("!'DATASOURCE'.equals('${jiu.database.multiTenantType}')")
+        annotationClass = Repository.class )
 public abstract class BaseDatabaseConfiguration implements InitializingBean {
-
-    final static String DATABASE_PREFIX = "master";
     /**
      * 测试环境
      */
     protected static final String[] DEV_PROFILES = new String[]{"dev"};
     @Value("${spring.profiles.active:dev}")
     protected String profiles;
-
     private static final List<Class<? extends Annotation>> AOP_POINTCUT_ANNOTATIONS = new ArrayList<>(2);
-
     static {
         //事务在controller层开启。
         AOP_POINTCUT_ANNOTATIONS.add(RestController.class);
@@ -126,8 +121,8 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
     }
 
 
-    @Bean(DATABASE_PREFIX + "SqlSessionTemplate")
-    public SqlSessionTemplate getSqlSessionTemplate(@Qualifier(DATABASE_PREFIX + "SqlSessionFactory") SqlSessionFactory sqlSessionFactory) {
+    @Bean
+    public SqlSessionTemplate getSqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
         ExecutorType executorType = this.properties.getExecutorType();
         if (executorType != null) {
             return new SqlSessionTemplate(sqlSessionFactory, executorType);
@@ -142,18 +137,18 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
      * @return
      */
     @Primary
-    @Bean(name = DATABASE_PREFIX + "DruidDataSource")
+    @Bean
     @ConfigurationProperties(prefix = "spring.datasource.druid")
     public DataSource druidDataSource() {
         return DruidDataSourceBuilder.create().build();
     }
 
 
-    @Bean(DATABASE_PREFIX + "DataSource")
-    public DataSource dataSourceProxy(@Qualifier(DATABASE_PREFIX + "DruidDataSource") DataSource dataSource) {
+    @Bean
+    public DataSource dataSourceProxy( DataSource dataSource) {
         DataSource dataSourceWrapper = dataSource;
         if (ArrayUtil.contains(DEV_PROFILES, this.profiles)) {
-           // dataSourceWrapper = new P6DataSource(dataSource);
+            dataSourceWrapper = new P6DataSource(dataSource);
         }
         if (databaseProperties.getIsSeata()) {
             dataSourceWrapper = new DataSourceProxy(dataSourceWrapper);
@@ -222,8 +217,8 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
                     "Cannot find config location: " + resource + " (please add config file or check your Mybatis configuration)");
         }
     }
-    @Bean(DATABASE_PREFIX + "SqlSessionFactory")
-    protected SqlSessionFactory sqlSessionFactory(@Qualifier(DATABASE_PREFIX + "DataSource")DataSource dataSource) throws Exception {
+    @Bean
+    protected SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         factory.setVfs(SpringBootVFS.class);
