@@ -7,7 +7,6 @@ import lombok.*;
  * 实体类
  *
  * </p>
- *
  */
 @Data
 @NoArgsConstructor
