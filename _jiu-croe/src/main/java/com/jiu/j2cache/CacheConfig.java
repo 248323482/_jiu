@@ -13,7 +13,7 @@ import java.util.Properties;
  *
  **/
 @Configuration
-@ConditionalOnProperty(prefix = "codingfly.j2cache", name = "enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "jiu.j2cache", name = "enable", havingValue = "true", matchIfMissing = true)
 public class CacheConfig {
  
     private final J2cacheProperties j2cacheProperties;
