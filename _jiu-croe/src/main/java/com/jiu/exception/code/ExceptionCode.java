@@ -23,8 +23,6 @@ package com.jiu.exception.code;
  * 统一监管平台异常 编码 范围：  110000-114999
  * 认证方面的异常编码  范围：115000-115999
  *
- * @author zuihou
- * @createTime 2017-12-13 16:22
  */
 public enum ExceptionCode implements BaseExceptionCode {
 
@@ -42,6 +40,7 @@ public enum ExceptionCode implements BaseExceptionCode {
     OPERATION_EX(-10, "操作异常"),
     SERVICE_MAPPER_ERROR(-11, "Mapper类转换异常"),
     CAPTCHA_ERROR(-12, "验证码校验失败"),
+    JSON_PARSE_ERROR(-13, "JSON解析异常"),
 
 
     OK(200, "OK"),

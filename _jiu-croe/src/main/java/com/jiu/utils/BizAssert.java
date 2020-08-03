@@ -14,6 +14,7 @@ import static com.jiu.exception.BaseException.BASE_VALID_PARAM;
 /**
  * 断言
  *
+ * @since 4.0
  */
 public class BizAssert {
     private BizAssert() {

@@ -43,6 +43,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.TransactionDefinition;
@@ -70,7 +71,7 @@ import java.util.*;
 @Slf4j
 @EnableConfigurationProperties({MybatisPlusProperties.class})
 @MapperScan(
-        basePackages = {"com.jiu"},
+        basePackages = {"com.jiu.dao"},
         annotationClass = Repository.class )
 public abstract class BaseDatabaseConfiguration implements InitializingBean {
     /**

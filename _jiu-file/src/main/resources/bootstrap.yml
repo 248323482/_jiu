@@ -1,4 +1,5 @@
 jiu:
+  security: true
   log-path: /logs
   name: file-server
   port: 80

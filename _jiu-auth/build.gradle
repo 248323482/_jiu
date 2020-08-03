@@ -1,0 +1,95 @@
+archivesBaseName = 'jiu-auth'
+apply plugin: 'application'
+mainClassName = "com.jiu.FileServerApplication"
+dependencies{
+    compile project(':_jiu-croe')
+    compile ('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile group: 'com.aliyun.oss', name: 'aliyun-sdk-oss', version: '3.8.1'
+    compile group: 'com.github.tobato', name: 'fastdfs-client', version: '1.26.6'
+    compile group: 'com.qiniu', name: 'qiniu-java-sdk', version: '7.2.28'
+    compile("com.baomidou:mybatis-plus:3.3.1")
+    compile group: 'com.github.whvcse', name: 'easy-captcha', version: '1.6.2'
+    compile group: 'eu.bitwalker', name: 'UserAgentUtils', version: '1.21'
+    //web
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        //使用undertow来代替tomacat
+        exclude module: "spring-boot-starter-tomcat"
+        exclude module: "spring-boot-starter-logging"
+        exclude module: "log4j-to-slf4j"
+        exclude module: "log4j-api"
+        exclude module: "logback-classic"
+    }
+
+    //替代tomcat
+    compile "org.springframework.boot:spring-boot-starter-undertow"
+}
+ext {
+    runJars=archivesBaseName + "-" + version + ".jar"
+    runJarsPlaceHolder="{{RUN_JAR}}"
+    mainClassPlaceHolder="{{MAIN_CLASS}}"
+}
+
+jar {
+    doFirst {
+
+        manifest {
+            if (!configurations.compile.isEmpty()) {
+                attributes(
+                        'Class-Path': configurations.compile.collect{it.getName()}.join(' '),
+                        'Main-Class': mainClassName)
+            }
+        }
+    }
+}
+
+
+sourceSets {
+    main {
+    }
+}
+processResources {
+    exclude(
+            // "**/**"
+    )
+}
+
+task moveOutFromJar(type: Copy) {
+
+    sourceSets.main.resources.srcDirs.each {
+        from it
+        into buildDir.getPath() + "/config"
+    }
+}
+
+processResources.dependsOn moveOutFromJar
+
+
+
+distributions {
+    main {
+        contents {
+            from ("script/shutdown.sh") {
+                into "bin"
+                fileMode = 0755
+            }
+            from (buildDir.getPath() + "/config") {
+                into "config"
+            }
+
+            from ("plugins") {
+                into "plugins"
+            }
+        }
+    }
+}
+
+startScripts {
+    doLast {
+        unixScript.text = resources.text.fromFile('script/unixStart.sh').asString()
+                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
+        windowsScript.text = resources.text.fromFile('script/windowsStart.bat').asString()
+                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
+    }
+}
+
+

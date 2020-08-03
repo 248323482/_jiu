@@ -3,9 +3,6 @@ package com.jiu.exception;
 /**
  * 运行期异常基类
  *
- * @author zuihou
- * @version 1.0
- * @see Exception
  */
 public abstract class BaseCheckedException extends Exception implements BaseException {
 

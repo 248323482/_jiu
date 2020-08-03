@@ -124,8 +124,6 @@ public class JwtUtil {
     /**
      * 解析jwt
      *
-     * @param jsonWebToken jsonWebToken
-     * @return zuihou
      */
     public static Claims parseJWT(String jsonWebToken) {
         try {

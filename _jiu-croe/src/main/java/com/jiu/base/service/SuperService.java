@@ -14,9 +14,6 @@ import java.util.List;
  * 1，updateAllById 执行后，会清除缓存
  * 2，saveBatchSomeColumn 批量插入
  *
- * @param <T> 实体
- * @author zuihuo
- * @date 2020年03月03日20:49:03
  */
 public interface SuperService<T> extends IService<T> {
 

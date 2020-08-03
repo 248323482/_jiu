@@ -3,9 +3,6 @@ package com.jiu.exception;
 /**
  * 非运行期异常基类，所有自定义非运行时异常继承该类
  *
- * @author zuihou
- * @version 1.0,
- * @see RuntimeException
  */
 public class BaseUncheckedException extends RuntimeException implements BaseException {
 
@@ -20,6 +17,16 @@ public class BaseUncheckedException extends RuntimeException implements BaseExce
      * 具体异常码
      */
     protected int code;
+
+    public BaseUncheckedException(Throwable cause) {
+        super(cause);
+    }
+
+    public BaseUncheckedException(int code, Throwable cause) {
+        super(cause);
+        this.code = code;
+    }
+
 
     public BaseUncheckedException(int code, String message) {
         super(message);
