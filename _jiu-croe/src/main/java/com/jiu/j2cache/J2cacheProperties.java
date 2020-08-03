@@ -25,8 +25,8 @@ public class J2cacheProperties {
     private L1cacheDefinition l1cache = new L1cacheDefinition();
  
     private L2cacheDefinition l2cache = new L2cacheDefinition();
- 
-    private String serialization = "json";
+    //json
+    private String serialization = "fst";
  
     private boolean syncTtlToRedis = true;
  
