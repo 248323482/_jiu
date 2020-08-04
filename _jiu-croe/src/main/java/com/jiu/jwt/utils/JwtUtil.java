@@ -29,7 +29,6 @@ import static com.jiu.exception.code.ExceptionCode.JWT_PARSER_TOKEN_FAIL;
 /**
  * Secure工具类
  *
- * @author zuihou
  */
 @Slf4j
 public class JwtUtil {

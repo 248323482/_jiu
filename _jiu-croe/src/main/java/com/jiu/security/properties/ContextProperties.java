@@ -11,7 +11,7 @@ import java.util.List;
  *
  */
 @Data
-@ConfigurationProperties("zuihou.context")
+@ConfigurationProperties("jiu.context")
 public class ContextProperties {
 
     /**

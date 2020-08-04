@@ -32,7 +32,7 @@ public class BaseContextConstants {
     /**
      * JWT token 签名
      */
-    public static final String JWT_SIGN_KEY = "zuihou";
+    public static final String JWT_SIGN_KEY = "0000000000000000000000000000000000000000000000";
 
     /**
      * JWT中封装的 租户编码

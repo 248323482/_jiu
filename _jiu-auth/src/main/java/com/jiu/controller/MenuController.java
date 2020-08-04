@@ -30,8 +30,6 @@ import static com.jiu.base.R.success;
  * 菜单
  * </p>
  *
- * @author zuihou
- * @date 2019-07-22
  */
 @Slf4j
 @Validated
