@@ -2,22 +2,28 @@
 buildscript {
     ext {
         springBootVersion = "2.2.5.RELEASE"
+        springBootManagementVersion = "1.0.8.RELEASE"
+        springCloudVersion = "Hoxton.SR3"
+        springCloudAlibaba ="2.2.1.RELEASE"
     }
     repositories {
         mavenLocal()
         mavenCentral()
+        maven {url  "https://plugins.gradle.org/m2/"}
         maven { url "http://mvnrepository.com/" }
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
         maven { url "https://repo.spring.io/snapshot" }
         maven { url "https://repo.spring.io/milestone" }
         maven { url "https://repo.spring.io/release" }
         maven { url "https://repo.spring.io/libs-milestone" }
+
         jcenter()
     }
     //打包
     dependencies {
-        classpath "io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:${springBootManagementVersion}"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.19.2')
     }
 
 }
@@ -32,6 +38,7 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven {url  "https://plugins.gradle.org/m2/"}
         maven { url "http://mvnrepository.com/" }
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
         maven { url "https://repo.spring.io/snapshot" }
@@ -48,6 +55,7 @@ subprojects {
     apply plugin: "java"
     apply plugin: "idea"
     apply plugin: "maven"
+    apply plugin: 'eclipse'
     //spring boot 插件
     apply plugin: "io.spring.dependency-management"
     //apply plugin: "org.springframework.boot"
@@ -71,8 +79,9 @@ subprojects {
     }
     dependencyManagement {
         imports {
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR3"
-            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:2.2.1.RELEASE"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibaba}"
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
         }
     }
     jar {

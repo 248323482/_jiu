@@ -1,6 +1,7 @@
 archivesBaseName = 'jiu-gateway'
 apply plugin: 'application'
 mainClassName = "com.jiu.GatewayServerApplication"
+description 'Copies the resource directory to the target directory.'
 dependencies {
     compile(project(':_jiu-croe'))
     configurations {
@@ -39,6 +40,14 @@ jar {
         }
     }
 }
+
+//apply plugin: 'com.palantir.docker'
+//docker {
+//    dockerfile file('script/Dockerfile') //DockerFile路径
+//    name "${project.group}/${jar.baseName}:${jar.version}"
+//    files jar.archivePath
+//    buildArgs(['JAR_FILE': "${jar.archiveName}"])
+//}
 
 
 sourceSets {
