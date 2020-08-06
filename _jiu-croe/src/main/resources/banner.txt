@@ -1,9 +1,9 @@
-________                                          .__   ___________
-\______ \   _______    ____   _____      _____    |__|  \__    ___/
- |    |  \  \_  __ \ _/ __ \  \__  \    /     \   |  |    |    |   
- |    `   \  |  | \/ \  ___/   / __ \_ |  Y Y  \  |  |    |    |   
-/_______  /  |__|     \___  > (____  / |__|_|  /  |__| /\ |____|
-        \/                \/       \/        \/        \/
-        Application Version: Jiu
-        Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
-        ${AnsiColor.DEFAULT}
+${AnsiColor.RED}
+                    ________                                          .__   ___________
+                    \______ \   _______    ____   _____      _____    |__|  \__    ___/
+                     |    |  \  \_  __ \ _/ __ \  \__  \    /     \   |  |    |    |
+                     |    `   \  |  | \/ \  ___/   / __ \_ |  Y Y  \  |  |    |    |
+                    /_______  /  |__|     \___  > (____  / |__|_|  /  |__| /\ |____|
+                            \/                \/       \/        \/        \/
+                            Application Version: ${application.version}
+                            Spring Boot Version: ${spring-boot.formatted-version}
