@@ -30,7 +30,7 @@ import java.util.List;
 @MapperScan(
         basePackages = {"com.jiu.dao",},
         annotationClass = Repository.class)
-@EnableConfigurationProperties({MybatisPlusProperties.class})
+@EnableConfigurationProperties({MybatisPlusProperties.class,DatabaseProperties.class})
 public class OauthDatabaseAutoConfiguration extends BaseDatabaseConfiguration {
 
     public OauthDatabaseAutoConfiguration(MybatisPlusProperties properties,

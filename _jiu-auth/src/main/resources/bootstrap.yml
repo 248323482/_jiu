@@ -3,7 +3,7 @@ jiu:
   security:
     enabled: true
   name: auth-server
-  port: 80
+  port: 801
   nacos:
     ip: budongi.club
     port: 8848

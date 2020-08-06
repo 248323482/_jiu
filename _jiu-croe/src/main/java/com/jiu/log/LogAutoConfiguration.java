@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
  * 1，存在web环境
  */
 @EnableAsync
-@Configuration
 @AllArgsConstructor
 @ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = OptLogProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)

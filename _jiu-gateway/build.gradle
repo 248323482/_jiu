@@ -1,0 +1,92 @@
+archivesBaseName = 'jiu-gateway'
+apply plugin: 'application'
+mainClassName = "com.jiu.GatewayServerApplication"
+dependencies {
+    compile(project(':_jiu-croe'))
+    configurations {
+        all*.exclude module: "spring-webmvc"
+        all*.exclude module: "slf4j-log4j12"
+        all*.exclude module: "log4j"
+        all*.exclude module: "slf4j-simple"
+        all*.exclude module: "mybatis-plus-boot-starter"
+        all*.exclude module: "druid-spring-boot-starter"
+        all*.exclude module: "mysql-connector-java"
+        all*.exclude module: "spring-boot-starter-aop"
+        all*.exclude module: "spring-boot-configuration-processor"
+        all*.exclude module: "easypoi-web"
+        all*.exclude module: "easypoi-base"
+
+    }
+    compile 'org.springframework.cloud:spring-cloud-gateway-core:2.2.4.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-webflux:2.2.5.RELEASE'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+}
+ext {
+    runJars = archivesBaseName + "-" + version + ".jar"
+    runJarsPlaceHolder = "{{RUN_JAR}}"
+    mainClassPlaceHolder = "{{MAIN_CLASS}}"
+}
+
+jar {
+    doFirst {
+
+        manifest {
+            if (!configurations.compile.isEmpty()) {
+                attributes(
+                        'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                        'Main-Class': mainClassName)
+            }
+        }
+    }
+}
+
+
+sourceSets {
+    main {
+    }
+}
+processResources {
+    exclude(
+            // "**/**"
+    )
+}
+
+task moveOutFromJar(type: Copy) {
+
+    sourceSets.main.resources.srcDirs.each {
+        from it
+        into buildDir.getPath() + "/config"
+    }
+}
+
+processResources.dependsOn moveOutFromJar
+
+
+distributions {
+    main {
+        contents {
+            from("script/shutdown.sh") {
+                into "bin"
+                fileMode = 0755
+            }
+            from(buildDir.getPath() + "/config") {
+                into "config"
+            }
+
+            from("plugins") {
+                into "plugins"
+            }
+        }
+    }
+}
+
+startScripts {
+    doLast {
+        unixScript.text = resources.text.fromFile('script/unixStart.sh').asString()
+                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
+        windowsScript.text = resources.text.fromFile('script/windowsStart.bat').asString()
+                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
+    }
+}
+
+

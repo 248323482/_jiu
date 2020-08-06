@@ -20,7 +20,6 @@ import org.springframework.core.annotation.Order;
 @Order
 @AllArgsConstructor
 @EnableConfigurationProperties({SecurityProperties.class, ContextProperties.class})
-@Configuration
 public class SecureConfiguration {
 
     @Bean

@@ -5,6 +5,7 @@ import com.jiu.jwt.JwtConfiguration;
 import com.jiu.security.annotation.EnableLoginArgResolver;
 import com.jiu.security.aspect.AuthAspect;
 import com.jiu.security.config.SecureConfiguration;
+import com.jiu.swagger2.Swagger2Configuration;
 import com.jiu.validator.config.EnableFormValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
@@ -24,6 +25,7 @@ import java.net.UnknownHostException;
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableLoginArgResolver
 @EnableFormValidator
+@Import(Swagger2Configuration.class)
 public class OauthApplication  {
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(OauthApplication.class, args);

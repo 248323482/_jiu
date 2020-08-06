@@ -12,6 +12,7 @@ import org.hibernate.validator.cfg.ConstraintMapping;
 import org.hibernate.validator.cfg.context.ConstraintDefinitionContext;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.internal.cfg.context.DefaultConstraintMapping;
+import org.hibernate.validator.internal.properties.javabean.JavaBeanHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -47,7 +48,7 @@ public class ValidatorConfiguration {
 
     private void addValidatorMapping(HibernateValidatorConfiguration configuration) {
         //增加一个我们自定义的校验处理器与length的映射
-        ConstraintMapping mapping = new DefaultConstraintMapping();
+        ConstraintMapping mapping = new DefaultConstraintMapping(null);
         ConstraintDefinitionContext<Length> length = mapping.constraintDefinition(Length.class);
         length.includeExistingValidators(true);
         length.validatedBy(LengthConstraintValidator.class);

@@ -3,8 +3,6 @@ package com.jiu.security.properties;
 /**
  * 调用用户信息的类型
  *
- * @author zuihou
- * @date 2020年02月24日10:47:49
  */
 public enum UserType {
     /**

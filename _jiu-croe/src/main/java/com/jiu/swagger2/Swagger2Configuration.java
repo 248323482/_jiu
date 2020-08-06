@@ -21,10 +21,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * 1，配置文件中zuihou.swagger.enabled=true
  * 2，配置文件中不存在：zuihou.swagger.enabled 值
  *
- * @author zuihou
- * @date 2018/11/18 9:20
  */
-@Configuration
 @ConditionalOnProperty(prefix = SwaggerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableSwagger2
 @ComponentScan(

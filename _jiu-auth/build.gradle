@@ -1,6 +1,6 @@
 archivesBaseName = 'jiu-auth'
 apply plugin: 'application'
-mainClassName = "com.jiu.FileServerApplication"
+mainClassName = "com.jiu.OauthApplication"
 dependencies{
     compile project(':_jiu-croe')
     compile ('org.springframework.boot:spring-boot-starter-thymeleaf')

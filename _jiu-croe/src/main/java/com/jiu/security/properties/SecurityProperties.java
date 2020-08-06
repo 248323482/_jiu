@@ -18,5 +18,5 @@ public class SecurityProperties {
     /**
      * 查询用户信息的调用方式
      */
-    private UserType type = UserType.FEIGN;
+    private UserType type = UserType.SERVICE;
 }
