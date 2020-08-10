@@ -90,13 +90,12 @@ public class WaitingAspect {
         //根据IP地址生成缓存到Redis的Key
         String redisKey = String.format("%s_%d", ipAddress, hashCode);
         logger.info("请求客户端缓存Key: {}", redisKey);
-        String value = (String) redisTemplate.opsForValue().get(redisKey);
-        if (StringUtils.isNotBlank(value)) {
+        Boolean success = redisTemplate.opsForValue().setIfAbsent(redisKey, "1", targetMethod.getAnnotation(Waiting.class).timeout(), TimeUnit.MILLISECONDS);
+        if (!success) {
             logger.error("请勿重复提交.....");
             throw new RuntimeException("请勿重复提交.....");
         }
         //保存(客户端请求IP地址->UUID随机字符串)到Redis中
-        redisTemplate.opsForValue().set(redisKey, UUID.randomUUID().toString(), targetMethod.getAnnotation(Waiting.class).timeout(), TimeUnit.MILLISECONDS);
         //执行Controller目标方法
         return point.proceed();
     }
