@@ -1,6 +1,7 @@
 package com.jiu.j2cache;
  
 import net.oschina.j2cache.J2CacheConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +16,8 @@ import java.util.Properties;
 @Configuration
 @ConditionalOnProperty(prefix = "jiu.j2cache", name = "enable", havingValue = "true", matchIfMissing = true)
 public class CacheConfig {
- 
     private final J2cacheProperties j2cacheProperties;
- 
+
     private final RedisProperties redisProperties;
  
     public CacheConfig(J2cacheProperties j2cacheProperties, RedisProperties redisProperties) {
@@ -39,7 +39,6 @@ public class CacheConfig {
         j2CacheConfig.setL2CacheProperties(getBroadcastProperties());
         return j2CacheConfig;
     }
- 
     private Properties getBroadcastProperties() {
         Properties broadcastProperties = new Properties();
         broadcastProperties.setProperty("namespace", "");

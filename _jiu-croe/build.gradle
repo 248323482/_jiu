@@ -42,7 +42,9 @@ dependencies {
     compile group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.1'
     compile group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.1'
     compile group: 'net.oschina.j2cache', name: 'j2cache-core', version: '2.8.2-release'
-
+    compile 'org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r'
+    compile 'org.apache.maven.shared:maven-invoker:3.0.1'
+    compile group: 'com.typesafe.akka', name: 'akka-actor_2.13', version: '2.6.8'
 
 
     configurations {
