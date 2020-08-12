@@ -34,6 +34,8 @@ public class RedisWebSocketManager extends MemWebSocketManager {
 
     @Override
     public void put(String identifier, WebSocket webSocket) {
+        //先清除链接确保seesion 的唯一性
+        this.remove(identifier);
         super.put(identifier, webSocket);
         //在线数量加1
         countChange(1);
