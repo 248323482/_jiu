@@ -3,5 +3,6 @@ include "_jiu-croe"
 include "_jiu-file"
 include "_jiu-auth"
 include "_jiu-gateway"
+include "_jiu-job"
 
 

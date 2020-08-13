@@ -1,0 +1,106 @@
+##############################start############################
+jiu:
+  name: jobs-server
+  port: 8687
+  websocket: true
+  nacos:
+    ip: budongi.club
+    port: 8848
+    namespace: jiu_dev
+#############################end#################################
+
+### xxl-job email
+xxl.job:
+  mail:
+    host: smtp.163.com
+    port: 25
+    ssl: false
+    username: ovono802302@163.com
+    password: asdfzxcv
+    sendNick: 《任务调度平台ZUIHOU-JOB》
+  login:
+    username: jiu
+    password: jiu
+  # 调度中心国际化配置 ： 默认为 "zh_CN"/中文简体, 可选范围为 "zh_CN"/中文简体, "zh_TC"/中文繁体 and "en"/英文；
+  i18n:
+  #设置一：调度中心和执行器，均不设置AccessToken；关闭安全性校验；
+  #设置二：调度中心和执行器，设置了相同的AccessToken；
+  accessToken:
+  # 以下是client 执行器端配置（注意：若不想配置调度器也是执行器，请自行参考xxl）
+  admin:
+    addresses: http://127.0.0.1:${server.port}/${spring.application.name}
+  executor:
+    # 执行器名
+    appname: ${spring.application.name}
+    # # 调度器通过XXL-RPC跟执行器通信的IP
+    ip: ${EXECUTOR_IP:127.0.0.1}
+    # 调度器通过XXL-RPC跟执行器通信的端口
+    port: ${EXECUTOR_PORT:8771}
+    registryLazy: 10000  # 延迟10秒注册，防止首次启动报错
+    # 日志路径
+    logpath: /logs/jobs-server/${spring.application.name}/
+    # 日志保留天数
+    logretentiondays: -1
+######jobend#####
+
+server:
+  servlet:
+    context-path: /${spring.application.name}
+  port: ${jiu.port}
+  undertow: # jetty  undertow
+    io-threads: 4 # 设置IO线程数, 它主要执行非阻塞的任务,它们会负责多个连接, 默认设置每个CPU核心一个线程
+    worker-threads: 80  # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
+    buffer-size: 1024  # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理 , 每块buffer的空间大小,越小的空间被利用越充分
+    direct-buffers: true  # 是否分配的直接内存
+spring:
+  application:
+    name: ${jiu.name}
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+        file-extension: yml
+        namespace: ${jiu.nacos.namespace}
+        shared-configs:
+          - dataId: common.yml
+            refresh: true
+          - dataId: mysql.yml
+            refresh: true
+        enabled: true
+      discovery:
+        server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+        namespace: ${jiu.nacos.namespace}
+        metadata:
+          management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
+  mvc:
+    static-path-pattern: /static/**
+  resources:
+    static-locations: classpath:/static/
+  freemarker:
+    templateLoaderPath: classpath:/templates/
+    suffix: .ftl
+    charset: UTF-8
+    request-context-attribute: request
+    settings:
+      number_format: 0.##       #解決freemarker数字输出中的逗号问题
+      #      classic_compatible: true  #默认情况变量为null则替换为空字符串，如果需要自定义，写上${empty!"EmptyValue of fbysss"}的形式即可
+      whitespace_stripping: true      # 剥离前后空字符串
+      boolean_format: true,false      # 布尔类型格式化
+      datetime_format: yyyy-MM-dd HH:mm:ss  # dateTime 类型格式化， 使用日期类型时， 需要在参数后追加 ?datetime eg: ${date?datetime}
+      date_format: yyyy-MM-dd   # date 类型格式化， 使用日期类型时， 需要在参数后追加 ?date eg: ${date?date}
+      time_format: HH:mm:ss      # time 类型格式化， 使用日期类型时， 需要在参数后追加 ?time eg: ${date?time}
+      template_exception_handler: ignore   # 忽略模版异常
+      default_encoding: UTF-8      # 默认编码
+      url_escaping_charset: UTF-8  # url 转义编码
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+
+logging:
+  config: classpath:log4j2-spring.xml
+
+

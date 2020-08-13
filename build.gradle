@@ -58,7 +58,7 @@ subprojects {
     apply plugin: 'eclipse'
     //spring boot 插件
     apply plugin: "io.spring.dependency-management"
-    //apply plugin: "org.springframework.boot"
+    apply plugin: "org.springframework.boot"
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
     ext {
@@ -106,16 +106,18 @@ subprojects {
     dependencies {
         compile "com.alibaba.nacos:nacos-client:1.3.0"
         //web
-        compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
+        compile("org.springframework.boot:spring-boot-starter-web") {
             //使用undertow来代替tomacat
-//            exclude module: "spring-boot-starter-tomcat"
-//            exclude module: "spring-boot-starter-logging"
-//            exclude module: "log4j-to-slf4j"
-//            exclude module: "log4j-api"
-//            exclude module: "logback-classic"
+            exclude module: "spring-boot-starter-tomcat"
+            exclude module: "spring-boot-starter-logging"
+            exclude module: "log4j-to-slf4j"
+            exclude module: "log4j-api"
+            exclude module: "logback-classic"
         }
+
+
         //替代tomcat
-        compile "org.springframework.boot:spring-boot-starter-undertow:${springBootVersion}"
+        compile "org.springframework.boot:spring-boot-starter-undertow"
         //configuration
         compile "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
         //缓存

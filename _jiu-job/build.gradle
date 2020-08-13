@@ -1,0 +1,102 @@
+archivesBaseName = 'jiu-job'
+apply plugin: 'application'
+mainClassName = "com.jiu.GatewayServerApplication"
+description 'Copies the resource directory to the target directory.'
+dependencies {
+    compile(project(':_jiu-croe'))
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        //使用undertow来代替tomacat
+        exclude module: "spring-boot-starter-tomcat"
+        exclude module: "spring-boot-starter-logging"
+        exclude module: "log4j-to-slf4j"
+        exclude module: "log4j-api"
+        exclude module: "logback-classic"
+    }
+
+    //替代tomcat
+    compile "org.springframework.boot:spring-boot-starter-undertow"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker'
+
+
+    configurations {
+
+
+    }
+}
+ext {
+    runJars = archivesBaseName + "-" + version + ".jar"
+    runJarsPlaceHolder = "{{RUN_JAR}}"
+    mainClassPlaceHolder = "{{MAIN_CLASS}}"
+}
+
+jar {
+    doFirst {
+
+        manifest {
+            if (!configurations.compile.isEmpty()) {
+                attributes(
+                        'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                        'Main-Class': mainClassName)
+            }
+        }
+    }
+}
+
+//apply plugin: 'com.palantir.docker'
+//docker {
+//    dockerfile file('script/Dockerfile') //DockerFile路径
+//    name "${project.group}/${jar.baseName}:${jar.version}"
+//    files jar.archivePath
+//    buildArgs(['JAR_FILE': "${jar.archiveName}"])
+//}
+
+
+sourceSets {
+    main {
+    }
+}
+processResources {
+    exclude(
+            // "**/**"
+    )
+}
+
+task moveOutFromJar(type: Copy) {
+
+    sourceSets.main.resources.srcDirs.each {
+        from it
+        into buildDir.getPath() + "/config"
+    }
+}
+//s
+processResources.dependsOn moveOutFromJar
+
+
+distributions {
+    main {
+        contents {
+            from("script/shutdown.sh") {
+                into "bin"
+                fileMode = 0755
+            }
+            from(buildDir.getPath() + "/config") {
+                into "config"
+            }
+
+            from("plugins") {
+                into "plugins"
+            }
+        }
+    }
+}
+
+startScripts {
+    doLast {
+        unixScript.text = resources.text.fromFile('script/unixStart.sh').asString()
+                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
+        windowsScript.text = resources.text.fromFile('script/windowsStart.bat').asString()
+                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
+    }
+}
+
+
