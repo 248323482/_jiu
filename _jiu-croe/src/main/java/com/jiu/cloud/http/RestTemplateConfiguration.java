@@ -11,6 +11,7 @@ import org.springframework.cloud.commons.httpclient.OkHttpClientFactory;
 import org.springframework.cloud.openfeign.FeignLoggerFactory;
 import org.springframework.cloud.openfeign.support.FeignHttpClientProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -29,6 +30,7 @@ import java.util.List;
  *
  */
 @AllArgsConstructor
+@Configuration
 public class RestTemplateConfiguration {
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
     private final ObjectMapper objectMapper;

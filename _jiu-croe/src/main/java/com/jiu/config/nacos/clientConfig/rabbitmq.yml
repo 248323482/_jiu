@@ -1,11 +1,11 @@
 jiu:
   rabbitmq:
     # 若系统中有除了zipkin之外的地方使用了mq ，则一定不能设置成false
-    enabled: false
+    enabled: true
     ip: 127.0.0.1
     port: 5672
-    username: jiu
-    password: jiu
+    username: guest
+    password: guest
 
 spring:
   rabbitmq:
@@ -14,5 +14,20 @@ spring:
     port: ${jiu.rabbitmq.port}
     username: ${jiu.rabbitmq.username}
     password: ${jiu.rabbitmq.password}
+    virtual-host: /
+      #连接超时时间
+    connection-timeout: 15000ms
+      #开启消息确认机制 指生产者发送消息给队列，队列收到后会给生产者回送应答
+      #根据应答结果确认这条消息是否正常发送到队列，这种方式也是消息可靠性投递的核心保障
+    publisher-confirms: true
+      #开启不可路消息处理机制
+      #不可路由消息是指制定的路由不存在或者路由key不存在，导致这个消息无法被消费，这是一个错误的消息
+    publisher-returns: true
+    template:
+        #Mandatory为true不可路由消息能通过监听器获取
+        #Mandatory为false，那么队列会自动删除错误消息，默认为false
+      mandatory: true
+    #采用手动应答
     listener:
-      type: direct # simple direct
+      simple:
+        acknowledge-mode: manual
