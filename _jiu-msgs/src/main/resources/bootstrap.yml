@@ -1,0 +1,49 @@
+##############################start############################
+jiu:
+  security:
+    enabled: true
+  name: auth-server
+  port: 801
+  websocket: true
+  cache:
+    type: caffeine
+  nacos:
+    ip: budongi.club
+    port: 8848
+    namespace: jiu_dev
+#############################end#################################
+
+server:
+  port: ${jiu.port}
+  websocket:
+    exporter:
+      enable: ${jiu.websocket}
+spring:
+  application:
+    name: ${jiu.name}
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+        file-extension: yml
+        namespace: ${jiu.nacos.namespace}
+        shared-configs:
+          - dataId: common.yml
+            refresh: true
+          - dataId: mysql.yml
+            refresh: true
+        enabled: true
+      discovery:
+        server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+        namespace: ${jiu.nacos.namespace}
+        metadata:
+          management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
+logging:
+  config: classpath:log4j2-spring.xml
+
+
+
+
+
