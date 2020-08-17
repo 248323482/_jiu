@@ -1,6 +1,6 @@
-archivesBaseName = 'jiu-auth'
+archivesBaseName = 'jiu-msgs'
 apply plugin: 'application'
-mainClassName = "com.jiu.OauthApplication"
+mainClassName = "com.jiu.MsgsApplication"
 dependencies{
     compile project(':_jiu-croe')
     compile ('org.springframework.boot:spring-boot-starter-thymeleaf')

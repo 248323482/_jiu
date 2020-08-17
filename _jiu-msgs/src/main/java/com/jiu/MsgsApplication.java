@@ -27,9 +27,9 @@ import java.net.UnknownHostException;
 @EnableLoginArgResolver
 @EnableFormValidator
 @Import({Swagger2Configuration.class})
-public class OauthApplication{
+public class MsgsApplication{
     public static void main(String[] args) throws UnknownHostException {
-        ConfigurableApplicationContext application = SpringApplication.run(OauthApplication.class, args);
+        ConfigurableApplicationContext application = SpringApplication.run(MsgsApplication.class, args);
         Environment env = application.getEnvironment();
         log.info("\n----------------------------------------------------------\n\t" +
                         "应用 '{}' 运行成功! 访问连接:\n\t" +

@@ -2,7 +2,7 @@
 jiu:
   security:
     enabled: true
-  name: auth-server
+  name: msgs-server
   port: 801
   websocket: true
   cache:
