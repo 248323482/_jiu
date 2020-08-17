@@ -16,11 +16,16 @@ dependencies {
         all*.exclude module: "spring-boot-configuration-processor"
         all*.exclude module: "easypoi-web"
         all*.exclude module: "easypoi-base"
+        all*.exclude module: "xxl-rpc-core"
 
     }
     compile 'org.springframework.cloud:spring-cloud-gateway-core:2.2.4.RELEASE'
     compile 'org.springframework.boot:spring-boot-starter-webflux:2.2.5.RELEASE'
     compile 'ch.qos.logback:logback-classic:1.2.3'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+
 }
 ext {
     runJars = archivesBaseName + "-" + version + ".jar"

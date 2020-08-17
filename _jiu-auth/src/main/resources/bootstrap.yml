@@ -4,13 +4,18 @@ jiu:
     enabled: true
   name: auth-server
   port: 801
+  websocket: true
   nacos:
     ip: budongi.club
     port: 8848
     namespace: jiu_dev
 #############################end#################################
+
 server:
   port: ${jiu.port}
+  websocket:
+    exporter:
+      enable: ${jiu.websocket}
 spring:
   application:
     name: ${jiu.name}
@@ -26,6 +31,8 @@ spring:
           - dataId: common.yml
             refresh: true
           - dataId: mysql.yml
+            refresh: true
+          - dataId: rabbitmq.yml
             refresh: true
         enabled: true
       discovery:

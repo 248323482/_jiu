@@ -181,8 +181,12 @@
     <logger name="com.plumelog.trace.aspect" level="WARN" />
     <logger name="com.mysql.jdbc" level="debug" />
     <logger name="com.alibaba.nacos.client.config" level="WARN" />
+    <logger name="springfox.documentation" level="ERROR" />
+    <logger name="org.mybatis.spring.mapper" level="ERROR" />
+    <logger name="com.alibaba.nacos.client.naming" level="ERROR" />
+    <logger name="com.netflix.config" level="ERROR" />
     <!-- 日志输出级别 -->
-    <root level="INFO">
+    <root level="debug">
         <appender-ref ref="CONSOLE"/>
 <!--        <appender-ref ref="plumelog"/>-->
     </root>

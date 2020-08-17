@@ -13,9 +13,11 @@ import com.jiu.log.annotation.SysLog;
 import com.jiu.manager.FileRestManager;
 import com.jiu.service.FileService;
 import com.jiu.utils.BeanPlusUtil;
+import com.jiu.websocket.WebSocketManager;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -42,14 +44,16 @@ public class FileController extends SuperController<FileService, Long, File, Fil
     private static org.slf4j.Logger logger= LoggerFactory.getLogger(FileController.class);
     @Autowired
     private FileRestManager fileRestManager;
+    @Autowired
+    private WebSocketManager webSocketManager;
 
     @Override
     public void query(PageParams<FilePageReqDTO> params, IPage<File> page, Long defSize) {
         fileRestManager.page(page, params.getModel());
     }
     @RequestMapping("test")
-    public void test(){
-        logger.info("test");
+    public void test(String key,String  value){
+        webSocketManager.sendMessage(key,value);
 
     }
     @Override

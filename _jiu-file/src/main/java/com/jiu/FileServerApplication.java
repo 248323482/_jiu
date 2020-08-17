@@ -1,6 +1,7 @@
 package com.jiu;
 
 import com.jiu.swagger2.Swagger2Configuration;
+import com.jiu.websocket.redis.EnableRedisWebSocketManager;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,7 @@ import java.net.UnknownHostException;
 @MapperScan("com.jiu.dao")
 @EnableDiscoveryClient
 @Import(Swagger2Configuration.class)
+@EnableRedisWebSocketManager
 public class FileServerApplication {
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(FileServerApplication.class, args);
