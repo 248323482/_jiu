@@ -41,8 +41,6 @@ import static com.jiu.exception.code.ExceptionCode.JWT_OFFLINE;
 /**
  * 过滤器
  *
- * @author zuihou
- * @date 2019/07/31
  */
 @Component
 @Slf4j

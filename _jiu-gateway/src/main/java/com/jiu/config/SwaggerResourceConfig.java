@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.support.NameUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -18,9 +19,6 @@ import java.util.List;
 
 /***
  * 资源配置
- * @since:swagger-bootstrap-ui 1.0
- * @author zuihou
- * @date 2019-07-25 22:13
  */
 @Component
 @Primary
@@ -33,7 +31,6 @@ public class SwaggerResourceConfig implements SwaggerResourcesProvider {
     RestTemplate restTemplate;
     @Autowired
     private GatewayProperties gatewayProperties;
-
     @Value("${server.servlet.context-path:/api}")
     private String contextPath;
 
@@ -72,6 +69,7 @@ public class SwaggerResourceConfig implements SwaggerResourcesProvider {
 
         return resources;
     }
+
 
     private SwaggerResource swaggerResource(String name, String location) {
         log.info("name:{},location:{}", name, location);

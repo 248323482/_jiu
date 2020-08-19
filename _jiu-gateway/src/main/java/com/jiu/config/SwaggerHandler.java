@@ -13,8 +13,6 @@ import java.util.Optional;
 /**
  * Swagger配置
  *
- * @author zuihou
- * @date 2019/07/31
  */
 @RestController
 public class SwaggerHandler {

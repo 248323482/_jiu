@@ -18,8 +18,6 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  * 1, spring.cloud.gateway.x-forwarded.prefixEnabled: false ， 仅供官方 XForwardedHeadersFilter 的部分功能
  * 2，重写 XForwardedHeadersFilter 禁用掉的部分功能
  *
- * @author zuihou
- * @date 2019/08/13
  */
 @Component
 public class MySwaggerXForwardedHeadersFilter implements HttpHeadersFilter, Ordered {

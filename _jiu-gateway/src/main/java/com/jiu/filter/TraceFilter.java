@@ -14,8 +14,6 @@ import reactor.core.publisher.Mono;
 /**
  * 生成日志链路追踪id，并传入header中
  *
- * @author zuihou
- * @date 2020年03月09日18:02:47
  */
 @Component
 public class TraceFilter implements GlobalFilter, Ordered {

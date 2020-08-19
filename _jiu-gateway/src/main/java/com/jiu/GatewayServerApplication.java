@@ -2,25 +2,32 @@ package com.jiu;
 
 
 import com.jiu.cloud.RibbonMetaFilterAutoConfiguration;
+import com.jiu.swagger2.SwaggerAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.gateway.filter.NettyRoutingFilter;
+import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
+import org.springframework.cloud.gateway.filter.WebClientHttpRoutingFilter;
+import org.springframework.cloud.gateway.filter.WebClientWriteResponseFilter;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
+ *
  */
 @SpringBootApplication
 @EnableDiscoveryClient
 @Slf4j
-@ComponentScan(excludeFilters= {@ComponentScan.Filter(type= FilterType.ASSIGNABLE_TYPE, value= {RibbonMetaFilterAutoConfiguration.class})})
+@ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = {SwaggerAutoConfiguration.class, NettyRoutingFilter.class, NettyWriteResponseFilter.class})})
 public class GatewayServerApplication {
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(GatewayServerApplication.class, args);

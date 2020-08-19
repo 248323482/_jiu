@@ -181,6 +181,8 @@
     <logger name="com.plumelog.trace.aspect" level="WARN" />
     <logger name="com.mysql.jdbc" level="debug" />
     <logger name="com.alibaba.nacos.client.config" level="WARN" />
+    <logger name="com.alibaba.nacos.client.naming" level="WARN" />
+    <logger name="org.quartz.core.QuartzScheduler" level="WARN" />
     <!-- 日志输出级别 -->
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
