@@ -1,14 +1,17 @@
 ##############################start############################
 jiu:
-  security:
-    enabled: true
   name: auth-server
-  port: 801
-  websocket: true
+  port: 7001
   nacos:
     ip: budongi.club
     port: 8848
     namespace: jiu_dev
+    username: nacos
+    password: www.5211314.com
+  swagger:
+    enabled: true
+    title: 权限认证
+    description: 权限认证
 #############################end#################################
 
 server:
@@ -27,6 +30,8 @@ spring:
         server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
         file-extension: yml
         namespace: ${jiu.nacos.namespace}
+        username: ${jiu.nacos.username}
+        password: ${jiu.nacos.password}
         shared-configs:
           - dataId: common.yml
             refresh: true
@@ -38,6 +43,8 @@ spring:
       discovery:
         server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
         namespace: ${jiu.nacos.namespace}
+        username: ${jiu.nacos.username}
+        password: ${jiu.nacos.password}
         metadata:
           management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
 logging:

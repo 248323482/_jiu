@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 /**
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Primary;
 @Slf4j
 @ConditionalOnProperty(prefix = CustomCacheProperties.PREFIX, name = "type", havingValue = "CAFFEINE")
 @EnableConfigurationProperties({CustomCacheProperties.class})
+@Configuration
 public class CaffeineAutoConfigure {
 
     @Autowired

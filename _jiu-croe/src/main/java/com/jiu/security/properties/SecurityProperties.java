@@ -14,7 +14,7 @@ public class SecurityProperties {
     /**
      * 是否启用uri权限
      */
-    private Boolean enabled = true;
+    private Boolean enabled = false;
     /**
      * 查询用户信息的调用方式
      */

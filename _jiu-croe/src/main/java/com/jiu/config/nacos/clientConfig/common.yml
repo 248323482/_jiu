@@ -3,9 +3,9 @@
 
 jiu:
   swagger:
-    license: Powered By zuihou
-    licenseUrl: https://github.com/zuihou
-    termsOfServiceUrl: https://github.com/zuihou
+    license: Powered By Jiu
+    licenseUrl: https://budongi.club
+    termsOfServiceUrl: https://budongi.club
     version: 2.1
     apiKeys:
       - name: 令牌

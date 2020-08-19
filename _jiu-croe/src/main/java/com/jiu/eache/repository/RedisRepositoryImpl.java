@@ -22,8 +22,6 @@ import java.util.function.Function;
  * Redis Repository
  * redis 基本操作 可扩展,基本够用了
  *
- * @author zuihou
- * @date 2019-08-06 10:42
  */
 @Slf4j
 public class RedisRepositoryImpl implements CacheRepository {

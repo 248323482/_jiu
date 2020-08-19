@@ -1,32 +1,21 @@
 package com.jiu;
 
-import com.jiu.security.annotation.EnableLoginArgResolver;
-import com.jiu.swagger2.Swagger2Configuration;
-import com.jiu.validator.config.EnableFormValidator;
-import com.jiu.websocket.memory.EnableMemWebSocketManager;
-import com.jiu.websocket.redis.EnableRedisWebSocketManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
-import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
-import javax.websocket.server.ServerEndpoint;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-//https://mp.weixin.qq.com/s/zkxI5IQP0jFTjVYe5pTsXw
 @SpringBootApplication
 @Slf4j
+//https://mp.weixin.qq.com/s/zkxI5IQP0jFTjVYe5pTsXw
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
-@EnableLoginArgResolver
-@EnableFormValidator
-@Import({Swagger2Configuration.class})
+@EnableDiscoveryClient
 public class OauthApplication{
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(OauthApplication.class, args);

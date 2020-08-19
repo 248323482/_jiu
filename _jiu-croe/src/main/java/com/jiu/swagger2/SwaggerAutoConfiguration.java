@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RequestMethod;
 import springfox.documentation.builders.*;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
         Swagger2Configuration.class
 })
 @EnableConfigurationProperties(SwaggerProperties.class)
+@Configuration
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
     @Autowired
     SwaggerProperties swaggerProperties;

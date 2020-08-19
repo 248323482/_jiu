@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
@@ -36,6 +37,7 @@ import java.util.Optional;
 @ConditionalOnClass(RedisConnectionFactory.class)
 @ConditionalOnProperty(prefix = CustomCacheProperties.PREFIX, name = "type", havingValue = "REDIS", matchIfMissing = true)
 @EnableConfigurationProperties({RedisProperties.class, CustomCacheProperties.class})
+@Configuration
 public class RedisAutoConfigure {
     @Autowired
     private CustomCacheProperties cacheProperties;
@@ -59,7 +61,6 @@ public class RedisAutoConfigure {
      */
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
-        System.err.println(factory);
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(factory);
 

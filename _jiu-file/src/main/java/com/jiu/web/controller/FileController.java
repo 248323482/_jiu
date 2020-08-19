@@ -44,17 +44,10 @@ public class FileController extends SuperController<FileService, Long, File, Fil
     private static org.slf4j.Logger logger= LoggerFactory.getLogger(FileController.class);
     @Autowired
     private FileRestManager fileRestManager;
-    @Autowired
-    private WebSocketManager webSocketManager;
 
     @Override
     public void query(PageParams<FilePageReqDTO> params, IPage<File> page, Long defSize) {
         fileRestManager.page(page, params.getModel());
-    }
-    @RequestMapping("test")
-    public void test(String key,String  value){
-        webSocketManager.sendMessage(key,value);
-
     }
     @Override
     public R<File> handlerSave(FolderSaveDTO model) {

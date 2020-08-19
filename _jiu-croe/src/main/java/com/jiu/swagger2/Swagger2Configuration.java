@@ -18,8 +18,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * Swagger2 启动类
  * 启动条件：
- * 1，配置文件中zuihou.swagger.enabled=true
- * 2，配置文件中不存在：zuihou.swagger.enabled 值
+ * 1，配置文件中jiu.swagger.enabled=true
+ * 2，配置文件中不存在：jiu.swagger.enabled 值
  *
  */
 @ConditionalOnProperty(prefix = SwaggerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)

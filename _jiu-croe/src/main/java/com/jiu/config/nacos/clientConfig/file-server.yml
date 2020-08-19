@@ -2,12 +2,6 @@ jiu:
   nginx:
     ip: ${spring.cloud.client.ip-address}   # 正式环境需要将该ip设置成nginx对应的 公网ip
     port: 10000                             # 正式环境需要将该ip设置成nginx对应的 公网端口
-  swagger:
-    enabled: true
-    docket:
-      file:
-        title: 文件服务
-        base-package: com.github.jiu.file.controller
   file:
     type: LOCAL # FAST_DFS LOCAL
     storage-path: /data/projects/uploadfile/file/     # 文件存储路径  （ 某些版本的 window 需要改成  D:\\data\\projects\\uploadfile\\file\\  ）
