@@ -22,7 +22,7 @@ public class RateLimitByCpuGatewayFilter implements GlobalFilter, Ordered {
     private MetricsEndpoint metricsEndpoint;
  
     private static final String METRIC_NAME = "system.cpu.usage";
-    private static final double MAX_USAGE = 0.50D;
+    private static final double MAX_USAGE = 0.90D;
  
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -37,8 +37,7 @@ public class RateLimitByCpuGatewayFilter implements GlobalFilter, Ordered {
  
         boolean ok = systemCpuUsage < MAX_USAGE;
  
-        log.info("system.cpu.usage: " + systemCpuUsage + " ok: " + ok);
- 
+
         if (!ok) {
             exchange.getResponse().setStatusCode(HttpStatus.TOO_MANY_REQUESTS);
             return exchange.getResponse().setComplete();

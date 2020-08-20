@@ -40,7 +40,7 @@ public class UserResolveFeignConfiguration {
         return new SpringUtils();
     }
 
-    @FeignClient(name = "jiu-user", path = "/user",
+    @FeignClient(name = "auth-server", path = "/user",
             fallback = UserResolveApiFallback.class)
     public interface UserResolveApi {
 

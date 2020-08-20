@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
  * 生成日志链路追踪id，并传入header中
  *
  */
-@Component
+//@Component
 public class TraceFilter implements GlobalFilter, Ordered {
 
     @Override

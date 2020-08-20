@@ -51,6 +51,9 @@ dependencies {
     compile 'org.codehaus.groovy:groovy:3.0.3'
     compile 'org.apache.commons:commons-exec:1.3'
     compile 'org.springframework.amqp:spring-rabbit'
+    compile group: 'com.github.dozermapper', name: 'dozer-core', version: '6.5.0'
+    compile group: 'com.github.dozermapper', name: 'dozer-spring4', version: '6.5.0'
+
 
     configurations {
         all*.exclude module: "slf4j-simple"

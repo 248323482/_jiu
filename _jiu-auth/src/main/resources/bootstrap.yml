@@ -50,6 +50,7 @@ spring:
         metadata:
           management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
           grayversion: jiu
+        #ip: 120.78.215.90
 logging:
   config: classpath:log4j2-spring.xml
 

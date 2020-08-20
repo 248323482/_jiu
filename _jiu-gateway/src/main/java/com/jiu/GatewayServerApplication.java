@@ -2,6 +2,7 @@ package com.jiu;
 
 
 import com.jiu.cloud.RibbonMetaFilterAutoConfiguration;
+import com.jiu.security.config.SecureConfiguration;
 import com.jiu.swagger2.SwaggerAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -27,7 +28,7 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 @EnableDiscoveryClient
 @Slf4j
-@ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = {SwaggerAutoConfiguration.class, NettyRoutingFilter.class, NettyWriteResponseFilter.class})})
+@ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = {SwaggerAutoConfiguration.class, SecureConfiguration.class})})
 public class GatewayServerApplication {
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(GatewayServerApplication.class, args);

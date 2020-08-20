@@ -71,6 +71,7 @@ mybatis-plus:
   typeAliasesPackage: com.xxl.job.admin.core.model;com.jiu.entity;com.jiu.database.mybatis.typehandler
   typeEnumsPackage: com.jiu.*.enumeration
   global-config:
+    banner: false
     db-config:
       id-type: INPUT
       insert-strategy: NOT_NULL

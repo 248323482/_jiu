@@ -18,7 +18,6 @@ import java.io.IOException;
  * <p>
  * 解决启动时警告：[io.undertow.websockets.jsr.handleDeployment:68] --> UT026010: Buffer pool was not set on WebSocketDeploymentInfo, the default pool will be used
  *
- * @author zuihou
  * @see <a>https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-programmatic-embedded-container-customization</a>
  */
 public class UndertowServerFactoryCustomizer implements WebServerFactoryCustomizer<UndertowServletWebServerFactory> {

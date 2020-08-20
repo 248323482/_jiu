@@ -1,5 +1,6 @@
 archivesBaseName = 'jiu-auth'
 apply plugin: 'application'
+apply plugin: "org.springframework.boot"
 mainClassName = "com.jiu.OauthApplication"
 dependencies{
     compile project(':_jiu-croe')
@@ -48,6 +49,29 @@ task moveOutFromJar(type: Copy) {
     sourceSets.main.resources.srcDirs.each {
         from it
         into buildDir.getPath() + "/config"
+    }
+}
+
+def remoteDir = '/root/project/jiu'
+
+task remoteDeploy(dependsOn: [clean, bootJar]) {
+    bootJar.mustRunAfter clean
+    doLast {
+        ssh.run {
+            session(remotes.deployServer) {
+                println '>>> start copying jar...'
+                put from: buildDir.toString() + '/libs/' + archivesBaseName + '-' + version + '.jar', into: remoteDir
+                println '>>> start app...'
+                ///execute 'xxxx/startup.sh'
+                //执行重启脚本
+             def result =   executeScript '''#!/bin/sh
+                  cd ''' + remoteDir + '''
+                        java  -Xms128m -Xmx129m  -jar   ''' + archivesBaseName + '''-''' + version + '''.jar  &
+                    '''
+                println(result)
+                println '>>> remote deploy OK...'
+            }
+        }
     }
 }
 

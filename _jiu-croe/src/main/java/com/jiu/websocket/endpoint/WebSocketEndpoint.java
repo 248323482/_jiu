@@ -9,7 +9,6 @@ import java.util.Base64;
 /**
  * 2.标注@Component @ServerEndpoint
  */
-@Component
 @ServerEndpoint(value ="/websocket/connect/{identifier}")
 public class WebSocketEndpoint extends BaseWebSocketEndpoint {
 }
