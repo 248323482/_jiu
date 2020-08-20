@@ -1,4 +1,4 @@
-package com.jiu.controller;
+package com.jiu.web.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.jiu.base.R;
@@ -10,8 +10,6 @@ import com.jiu.jwt.model.AuthInfo;
 import com.jiu.jwt.utils.JwtUtil;
 import com.jiu.granter.TokenGranter;
 import com.jiu.granter.TokenGranterBuilder;
-import com.jiu.mq.constant.QueueConstants;
-import com.jiu.mq.producer.Producer;
 import com.jiu.service.AdminService;
 import com.jiu.service.ValidateCodeService;
 import io.swagger.annotations.Api;

@@ -1,4 +1,4 @@
-package com.jiu.controller;
+package com.jiu.web.controller;
 
 import com.jiu.base.R;
 import com.jiu.base.controller.SuperCacheController;

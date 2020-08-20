@@ -12,6 +12,8 @@ jiu:
     enabled: true
     title: 权限认证
     description: 权限认证
+  security:
+    enabled: true
 #############################end#################################
 
 server:
@@ -47,6 +49,7 @@ spring:
         password: ${jiu.nacos.password}
         metadata:
           management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
+          grayversion: jiu
 logging:
   config: classpath:log4j2-spring.xml
 

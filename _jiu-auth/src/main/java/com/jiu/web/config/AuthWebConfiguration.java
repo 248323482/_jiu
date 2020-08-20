@@ -8,11 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties
-public class FileWebConfiguration extends BaseConfig {
-    @Bean
-    public WebSocketOnMessageListener  webSocketOnMessageListener(){
-        return  new WebSocketOnMessageListener(message -> {
-            System.err.println(message);
-        });
-    }
+public class AuthWebConfiguration extends BaseConfig {
+
 }
