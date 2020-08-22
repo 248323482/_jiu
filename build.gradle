@@ -1,6 +1,18 @@
 //编译构建时的配置
 buildscript {
     ext {
+        runJarsPlaceHolder="{{RUN_JAR}}"
+        mainClassPlaceHolder="{{MAIN_CLASS}}"
+        optPlaceHolder="{{opt}}"
+        profilesPlaceHolder="{{profiles}}"
+        remoteDirPlaceHolder="{{remoteDir}}"
+        shellFile="/_docs/shells/linux/start_.sh"
+        //linux 存放包路径
+        remoteDir = "/root/project/jiu"
+        //模式
+        profiles ="dev"
+        //环境配置
+        opt ="-server -Xms64M -Xmx64M -Xss512k -XX:MetaspaceSize=64M -XX:MaxMetaspaceSize=64M -XX:+UseG1GC"
         springBootVersion = "2.2.5.RELEASE"
         springBootManagementVersion = "1.0.8.RELEASE"
         springCloudVersion = "Hoxton.SR3"
@@ -9,17 +21,14 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        maven {url  "https://plugins.gradle.org/m2/"}
-//        maven { url "http://mvnrepository.com/" }
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
-        maven{  url 'https://maven.aliyun.com/repository/central' }
-
-
-//        maven { url "https://repo.spring.io/snapshot" }
-//        maven { url "https://repo.spring.io/milestone" }
-//        maven { url "https://repo.spring.io/release" }
-//        maven { url "https://repo.spring.io/libs-milestone" }
-
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url  "https://plugins.gradle.org/m2/"}
+        maven { url "http://mvnrepository.com/" }
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url "https://repo.spring.io/release" }
+        maven { url "https://repo.spring.io/libs-milestone" }
         jcenter()
     }
     //打包
@@ -34,25 +43,20 @@ buildscript {
 
 allprojects {
     group = "com.jiu" //分组
-    version = "1.0" //版本号
-    //指定编码格式
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-    }
+    version = "1.0.0" //版本号
     repositories {
         mavenLocal()
         mavenCentral()
-        maven {url  "https://plugins.gradle.org/m2/"}
-//        maven { url "http://mvnrepository.com/" }
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
-        maven{  url 'https://maven.aliyun.com/repository/central' }
-//        maven { url "https://repo.spring.io/snapshot" }
-//        maven { url "https://repo.spring.io/milestone" }
-//        maven { url "https://repo.spring.io/libs-milestone" }
-//        maven { url "https://repo.spring.io/release" }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url  "https://plugins.gradle.org/m2/"}
+        maven { url "http://mvnrepository.com/" }
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url "https://repo.spring.io/release" }
+        maven { url "https://repo.spring.io/libs-milestone" }
         jcenter()
     }
-
 
 }
 //统一所有子项目的配置
@@ -64,47 +68,169 @@ subprojects {
     apply plugin: 'eclipse'
     //spring boot 插件
     apply plugin: "io.spring.dependency-management"
-   // apply plugin: "org.springframework.boot"
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-    ext {
-        gradleDockerVersion = "1.2"
-        ehcacheVersion = "2.10.4"
-        mysqlConnectorVersion = "8.0.19"
-        lombokVersion = "1.16.18"
-        mybatisVersion = "3.4.5"
-        mybatisStarterVersion = "1.3.0"
-        hikariCPVersion = "2.5.1"
-        commonMapperVersion = "3.4.4"
-        commonsIOVersion = "2.4"
-        commonsLangversion = "3.7"
-        commonsCodecVersion = "1.11"
-        fastJsonVersion = "1.2.62"
-        swagger2Version = "2.9.2"
-        jacksonVersion= "2.10.3"
+    apply plugin: 'distribution'
+    if (!name.contains("croe")) {
+        apply plugin: "org.springframework.boot"
+        apply plugin: 'application'
     }
+
+    //指定编码格式
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+
+
+    
     dependencyManagement {
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
             mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibaba}"
             mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
         }
-    }
-    jar {
-        manifest.attributes provider: "gradle"
-    }
+        
+        dependencies {
+            dependency "com.alibaba.nacos:nacos-client:1.3.0"
+            dependency "org.projectlombok:lombok:1.16.18"
+            dependency "com.google.guava:guava:28.0-jre"
+            dependency "commons-beanutils:commons-beanutils:1.9.3"
+            dependency "cn.hutool:hutool-all:5.2.3"
+            dependency "org.lionsoul:ip2region:1.7"
+            dependency "com.github.xiaoymin:knife4j-spring-boot-starter:2.0.2"
+            dependency "io.github.openfeign:feign-okhttp:10.2.3"
+            dependency "net.sf.ehcache:ehcache:2.10.4"
+            dependency "com.lmax:disruptor:3.3.6"
+            dependency "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
+            dependency "commons-io:commons-io:2.4"
+            dependency "org.apache.commons:commons-lang3:3.7"
+            dependency "commons-codec:commons-codec:1.11"
+            dependency "com.alibaba:fastjson:1.2.62"
+            dependency "io.springfox:springfox-swagger2:2.9.2"
+            dependency"io.seata:seata-all:1.0.0"
+            dependency "p6spy:p6spy:3.9.1"
+            dependency "cn.hutool:hutool-core:5.3.0"
+            dependency "org.hibernate.validator:hibernate-validator:6.0.13.Final"
+            dependency 'cn.afterturn:easypoi-annotation:4.1.3'
+            dependency 'cn.afterturn:easypoi-base:4.1.3'
+            dependency 'cn.afterturn:easypoi:4.2.0'
+            dependency group: 'net.oschina.j2cache', name: 'j2cache-core', version: '2.8.2-release'
+            dependency 'org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r'
+            dependency 'org.apache.maven.shared:maven-invoker:3.0.1'
+            dependency "org.apache.httpcomponents:httpclient:4.5.6"
+            dependency "org.apache.httpcomponents:httpcore:4.4.11"
+            dependency 'com.xuxueli:xxl-rpc-core:1.2.1'
+            dependency 'org.quartz-scheduler:quartz:2.2.3'
+            dependency 'org.apache.commons:commons-email:1.5'
+            dependency 'org.codehaus.groovy:groovy:3.0.3'
+            dependency 'org.apache.commons:commons-exec:1.3'
+            dependency group: 'com.github.dozermapper', name: 'dozer-core', version: '6.5.0'
+            dependency group: 'com.github.dozermapper', name: 'dozer-spring4', version: '6.5.0'
+            dependencySet(group: 'io.jsonwebtoken', version: '0.11.1') {
+                entry 'jjwt-jackson'
+                entry 'jjwt-impl'
+                entry 'jjwt-api'
+            }
+            dependencySet(group: 'com.baomidou', version: '3.3.1') {
+                entry 'mybatis-plus-core'
+                entry 'mybatis-plus-annotation'
+                entry 'mybatis-plus'
+                entry 'mybatis-plus-boot-starter'
+            }
+            dependencySet(group: 'com.plumelog', version: '2.2.2') {
+                entry 'plumelog-logback'
+                entry 'plumelog-trace'
+            }
+            dependencySet(group: 'com.fasterxml.jackson.core', version: '2.10.3') {
+                entry 'jackson-core'
+                entry 'jackson-databind'
+                entry 'jackson-annotations'
+            }
+            dependencySet(group: 'com.fasterxml.jackson.datatype', version: '2.10.3') {
+                entry 'jackson-datatype-jsr310'
+                entry 'jackson-datatype-jdk8'
+            }
+            dependencySet(group: 'com.fasterxml.jackson.module', version: '2.10.3') {
+                entry 'jackson-module-parameter-names'
+            }
 
 
-    build.doLast {
-        def rootPath = rootProject.buildDir.getPath() + "/distributions"
-        copy {
-            from buildDir.getPath() + "/distributions" into rootPath
+
+
         }
-    }
-    clean.doFirst {
-        delete "${buildDir}/../out"
+
+
+
+
+
     }
 
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+
+    if (!project.name.contains("croe")) {
+        println "Project ${name} "
+        applicationDefaultJvmArgs = ['-Xms64m', '-Xmx64m']
+        jar {
+            enabled true
+        }
+        /**
+         * 生成启动脚本
+         */
+        startScripts() {
+            doFirst {
+                unixStartScriptGenerator.template = resources.text.fromFile(
+                        project.getRootDir().getAbsolutePath() + "/_docs/shells/linux/unixStartScript.txt"
+                )
+                windowsStartScriptGenerator.template = resources.text.fromFile(
+                        project.getRootDir().getAbsolutePath() + "/_docs/shells/windows/windowsStartScript.txt"
+
+                )
+            }
+        }
+
+        applicationDistribution.from("src/main/resources") {
+            include 'application*.properties'
+            include 'bootstrap.yml'
+            into 'config'
+        }
+
+
+
+
+        build.doLast {
+            ssh.run {
+                session(remotes.deployServer) {
+                    def runJars = project.name+"-"+version+".jar"
+                    println '>>> start copying jar...'
+                    //copy jar 包
+                    put from: "${buildDir}/libs/${runJars}", into: "${remoteDir}"
+                    println '>>> start app...'
+                    execute resources.text.fromFile(project.getRootDir().getAbsolutePath()+shellFile).asString().replace(runJarsPlaceHolder, runJars).replace(optPlaceHolder, opt).replace(profilesPlaceHolder, profiles).replace(remoteDirPlaceHolder, remoteDir).replace("\r", "")
+                    println '>>> remote deploy OK...'
+                }
+            }
+          
+        }
+
+        task remoteDeploy(dependsOn: [clean, bootJar]) {
+            bootJar.mustRunAfter clean
+            doLast {
+                ssh.run {
+                    session(remotes.deployServer) {
+                        def runJars = project.name+"-"+version+".jar"
+                        println '>>> start copying jar...'
+                        //copy jar 包
+                        //   put from: "${buildDir}/libs/${runJars}", into: "${remoteDir}"
+                        println '>>> start app...'
+                        execute resources.text.fromFile(project.getRootDir().getAbsolutePath()+shellFile).asString().replace(runJarsPlaceHolder, runJars).replace(optPlaceHolder, opt).replace(profilesPlaceHolder, profiles).replace(remoteDirPlaceHolder, remoteDir).replace("\r", "")
+                        println '>>> remote deploy OK...'
+                    }
+                }
+            }
+        }
+
+    }
 
     ssh.settings {
         knownHosts = allowAnyHosts
@@ -120,61 +246,7 @@ subprojects {
     }
 
 
-    dependencies {
-        compile "com.alibaba.nacos:nacos-client:1.3.0"
-        //web
-        compile("org.springframework.boot:spring-boot-starter-web") {
-            //使用undertow来代替tomacat
-            exclude module: "spring-boot-starter-tomcat"
-            exclude module: "spring-boot-starter-logging"
-            exclude module: "log4j-to-slf4j"
-            exclude module: "log4j-api"
-            exclude module: "logback-classic"
-        }
 
-
-        //替代tomcat
-        compile "org.springframework.boot:spring-boot-starter-undertow"
-        //configuration
-        compile "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
-        //缓存
-        compile "net.sf.ehcache:ehcache:${ehcacheVersion}"
-        //lombok插件
-        compile "org.projectlombok:lombok:${lombokVersion}"
-        //
-        compile "com.lmax:disruptor:3.3.6"
-        //热部署
-        compile "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
-        //commons-io
-        compile "commons-io:commons-io:${commonsIOVersion}"
-        //commons-lang3
-        compile "org.apache.commons:commons-lang3:${commonsLangversion}"
-        //commons-codec
-        compile "commons-codec:commons-codec:${commonsCodecVersion}"
-        //fast-json
-        compile "com.alibaba:fastjson:${fastJsonVersion}"
-        //thymeleft
-        implementation "org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}"
-        // 关闭thymeleft强校验
-        implementation "net.sourceforge.nekohtml:nekohtml:1.9.22"
-        //swagger2
-        compile "io.springfox:springfox-swagger2:${swagger2Version}"
-        //httpclient
-        compile "org.apache.httpcomponents:httpclient:4.5.6"
-        compile "org.apache.httpcomponents:httpcore:4.4.11"
-        //测试
-        testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
-        //jackson
-        compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-        compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
-        compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
-        compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
-        compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"
-        compile "com.fasterxml.jackson.module:jackson-module-parameter-names:${jacksonVersion}"
-
-
-
-    }
 
 
 }

@@ -1,6 +1,3 @@
-archivesBaseName = 'jiu-auth'
-apply plugin: 'application'
-apply plugin: "org.springframework.boot"
 mainClassName = "com.jiu.OauthApplication"
 dependencies{
     compile project(':_jiu-croe')
@@ -14,96 +11,12 @@ dependencies{
     //替代tomcat
     compile "org.springframework.boot:spring-boot-starter-undertow"
 }
-ext {
-    runJars=archivesBaseName + "-" + version + ".jar"
-    runJarsPlaceHolder="{{RUN_JAR}}"
-    mainClassPlaceHolder="{{MAIN_CLASS}}"
-}
-
-jar {
-    doFirst {
-
-        manifest {
-            if (!configurations.compile.isEmpty()) {
-                attributes(
-                        'Class-Path': configurations.compile.collect{it.getName()}.join(' '),
-                        'Main-Class': mainClassName)
-            }
-        }
-    }
-}
-
-
-sourceSets {
-    main {
-    }
-}
-processResources {
-    exclude(
-            // "**/**"
-    )
-}
-
-task moveOutFromJar(type: Copy) {
-
-    sourceSets.main.resources.srcDirs.each {
-        from it
-        into buildDir.getPath() + "/config"
-    }
-}
-
-def remoteDir = '/root/project/jiu'
-
-task remoteDeploy(dependsOn: [clean, bootJar]) {
-    bootJar.mustRunAfter clean
-    doLast {
-        ssh.run {
-            session(remotes.deployServer) {
-                println '>>> start copying jar...'
-                put from: buildDir.toString() + '/libs/' + archivesBaseName + '-' + version + '.jar', into: remoteDir
-                println '>>> start app...'
-                ///execute 'xxxx/startup.sh'
-                //执行重启脚本
-             def result =   executeScript '''#!/bin/sh
-                  cd ''' + remoteDir + '''
-                        java  -Xms128m -Xmx129m  -jar   ''' + archivesBaseName + '''-''' + version + '''.jar  &
-                    '''
-                println(result)
-                println '>>> remote deploy OK...'
-            }
-        }
-    }
-}
-
-processResources.dependsOn moveOutFromJar
 
 
 
-distributions {
-    main {
-        contents {
-            from ("script/shutdown.sh") {
-                into "bin"
-                fileMode = 0755
-            }
-            from (buildDir.getPath() + "/config") {
-                into "config"
-            }
 
-            from ("plugins") {
-                into "plugins"
-            }
-        }
-    }
-}
 
-startScripts {
-    doLast {
-        unixScript.text = resources.text.fromFile('script/unixStart.sh').asString()
-                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
-        windowsScript.text = resources.text.fromFile('script/windowsStart.bat').asString()
-                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
-    }
-}
+
+
 
 
