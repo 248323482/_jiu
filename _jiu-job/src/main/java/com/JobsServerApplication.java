@@ -13,8 +13,6 @@ import java.net.InetAddress;
 /**
  * 消息服务
  *
- * @author zuihou
- * @createTime 2018-01-25 10:13
  */
 @SpringBootApplication
 @ComponentScan({
