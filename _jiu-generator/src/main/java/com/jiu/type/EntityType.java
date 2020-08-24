@@ -1,0 +1,55 @@
+package com.jiu.type;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+/**
+ * 父类实体类型
+ *
+ */
+@Getter
+@AllArgsConstructor
+public enum EntityType {
+    /**
+     * 只有id
+     * <p>
+     * "tenant_code" 字段会自动忽略
+     */
+    SUPER_ENTITY("com.jiu.entity.SuperEntity", new String[]{"id", "tenant_code", "create_time", "create_user"}),
+    /**
+     * 有创建人创建时间等
+     * "tenant_code" 字段会自动忽略
+     */
+    ENTITY("com.jiu.entity.Entity", new String[]{"id", "tenant_code", "create_time", "create_user", "update_time", "update_user"}),
+
+    /**
+     * 树形实体
+     * "tenant_code" 字段会自动忽略
+     */
+    TREE_ENTITY("com.jiu.entity.TreeEntity", new String[]{"id", "tenant_code", "create_time", "create_user", "update_time", "update_user", "label", "parent_id", "sort_value"}),
+
+    /**
+     * 不继承任何实体
+     */
+    NONE("", new String[]{""}),
+    ;
+
+    private String val;
+    private String[] columns;
+
+
+    public boolean eq(String val) {
+        if (this.name().equals(val)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean eq(EntityType val) {
+        if (val == null) {
+            return false;
+        }
+        return eq(val.name());
+    }
+
+}
