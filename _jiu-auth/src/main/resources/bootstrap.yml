@@ -22,6 +22,10 @@ server:
     exporter:
       enable: ${jiu.websocket}
 spring:
+    # 模板引擎
+  thymeleaf:
+    mode: HTML
+    encoding: utf-8
   application:
     name: ${jiu.name}
   profiles:
