@@ -60,8 +60,6 @@ public class FileController extends SuperController<FileService, Long, File, Fil
      *
      * @param
      * @return
-     * @author zuihou
-     * @date 2019-05-06 16:28
      */
     @ApiOperation(value = "上传文件", notes = "上传文件 ")
     @ApiResponses({

@@ -162,8 +162,6 @@ public class AttachmentController extends SuperSimpleController<AttachmentServic
      * @param bizIds   业务id
      * @param bizTypes 业务类型
      * @return
-     * @author zuihou
-     * @date 2019-05-12 21:23
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "bizIds[]", value = "业务id数组", dataType = "array", paramType = "query"),
