@@ -1,7 +1,4 @@
-archivesBaseName = 'jiu-gateway'
-apply plugin: 'application'
 mainClassName = "com.jiu.GatewayServerApplication"
-description 'Copies the resource directory to the target directory.'
 dependencies {
     compile(project(':_jiu-croe'))
     configurations {
@@ -21,6 +18,7 @@ dependencies {
 
     }
     compile 'org.springframework.cloud:spring-cloud-starter-gateway'
+    compile 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
     compile group: 'javax.servlet', name: 'javax.servlet-api'
@@ -28,24 +26,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
 
-}
-ext {
-    runJars = archivesBaseName + "-" + version + ".jar"
-    runJarsPlaceHolder = "{{RUN_JAR}}"
-    mainClassPlaceHolder = "{{MAIN_CLASS}}"
-}
-
-jar {
-    doFirst {
-
-        manifest {
-            if (!configurations.compile.isEmpty()) {
-                attributes(
-                        'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                        'Main-Class': mainClassName)
-            }
-        }
-    }
 }
 
 //apply plugin: 'com.palantir.docker'
@@ -56,53 +36,5 @@ jar {
 //    buildArgs(['JAR_FILE': "${jar.archiveName}"])
 //}
 
-
-sourceSets {
-    main {
-    }
-}
-processResources {
-    exclude(
-            // "**/**"
-    )
-}
-
-task moveOutFromJar(type: Copy) {
-
-    sourceSets.main.resources.srcDirs.each {
-        from it
-        into buildDir.getPath() + "/config"
-    }
-}
-
-processResources.dependsOn moveOutFromJar
-
-
-distributions {
-    main {
-        contents {
-            from("script/shutdown.sh") {
-                into "bin"
-                fileMode = 0755
-            }
-            from(buildDir.getPath() + "/config") {
-                into "config"
-            }
-
-            from("plugins") {
-                into "plugins"
-            }
-        }
-    }
-}
-
-startScripts {
-    doLast {
-        unixScript.text = resources.text.fromFile('script/unixStart.sh').asString()
-                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
-        windowsScript.text = resources.text.fromFile('script/windowsStart.bat').asString()
-                .replace(runJarsPlaceHolder, runJars).replace(mainClassPlaceHolder, mainClassName)
-    }
-}
 
 
