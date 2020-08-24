@@ -1,3 +1,4 @@
+
 //编译构建时的配置
 buildscript {
     ext {
@@ -41,6 +42,7 @@ buildscript {
 
 }
 
+
 allprojects {
     group = "com.jiu" //分组
     version = "1.0.0" //版本号
@@ -69,7 +71,7 @@ subprojects {
     //spring boot 插件
     apply plugin: "io.spring.dependency-management"
     apply plugin: 'distribution'
-    if (!name.contains("croe")) {
+    if (!name.contains("croe")&&!name.contains("generator")) {
         apply plugin: "org.springframework.boot"
         apply plugin: 'application'
     }
@@ -102,7 +104,7 @@ subprojects {
             dependency "com.lmax:disruptor:3.3.6"
             dependency "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
             dependency "commons-io:commons-io:2.4"
-            dependency "org.apache.commons:commons-lang3:3.7"
+            dependency "org.apache.commons:commons-lang:3.10"
             dependency "commons-codec:commons-codec:1.11"
             dependency "com.alibaba:fastjson:1.2.62"
             dependency "io.springfox:springfox-swagger2:2.9.2"
@@ -135,6 +137,7 @@ subprojects {
                 entry 'mybatis-plus-annotation'
                 entry 'mybatis-plus'
                 entry 'mybatis-plus-boot-starter'
+                entry 'mybatis-plus-generator'
             }
             dependencySet(group: 'com.plumelog', version: '2.2.2') {
                 entry 'plumelog-logback'
@@ -168,8 +171,8 @@ subprojects {
     targetCompatibility = 1.8
 
 
-    if (!project.name.contains("croe")) {
-        println "Project ${name} "
+    if (!project.name.contains("croe")&&!name.contains("generator")) {
+        println "Project----------------------------------------------------> ${name} "
         applicationDefaultJvmArgs = ['-Xms64m', '-Xmx64m']
         jar {
             enabled true
@@ -197,8 +200,17 @@ subprojects {
 
 
 
+        clean.doFirst {
+            delete "${buildDir}/../out"
+            delete rootProject.buildDir.getPath() + "/distributions"
+            delete project.getRootDir().getAbsolutePath()+"/catalina.base_IS_UNDEFINED"
+            delete rootProject.buildDir.getPath()
+        }
 
         build.doLast {
+            copy {
+                from buildDir.getPath() + "/distributions" into rootProject.buildDir.getPath() + "/distributions"
+            }
             ssh.run {
                 session(remotes.deployServer) {
                     def runJars = project.name+"-"+version+".jar"
@@ -219,10 +231,10 @@ subprojects {
                 ssh.run {
                     session(remotes.deployServer) {
                         def runJars = project.name+"-"+version+".jar"
-                        println '>>> start copying jar...'
+                        println '>>> start copying   '+runJars+'  ...'
                         //copy jar 包
                         //   put from: "${buildDir}/libs/${runJars}", into: "${remoteDir}"
-                        println '>>> start app...'
+                        println '>>> start app   '+runJars+'  ...'
                         execute resources.text.fromFile(project.getRootDir().getAbsolutePath()+shellFile).asString().replace(runJarsPlaceHolder, runJars).replace(optPlaceHolder, opt).replace(profilesPlaceHolder, profiles).replace(remoteDirPlaceHolder, remoteDir).replace("\r", "")
                         println '>>> remote deploy OK...'
                     }
