@@ -1,4 +1,4 @@
-package com.jiu.controller;
+package com.jiu.web.controller;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;

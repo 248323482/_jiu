@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
-import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import javax.websocket.server.ServerEndpoint;
 import java.net.InetAddress;
