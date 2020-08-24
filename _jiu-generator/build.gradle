@@ -1,4 +1,3 @@
-mainClassName = "com.jiu.OauthApplication"
 dependencies{
     compile project(':_jiu-croe')
     compile group: 'org.apache.velocity', name: 'velocity', version: '1.7'

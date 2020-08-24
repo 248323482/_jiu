@@ -16,7 +16,7 @@ public class UpdateAllById extends AlwaysUpdateSomeColumnById {
 
     @Override
     public String getMethod(SqlMethod sqlMethod) {
-        // 自定义 mapper 方法名
+        // 自定义 dao 方法名
         return "updateAllById";
     }
 }

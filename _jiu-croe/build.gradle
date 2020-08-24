@@ -2,9 +2,9 @@ dependencies {
     compile "org.projectlombok:lombok"
     compile "org.springframework.boot:spring-boot-starter-aop"
     compile "com.baomidou:mybatis-plus-boot-starter"
-    compile 'com.baomidou:mybatis-plus'
-    compile 'com.baomidou:mybatis-plus-annotation'
-    compile 'com.baomidou:mybatis-plus-core'
+    compile "com.baomidou:mybatis-plus"
+    compile "com.baomidou:mybatis-plus-annotation"
+    compile "com.baomidou:mybatis-plus-core"
     compile "cn.hutool:hutool-all"
     compile "io.github.openfeign:feign-okhttp"
     compile "org.springframework.cloud:spring-cloud-starter-openfeign"
@@ -13,16 +13,21 @@ dependencies {
     compile "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery"
     compile "com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config"
     compile "cn.afterturn:easypoi-web:4.1.0"
-    compile 'cn.afterturn:easypoi-annotation'
-    compile group: 'net.oschina.j2cache', name: 'j2cache-core'
-    compile 'cn.afterturn:easypoi'
+    compile "cn.afterturn:easypoi-annotation"
+    compile  "net.oschina.j2cacheL:j2cache-core"
+    compile "cn.afterturn:easypoi"
     compile "io.springfox:springfox-swagger2"
-    implementation "org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"
+    compile "com.xuxueli:xxl-rpc-core"
+    compile "org.quartz-scheduler:quartz"
+    compile "org.apache.commons:commons-email"
+    compile "org.hibernate.validator:hibernate-validator"
+    compile "org.springframework.boot:spring-boot-starter-undertow"
+    compile  "org.apache.commons:commons-lang3"
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
     implementation "com.google.guava:guava"
     implementation "commons-beanutils:commons-beanutils"
     implementation "org.lionsoul:ip2region"
     implementation "com.github.xiaoymin:knife4j-spring-boot-starter"
-
     implementation "mysql:mysql-connector-java:8.0.19"
     implementation "com.alibaba:druid-spring-boot-starter:1.1.22"
     implementation "com.alibaba:druid:1.1.22"
@@ -31,39 +36,34 @@ dependencies {
     //<!-- seata-all 1.0.0 SeataHystrixConcurrencyStrategy 和 本项目中 ThreadLocalHystrixConcurrencyStrategy 冲突，导致事务回滚失效 -->
     implementation"io.seata:seata-all"
     implementation "p6spy:p6spy"
-    implementation "org.hibernate.validator:hibernate-validator"
     implementation  "com.plumelog:plumelog-logback"
     implementation  "com.plumelog:plumelog-trace"
-    implementation 'cn.afterturn:easypoi-base'
-    implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson'
-    implementation group: 'io.jsonwebtoken', name: 'jjwt-impl'
-    implementation group: 'io.jsonwebtoken', name: 'jjwt-api'
-    implementation 'org.eclipse.jgit:org.eclipse.jgit'
-    implementation 'org.apache.maven.shared:maven-invoker'
-    implementation group: 'org.springframework', name: 'spring-websocket'
-    implementation 'com.xuxueli:xxl-rpc-core'
-    implementation 'org.quartz-scheduler:quartz'
-    implementation 'org.apache.commons:commons-email'
-    implementation 'org.codehaus.groovy:groovy'
-    implementation 'org.apache.commons:commons-exec'
-    implementation 'org.springframework.amqp:spring-rabbit'
-    implementation group: 'com.github.dozermapper', name: 'dozer-core'
-    implementation group: 'com.github.dozermapper', name: 'dozer-spring4'
+    implementation "cn.afterturn:easypoi-base"
+    implementation  "io.jsonwebtoken:jjwt-jackson"
+    implementation  "io.jsonwebtoken:jjwt-impl"
+    implementation  "io.jsonwebtoken:jjwt-api"
+    implementation "org.eclipse.jgit:org.eclipse.jgit"
+    implementation "org.apache.maven.shared:maven-invoker"
+    implementation  "org.springframework:spring-websocket"
+    implementation "org.codehaus.groovy:groovy"
+    implementation "org.apache.commons:commons-exec"
+    implementation "org.springframework.amqp:spring-rabbit"
+    implementation  "com.github.dozermapper:dozer-core"
+    implementation  "com.github.dozermapper:dozer-spring4"
     implementation "com.fasterxml.jackson.core:jackson-core"
     implementation "com.fasterxml.jackson.core:jackson-databind"
     implementation "com.fasterxml.jackson.core:jackson-annotations"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
     implementation "com.fasterxml.jackson.module:jackson-module-parameter-names"
-    implementation "org.springframework.boot:spring-boot-starter-undertow"
+
 
     configurations {
-        all*.exclude module: "slf4j-simple"
-        all*.exclude module: "spring-boot-starter-tomcat"
-        all*.exclude module: "spring-boot-starter-logging"
-        all*.exclude module: "log4j-to-slf4j"
-        all*.exclude module: "log4j-api"
-        all*.exclude module: "logback-classic"
+        all*.exclude module:"slf4j-simple"
+        all*.exclude module:"spring-boot-starter-tomcat"
+        all*.exclude module:"spring-boot-starter-logging"
+        all*.exclude module:"log4j-to-slf4j"
+        all*.exclude module:"log4j-api"
     }
 
 }

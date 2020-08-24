@@ -45,9 +45,9 @@ public class DozerAutoConfiguration {
     }
 
     /**
-     * Creates default Dozer mapper
+     * Creates default Dozer dao
      *
-     * @return Dozer mapper
+     * @return Dozer dao
      * @throws IOException if there is an exception during initialization.
      */
     @Bean
