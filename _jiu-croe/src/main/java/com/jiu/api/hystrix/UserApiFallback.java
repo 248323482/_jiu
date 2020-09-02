@@ -1,13 +1,11 @@
 package com.jiu.api.hystrix;
 
 import com.jiu.api.UserApi;
+import com.jiu.base.R;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 用户API熔断
@@ -31,5 +29,10 @@ public class UserApiFallback implements UserApi {
     @Override
     public Map<Serializable, Object> findUserNameByIds(Set<Serializable> codes) {
         return Collections.emptyMap();
+    }
+
+    @Override
+    public R findAllUserId() {
+        return R.timeout();
     }
 }

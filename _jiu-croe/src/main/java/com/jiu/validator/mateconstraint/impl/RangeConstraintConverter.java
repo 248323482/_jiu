@@ -13,7 +13,6 @@ import java.util.List;
 /**
  * 长度 转换器
  *
-
  */
 public class RangeConstraintConverter extends BaseConstraintConverter implements IConstraintConverter {
 

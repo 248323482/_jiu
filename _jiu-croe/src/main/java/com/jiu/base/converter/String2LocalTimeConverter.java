@@ -10,6 +10,8 @@ import java.util.Map;
 import static com.jiu.utils.DateUtils.DEFAULT_TIME_FORMAT;
 
 /**
+ * 解决入参为 Date类型
+ *
  */
 public class String2LocalTimeConverter extends BaseDateConverter<LocalTime> implements Converter<String, LocalTime> {
 

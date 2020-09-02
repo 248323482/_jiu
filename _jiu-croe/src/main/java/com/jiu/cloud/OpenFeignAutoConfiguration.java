@@ -27,6 +27,7 @@ import java.util.List;
  * OpenFeign 配置
  *
  */
+@Configuration
 public class OpenFeignAutoConfiguration {
     /**
      * 在feign调用方配置， 解决入参和出参是以下类型.

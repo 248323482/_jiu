@@ -1,10 +1,12 @@
 package com.jiu.api;
 
 import com.jiu.api.hystrix.UserApiFallback;
+import com.jiu.base.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,7 +14,7 @@ import java.util.Set;
  * 用户
  *
  */
-@FeignClient(name = "jiu-common-server", fallback = UserApiFallback.class
+@FeignClient(name = "auth-server", fallback = UserApiFallback.class
         , path = "/user", qualifier = "userApi")
 public interface UserApi {
     /**
@@ -41,4 +43,12 @@ public interface UserApi {
      */
     @GetMapping("/findUserNameByIds")
     Map<Serializable, Object> findUserNameByIds(@RequestParam(value = "ids") Set<Serializable> ids);
+
+    /**
+     * 查询所有的用户id
+     *
+     * @return
+     */
+    @RequestMapping(value = "/find", method = RequestMethod.GET)
+    R<List<Long>> findAllUserId();
 }

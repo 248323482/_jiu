@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import java.io.File;
 
@@ -16,7 +17,7 @@ import java.io.File;
 @Setter
 @Getter
 @ConfigurationProperties(prefix = "jiu.file")
-//@RefreshScope
+@RefreshScope
 public class FileServerProperties {
     /**
      * 为以下3个值，指定不同的自动化配置

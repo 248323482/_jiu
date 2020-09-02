@@ -50,8 +50,8 @@ public class OrgServiceImpl extends SuperCacheServiceImpl<OrgMapper, Org> implem
         }
         // MySQL 全文索引
         String applySql = String.format(" MATCH(tree_path) AGAINST('%s' IN BOOLEAN MODE) ", StringUtils.join(ids, " "));
-
-        return super.list(Wraps.<Org>lbQ().in(Org::getId, ids).or(query -> query.apply(applySql)));
+//.or(query -> query.apply(applySql))
+        return super.list(Wraps.<Org>lbQ().in(Org::getId, ids));
     }
 
     @Override

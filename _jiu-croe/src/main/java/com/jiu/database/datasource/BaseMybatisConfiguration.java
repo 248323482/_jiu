@@ -41,6 +41,7 @@ import java.util.List;
  */
 @Slf4j
 @Import({DatabaseProperties.class})
+@Configuration
 public class BaseMybatisConfiguration {
     protected final DatabaseProperties databaseProperties;
 

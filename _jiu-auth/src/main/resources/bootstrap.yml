@@ -43,6 +43,8 @@ spring:
             refresh: true
           - dataId: mysql.yml
             refresh: true
+          - dataId: redis.yml
+            refresh: true
           - dataId: rabbitmq.yml
             refresh: true
         enabled: true

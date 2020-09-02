@@ -7,7 +7,6 @@ import com.jiu.validator.model.ValidConstraint;
 import com.jiu.validator.wrapper.HttpServletRequestValidatorWrapper;
 import org.springframework.core.MethodParameter;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -49,6 +48,7 @@ import java.util.List;
  *
  * <p>
  *
+ * @author zuihou
  * @Null 被注释的元素必须为 null
  * @NotNull 被注释的元素必须不为 null
  * @AssertTrue 被注释的元素必须为 true
@@ -71,7 +71,6 @@ import java.util.List;
  * @NotEmpty 被注释的字符串的必须非空
  * @Range(min=,max=,message=) 被注释的元素必须在合适的范围内
  * <p>
- * @date 2019-07-12 14:30
  */
 @RequestMapping
 public class FormValidatorController {

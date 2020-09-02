@@ -20,14 +20,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static com.jiu.utils.DateUtils.DEFAULT_DATE_FORMAT;
-import static com.jiu.utils.DateUtils.DEFAULT_DATE_TIME_FORMAT;
-import static com.jiu.utils.DateUtils.DEFAULT_TIME_FORMAT;
+import static com.jiu.utils.DateUtils.*;
 
 /**
  * jackson 自定义序列化 & 反序列化 规则
  *
- * @author zuihou
  */
 public class MyJacksonModule extends SimpleModule {
 
@@ -44,7 +41,7 @@ public class MyJacksonModule extends SimpleModule {
         this.addSerializer(BigInteger.class, ToStringSerializer.instance);
         this.addSerializer(BigDecimal.class, ToStringSerializer.instance);
         this.addSerializer(BaseEnum.class, EnumSerializer.INSTANCE);
-        this.addDeserializer(Enum.class, EnumDeserializer.INSTANCE);
+        //this.addDeserializer(Enum.class, EnumDeserializer.INSTANCE);
     }
 
 }

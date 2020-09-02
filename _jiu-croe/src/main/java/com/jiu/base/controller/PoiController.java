@@ -48,7 +48,7 @@ public interface PoiController<Entity, PageDTO> extends PageController<Entity, P
     @RequestMapping(value = "/export", method = RequestMethod.POST, produces = "application/octet-stream")
     @SysLog("'导出Excel:'.concat(#params.map[" + NormalExcelConstants.FILE_NAME + "]?:'')")
     default void exportExcel(@RequestBody @Validated PageParams<PageDTO> params, HttpServletRequest request, HttpServletResponse response) {
-        IPage<Entity> page = params.getPage();
+        IPage<Entity> page = params.buildPage();
         ExportParams exportParams = getExportParams(params, page);
 
         Map<String, Object> map = new HashMap<>(5);
@@ -70,7 +70,7 @@ public interface PoiController<Entity, PageDTO> extends PageController<Entity, P
     @SysLog("'预览Excel:' + (#params.map[" + NormalExcelConstants.FILE_NAME + "]?:'')")
     @RequestMapping(value = "/preview", method = RequestMethod.POST)
     default R<String> preview(@RequestBody @Validated PageParams<PageDTO> params) {
-        IPage<Entity> page = params.getPage();
+        IPage<Entity> page = params.buildPage();
         ExportParams exportParams = getExportParams(params, page);
 
         Workbook workbook = ExcelExportUtil.exportExcel(exportParams, getEntityClass(), page.getRecords());

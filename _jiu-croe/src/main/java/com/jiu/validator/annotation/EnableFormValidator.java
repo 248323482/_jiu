@@ -1,5 +1,6 @@
-package com.jiu.validator.config;
+package com.jiu.validator.annotation;
 
+import com.jiu.validator.config.ValidatorConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;

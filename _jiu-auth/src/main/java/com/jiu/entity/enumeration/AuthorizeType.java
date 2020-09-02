@@ -48,7 +48,7 @@ public enum AuthorizeType implements BaseEnum {
     }
 
     public boolean eq(AuthorizeType val) {
-        return val == null ? false : eq(val);
+        return val == null ? false : eq(val.name());
     }
 
     @Override

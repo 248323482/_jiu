@@ -8,14 +8,24 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.jiu.utils.DateUtils.DEFAULT_DATE_FORMAT;
+import static com.jiu.utils.DateUtils.DEFAULT_DATE_FORMAT_EN;
+import static com.jiu.utils.DateUtils.DEFAULT_DATE_FORMAT_EN_MATCHES;
+import static com.jiu.utils.DateUtils.DEFAULT_DATE_FORMAT_MATCHES;
+import static com.jiu.utils.DateUtils.SLASH_DATE_FORMAT;
+import static com.jiu.utils.DateUtils.SLASH_DATE_FORMAT_MATCHES;
 
+/**
+ * 解决入参为 Date类型
+ *
+ */
 public class String2LocalDateConverter extends BaseDateConverter<LocalDate> implements Converter<String, LocalDate> {
 
     protected static final Map<String, String> FORMAT = new LinkedHashMap(2);
 
     static {
-        FORMAT.put(DEFAULT_DATE_FORMAT, "^\\d{4}-\\d{1,2}-\\d{1,2}$");
-        FORMAT.put("yyyy/MM/dd", "^\\d{4}/\\d{1,2}/\\d{1,2}$");
+        FORMAT.put(DEFAULT_DATE_FORMAT, DEFAULT_DATE_FORMAT_MATCHES);
+        FORMAT.put(SLASH_DATE_FORMAT, SLASH_DATE_FORMAT_MATCHES);
+        FORMAT.put(DEFAULT_DATE_FORMAT_EN, DEFAULT_DATE_FORMAT_EN_MATCHES);
     }
 
     @Override

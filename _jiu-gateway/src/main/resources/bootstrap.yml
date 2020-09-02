@@ -2,7 +2,7 @@
 jiu:
   name: gateway
   port: 80
-  context-path: /
+  context-path: /api
   nacos:
     ip: budongi.club
     port: 8848
@@ -35,10 +35,22 @@ spring:
             - Path=/file/**
           filters:
             - StripPrefix=1
+        - id: msgs-server
+          uri: lb://msgs-server
+          predicates:
+            - Path=/msgs/**
+          filters:
+            - StripPrefix=1
         - id: auth-server
           uri: lb://auth-server
           predicates:
-            - Path=/auth/**
+            - Path=/oauth/**
+          filters:
+            - StripPrefix=1
+        - id: auth-server-authority
+          uri: lb://auth-server
+          predicates:
+            - Path=/authority/**
           filters:
             - StripPrefix=1
       default-filters:

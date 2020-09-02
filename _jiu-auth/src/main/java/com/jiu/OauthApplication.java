@@ -1,5 +1,7 @@
 package com.jiu;
 
+import com.jiu.security.annotation.EnableLoginArgResolver;
+import com.jiu.validator.annotation.EnableFormValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +18,8 @@ import java.net.UnknownHostException;
 //https://mp.weixin.qq.com/s/zkxI5IQP0jFTjVYe5pTsXw
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @EnableDiscoveryClient
+@EnableLoginArgResolver
+@EnableFormValidator
 public class OauthApplication{
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(OauthApplication.class, args);

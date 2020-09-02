@@ -1,4 +1,4 @@
-package com.jiu.dao;
+package com.jiu.dao.common;
 
 import com.jiu.base.mapper.SuperMapper;
 import com.jiu.entity.common.DictionaryItem;

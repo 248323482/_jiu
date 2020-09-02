@@ -6,13 +6,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * 配置类
  *
- * @author zuihou
- * @create 2020年01月19日09:11:19
  */
 @Data
 @ConfigurationProperties(InjectionProperties.PREFIX)
 public class InjectionProperties {
-    public static final String PREFIX = "zuihou.injection";
+    public static final String PREFIX = "jiu.injection";
     /**
      * 是否启用远程查询
      */

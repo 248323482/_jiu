@@ -4,7 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.ImmutableMap;
 import com.jiu.base.service.SuperCacheServiceImpl;
-import com.jiu.dao.DictionaryItemMapper;
+import com.jiu.dao.common.DictionaryItemMapper;
 import com.jiu.database.mybatis.conditions.Wraps;
 import com.jiu.database.mybatis.conditions.query.LbqWrapper;
 import com.jiu.entity.common.DictionaryItem;

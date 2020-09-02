@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 /**
  * 基础实体
  *
- * @author zuihou
- * @date 2019/05/05
  */
 @Getter
 @Setter

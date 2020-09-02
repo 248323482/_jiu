@@ -16,8 +16,6 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 关联字段数据注入工具 自动配置类
  *
- * @author zuihou
- * @date 2019/09/20
  */
 @Slf4j
 @Configuration

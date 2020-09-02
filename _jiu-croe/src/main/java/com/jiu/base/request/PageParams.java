@@ -45,26 +45,33 @@ public class PageParams<T> {
     private Map<String, String> map = new HashMap<>(1);
 
     @JsonIgnore
-    public IPage getPage() {
-        PageParams params = this;
-        if (StrUtil.isEmpty(params.getSort())) {
-            Page page = new Page(params.getCurrent(), params.getSize());
+    public IPage buildPage() {
+        Page page;
+        if (StrUtil.isEmpty(this.getSort())) {
+            page = new Page(this.getCurrent(), this.getSize());
+            return page;
+        } else {
+            page = new Page(this.getCurrent(), this.getSize());
+            List<OrderItem> orders = new ArrayList();
+            String[] sortArr = StrUtil.split(this.getSort(), ",");
+            String[] orderArr = StrUtil.split(this.getOrder(), ",");
+            int len = sortArr.length < orderArr.length ? sortArr.length : orderArr.length;
+
+            for(int i = 0; i < len; ++i) {
+                String humpSort = sortArr[i];
+                String underlineSort = StrUtil.toUnderlineCase(humpSort);
+                if (!StrUtil.equalsAny(humpSort, new CharSequence[]{"createTime", "updateTime"})) {
+                    underlineSort = AntiSqlFilter.getSafeValue(underlineSort);
+                }
+
+                orders.add("ascending".equals(orderArr[i]) ? OrderItem.asc(underlineSort) : OrderItem.desc(underlineSort));
+            }
+
+            page.setOrders(orders);
             return page;
         }
-
-        Page page = new Page(params.getCurrent(), params.getSize());
-        List<OrderItem> orders = new ArrayList<>();
-        // 简单的 驼峰 转 下划线
-        String sort = StrUtil.toUnderlineCase(params.getSort());
-
-        // 除了 create_time 和 updateTime 都过滤sql关键字
-        if (!StrUtil.equalsAny(params.getSort(), SuperEntity.CREATE_TIME, Entity.UPDATE_TIME)) {
-            sort = AntiSqlFilter.getSafeValue(sort);
-        }
-
-        orders.add("ascending".equals(params.getOrder()) ? OrderItem.asc(sort) : OrderItem.desc(sort));
-        page.setOrders(orders);
-        return page;
-
     }
+
+
+
 }

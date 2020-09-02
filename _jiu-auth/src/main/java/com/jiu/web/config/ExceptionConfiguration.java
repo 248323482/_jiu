@@ -1,4 +1,4 @@
-package com.jiu.config;
+package com.jiu.web.config;
 
 import com.jiu.boot.handler.DefaultGlobalExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import javax.servlet.Servlet;
  * 全局异常处理
  *
  */
-@Configuration
+//@Configuration
 @ConditionalOnClass({Servlet.class, DispatcherServlet.class})
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @RestControllerAdvice(annotations = {RestController.class, Controller.class})

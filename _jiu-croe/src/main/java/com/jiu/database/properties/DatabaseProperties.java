@@ -3,6 +3,7 @@ package com.jiu.database.properties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = DatabaseProperties.PREFIX)
 @Data
 @NoArgsConstructor
+@Configuration
 public class DatabaseProperties {
     public static final String PREFIX = "jiu.database";
     /**
@@ -68,7 +70,7 @@ public class DatabaseProperties {
     /**
      * 事务扫描基础包
      */
-    private String transactionScanPackage = "com.github.zuihou";
+    private String transactionScanPackage = "com.jiu";
 
     @Data
     public static class Id {

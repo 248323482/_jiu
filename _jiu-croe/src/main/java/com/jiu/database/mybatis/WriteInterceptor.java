@@ -41,7 +41,7 @@ public class WriteInterceptor extends AbstractSqlParserHandler implements Interc
     @SneakyThrows
     public Object intercept(Invocation invocation) {
         // 为什么在拦截器里使用 @RefreshScope 无效？
-        if (!SpringUtils.getApplicationContext().getEnvironment().getProperty("zuihou.database.isNotWrite", Boolean.class, false)) {
+        if (!SpringUtils.getApplicationContext().getEnvironment().getProperty("jiu.database.isNotWrite", Boolean.class, false)) {
             return invocation.proceed();
         }
 

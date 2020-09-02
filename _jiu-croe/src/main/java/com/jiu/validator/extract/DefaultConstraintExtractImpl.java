@@ -1,13 +1,13 @@
 package com.jiu.validator.extract;
 
-import com.jiu.validator.model.ConstraintInfo;
-import com.jiu.validator.model.FieldValidatorDesc;
-import com.jiu.validator.model.ValidConstraint;
 import com.jiu.validator.mateconstraint.IConstraintConverter;
 import com.jiu.validator.mateconstraint.impl.NotNullConstraintConverter;
 import com.jiu.validator.mateconstraint.impl.OtherConstraintConverter;
 import com.jiu.validator.mateconstraint.impl.RangeConstraintConverter;
 import com.jiu.validator.mateconstraint.impl.RegExConstraintConverter;
+import com.jiu.validator.model.ConstraintInfo;
+import com.jiu.validator.model.FieldValidatorDesc;
+import com.jiu.validator.model.ValidConstraint;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.engine.ValidatorImpl;
 import org.hibernate.validator.internal.metadata.BeanMetaDataManager;
@@ -104,16 +104,15 @@ public class DefaultConstraintExtractImpl implements IConstraintExtract {
         }
 
         ConstraintLocation con = metaConstraint.getLocation();
-
         String domainName = con.getDeclaringClass().getSimpleName().toLowerCase();
-        String fieldName = "";//con.getMember().getName();
+        String fieldName = con.getMember().getName();
         String key = domainName + fieldName;
         FieldValidatorDesc desc = fieldValidatorDescs.get(domainName + fieldName);
         if (desc == null) {
             desc = new FieldValidatorDesc();
             desc.setDomainName(domainName);
             desc.setFieldName(fieldName);
-            //desc.setFieldType(getType(((Field) con.getMember()).getType()));
+            desc.setFieldType(getType(((Field) con.getMember()).getType()));
             desc.setConstraints(new ArrayList<>(5));
             fieldValidatorDescs.put(key, desc);
         }

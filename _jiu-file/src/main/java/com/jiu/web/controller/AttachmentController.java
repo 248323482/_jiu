@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.groupingBy;
  * </p>
  *
  */
-//@RestController
+@RestController
 @RequestMapping("/attachment")
 @Slf4j
 @Api(value = "附件", tags = "附件")

@@ -1,5 +1,7 @@
 package com.jiu.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.jiu.base.entity.Entity;
 import com.jiu.entity.enumeration.DataType;
 import io.swagger.annotations.ApiModel;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
+@TableName("f_attachment")
 @ApiModel(value = "Attachment", description = "附件")
 public class Attachment extends Entity<Long> {
 
@@ -35,7 +38,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "业务ID")
     @Length(max = 64, message = "业务ID长度不能超过64")
-
+    @TableField("biz_id")
     private String bizId;
 
     /**
@@ -44,7 +47,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "业务类型")
     @Length(max = 255, message = "业务类型长度不能超过255")
-
+    @TableField("biz_type")
     private String bizType;
 
     /**
@@ -52,6 +55,7 @@ public class Attachment extends Entity<Long> {
      * #DataType{DIR:目录;IMAGE:图片;VIDEO:视频;AUDIO:音频;DOC:文档;OTHER:其他}
      */
     @ApiModelProperty(value = "数据类型")
+    @TableField("data_type")
     private DataType dataType;
 
     /**
@@ -59,6 +63,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "原始文件名")
     @Length(max = 255, message = "原始文件名长度不能超过255")
+    @TableField("submitted_file_name")
     private String submittedFileName;
 
     /**
@@ -67,7 +72,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "FastDFS返回的组")
     @Length(max = 255, message = "FastDFS返回的组长度不能超过255")
-
+    @TableField("group_")
     private String group;
 
     /**
@@ -76,6 +81,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "FastDFS的远程文件名")
     @Length(max = 255, message = "FastDFS的远程文件名长度不能超过255")
+    @TableField("path")
     private String path;
 
     /**
@@ -83,6 +89,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "文件相对路径")
     @Length(max = 255, message = "文件相对路径长度不能超过255")
+    @TableField("relative_path")
     private String relativePath;
 
     /**
@@ -91,6 +98,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "文件访问链接")
     @Length(max = 255, message = "文件访问链接长度不能超过255")
+    @TableField("url")
     private String url;
 
     /**
@@ -98,6 +106,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "文件md5值")
     @Length(max = 255, message = "文件md5值长度不能超过255")
+    @TableField("file_md5")
     private String fileMd5;
 
     /**
@@ -106,6 +115,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "文件上传类型")
     @Length(max = 255, message = "文件上传类型长度不能超过255")
+    @TableField("context_type")
     private String contextType;
 
     /**
@@ -113,6 +123,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "唯一文件名")
     @Length(max = 255, message = "唯一文件名长度不能超过255")
+    @TableField("filename")
     private String filename;
 
     /**
@@ -121,17 +132,20 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "后缀")
     @Length(max = 64, message = "后缀长度不能超过64")
+    @TableField("ext")
     private String ext;
 
     /**
      * 大小
      */
     @ApiModelProperty(value = "大小")
+    @TableField("size")
     private Long size;
     /**
      * 组织ID
      */
     @ApiModelProperty(value = "组织ID")
+    @TableField("org_id")
     private Long orgId;
 
     /**
@@ -139,6 +153,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "图标")
     @Length(max = 64, message = "图标长度不能超过64")
+    @TableField("icon")
     private String icon;
 
     /**
@@ -147,6 +162,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "创建年月")
     @Length(max = 10, message = "创建年月长度不能超过10")
+    @TableField("create_month")
     private String createMonth;
 
     /**
@@ -155,6 +171,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "创建时处于当年的第几周")
     @Length(max = 10, message = "创建时处于当年的第几周长度不能超过10")
+    @TableField("create_week")
     private String createWeek;
 
     /**
@@ -163,6 +180,7 @@ public class Attachment extends Entity<Long> {
      */
     @ApiModelProperty(value = "创建年月日")
     @Length(max = 12, message = "创建年月日长度不能超过12")
+    @TableField("create_day")
     private String createDay;
 
 

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.jiu.base.BaseEnum;
-import com.jiu.base.converter.EnumDeserializer;
 import com.jiu.base.converter.EnumSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
@@ -25,8 +24,6 @@ import static com.jiu.utils.DateUtils.DEFAULT_DATE_TIME_FORMAT;
 /**
  * 此时定义的序列化操作表示可以序列化所有类的对象，当然，这个对象所在的类一定要实现序列化接口
  *
- * @author zuihou
- * @date 2019-08-06 10:42
  */
 public class RedisObjectSerializer extends Jackson2JsonRedisSerializer<Object> {
     public RedisObjectSerializer() {
@@ -44,7 +41,7 @@ public class RedisObjectSerializer extends Jackson2JsonRedisSerializer<Object> {
                 .setDateFormat(new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT));
 
         SimpleModule simpleModule = new SimpleModule()
-                .addDeserializer(Enum.class, EnumDeserializer.INSTANCE)
+                //.addDeserializer(Enum.class, EnumDeserializer.INSTANCE)
                 .addSerializer(BaseEnum.class, EnumSerializer.INSTANCE)
                 .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)))
                 .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));

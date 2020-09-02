@@ -54,7 +54,7 @@ public interface QueryController<Entity, Id extends Serializable, PageDTO> exten
     @SysLog(value = "'分页列表查询:第' + #params?.current + '页, 显示' + #params?.size + '行'", response = false)
     default R<IPage<Entity>> page(@RequestBody @Validated PageParams<PageDTO> params) {
         // 处理参数
-        IPage<Entity> page = params.getPage();
+        IPage<Entity> page = params.buildPage();
         query(params, page, null);
         return success(page);
     }

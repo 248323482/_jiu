@@ -179,7 +179,7 @@ public class InjectionCore {
                 "java.lang.Short".equals(typeName) ||
                 "java.lang.Boolean".equals(typeName) ||
                 "java.lang.String".equals(typeName) ||
-                "com.jiu.model.RemoteData".equals(typeName)
+                "com.jiu.base.model.RemoteData".equals(typeName)
         ) {
             return false;
         } else {
