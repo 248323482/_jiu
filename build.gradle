@@ -203,18 +203,20 @@ subprojects {
 //          identity = file('id_rsa')  证书链接
         }
     }
-    task remoteDeploy(dependsOn: [clean, bootJar]) {
-        bootJar.mustRunAfter clean
-        doLast {
-            ssh.run {
-                session(remotes.deployServer) {
-                    def runJars = project.name + "-" + version + ".jar"
-                    println '>>> start copying   ' + runJars + '  ...'
-                    //copy jar 包
-                    //   put from: "${buildDir}/libs/${runJars}", into: "${remoteDir}"
-                    println '>>> start app   ' + runJars + '  ...'
-                    execute resources.text.fromFile(project.getRootDir().getAbsolutePath() + shellFile).asString().replace(runJarsPlaceHolder, runJars).replace(optPlaceHolder, opt).replace(profilesPlaceHolder, profiles).replace(remoteDirPlaceHolder, remoteDir).replace("\r", "")
-                    println '>>> remote deploy OK...'
+    if (!project.name.contains("croe") && !name.contains("generator")) {
+        task remoteDeploy(dependsOn: [clean, bootJar]) {
+            bootJar.mustRunAfter clean
+            doLast {
+                ssh.run {
+                    session(remotes.deployServer) {
+                        def runJars = project.name + "-" + version + ".jar"
+                        println '>>> start copying   ' + runJars + '  ...'
+                        //copy jar 包
+                        //   put from: "${buildDir}/libs/${runJars}", into: "${remoteDir}"
+                        println '>>> start app   ' + runJars + '  ...'
+                        execute resources.text.fromFile(project.getRootDir().getAbsolutePath() + shellFile).asString().replace(runJarsPlaceHolder, runJars).replace(optPlaceHolder, opt).replace(profilesPlaceHolder, profiles).replace(remoteDirPlaceHolder, remoteDir).replace("\r", "")
+                        println '>>> remote deploy OK...'
+                    }
                 }
             }
         }
