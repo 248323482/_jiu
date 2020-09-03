@@ -4,20 +4,18 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 //编译构建时的配置
 buildscript {
     ext {
-        shellFile = "/_docs/shells/linux/start_.sh"
-        //linux 存放包路径
-        remoteDir = "/root/project/jiu"
-        //模式
-        profiles = "dev"
-        //环境配置
-        opt = "-server -Xms64M -Xmx64M -Xss512k -XX:MetaspaceSize=64M -XX:MaxMetaspaceSize=64M -XX:+UseG1GC"
-        springCloudVersion = "Hoxton.SR3"
-        springCloudAlibaba = "2.2.1.RELEASE"
+        shellFile = "/_docs/shells/linux/start_.sh"      // start 脚本
+        remoteDir = "/root/project/jiu"                 //linux 存放包路径
+        profiles = "dev"                               //模式
+        opt = "-server -Xms64M -Xmx64M -Xss512k -XX:MetaspaceSize=64M -XX:MaxMetaspaceSize=64M -XX:+UseG1GC"    //环境变量
+        springCloudVersion = "Hoxton.SR3"           //springcloud 版本
+        springCloudAlibaba = "2.2.1.RELEASE"      //springcloud 阿里巴巴 版本
     }
     repositories {
         mavenLocal()
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
         maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url "https://maven.aliyun.com/nexus/content/repositories/jcenter"}
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "http://mvnrepository.com/" }
         maven { url "https://repo.spring.io/snapshot" }
@@ -32,11 +30,10 @@ buildscript {
 plugins {
     id "com.bmuschko.docker-java-application" version "3.3.6"       //通过其远程API管理Docker镜像和容器.
     id "com.bmuschko.docker-remote-api" version "3.3.6"             //Gradle插件,通过其远程API管理Docker镜像和容器.
-    id "org.hidetake.ssh" version "2.6.0"
+    id "org.hidetake.ssh" version "2.6.0"                           // ssh 链接工具
     id 'org.springframework.boot' version '2.2.5.RELEASE'          //spring提供的spring boot插件,主要用到了其依赖管理的功能.
-    id "com.gradle.build-scan" version "1.8"                        //生成构建分析数据.
+    id "com.gradle.build-scan" version "1.8"                       //生成构建分析数据.
 }
-
 allprojects {
     group = "com.jiu" //分组
     version = "1.0.0" //版本号
@@ -44,6 +41,7 @@ allprojects {
         mavenLocal()
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
         maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url "https://maven.aliyun.com/nexus/content/repositories/jcenter"}
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "http://mvnrepository.com/" }
         maven { url "https://repo.spring.io/snapshot" }
@@ -53,7 +51,6 @@ allprojects {
         mavenCentral()
         jcenter()
     }
-
 }
 //子項目插件管理
 subprojects {
@@ -76,24 +73,6 @@ subprojects {
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
     }
-    ssh.settings {
-        knownHosts = allowAnyHosts
-    }
-    remotes {
-        deployServer {
-            host = 'budongi.club'
-            user = 'root'
-            password = 'www.5211314.com'
-//            identity = file('id_rsa')
-        }
-    }
-
-    docker {
-        registryCredentials {
-            url = 'tcp://127.0.0.1:2375'
-        }
-    }
-
 }
 
 //子項版本控制
@@ -167,20 +146,21 @@ subprojects {
             dependencySet(group: 'com.fasterxml.jackson.module', version: '2.10.3') {
                 entry 'jackson-module-parameter-names'
             }
-
-
         }
-
-
     }
 }
-
 //子項目打包控制
 subprojects {
     if (!project.name.contains("croe") && !name.contains("generator")) {
         applicationDefaultJvmArgs = ['-Xms64m', '-Xmx64m']
         jar {
             enabled true
+        }
+        //配置文件转移
+        applicationDistribution.from("src/main/resources") {
+            include 'application*.properties'
+            include 'bootstrap.yml'
+            into 'config'
         }
         /**
          * 生成启动脚本
@@ -192,65 +172,63 @@ subprojects {
                 )
                 windowsStartScriptGenerator.template = resources.text.fromFile(
                         project.getRootDir().getAbsolutePath() + "/_docs/shells/windows/windowsStartScript.txt"
-
                 )
             }
         }
-
-        applicationDistribution.from("src/main/resources") {
-            include 'application*.properties'
-            include 'bootstrap.yml'
-            into 'config'
-        }
-
-
         clean.doFirst {
             delete "${buildDir}/../out"
             delete rootProject.buildDir.getPath() + "/distributions"
             delete project.getRootDir().getAbsolutePath() + "/catalina.base_IS_UNDEFINED"
             delete rootProject.buildDir.getPath()
         }
-
         build.doLast {
             copy {
                 from buildDir.getPath() + "/distributions" into rootProject.buildDir.getPath() + "/distributions"
             }
-//            ssh.run {
-//                session(remotes.deployServer) {
-//                    def runJars = project.name + "-" + version + ".jar"
-//                    println '>>> start copying jar...'
-//                    //copy jar 包
-//                    put from: "${buildDir}/libs/${runJars}", into: "${remoteDir}"
-//                    println '>>> start app...'
-//                    execute resources.text.fromFile(project.getRootDir().getAbsolutePath() + shellFile).asString().replace(runJarsPlaceHolder, runJars).replace(optPlaceHolder, opt).replace(profilesPlaceHolder, profiles).replace(remoteDirPlaceHolder, remoteDir).replace("\r", "")
-//                    println '>>> remote deploy OK...'
-//                }
-//            }
+           // dependsOn  remoteDeploy
         }
+    }
+}
 
-        task remoteDeploy(dependsOn: [clean, bootJar]) {
-            bootJar.mustRunAfter clean
-            doLast {
-                ssh.run {
-                    session(remotes.deployServer) {
-                        def runJars = project.name + "-" + version + ".jar"
-                        println '>>> start copying   ' + runJars + '  ...'
-                        //copy jar 包
-                        //   put from: "${buildDir}/libs/${runJars}", into: "${remoteDir}"
-                        println '>>> start app   ' + runJars + '  ...'
-                        execute resources.text.fromFile(project.getRootDir().getAbsolutePath() + shellFile).asString().replace(runJarsPlaceHolder, runJars).replace(optPlaceHolder, opt).replace(profilesPlaceHolder, profiles).replace(remoteDirPlaceHolder, remoteDir).replace("\r", "")
-                        println '>>> remote deploy OK...'
-                    }
+//发布至linux 服务器
+subprojects {
+    ssh.settings {
+        knownHosts = allowAnyHosts
+    }
+    remotes {
+        deployServer {
+            host = 'budongi.club'
+            user = 'root'
+            password = 'www.5211314.com'
+//          identity = file('id_rsa')  证书链接
+        }
+    }
+    task remoteDeploy(dependsOn: [clean, bootJar]) {
+        bootJar.mustRunAfter clean
+        doLast {
+            ssh.run {
+                session(remotes.deployServer) {
+                    def runJars = project.name + "-" + version + ".jar"
+                    println '>>> start copying   ' + runJars + '  ...'
+                    //copy jar 包
+                    //   put from: "${buildDir}/libs/${runJars}", into: "${remoteDir}"
+                    println '>>> start app   ' + runJars + '  ...'
+                    execute resources.text.fromFile(project.getRootDir().getAbsolutePath() + shellFile).asString().replace(runJarsPlaceHolder, runJars).replace(optPlaceHolder, opt).replace(profilesPlaceHolder, profiles).replace(remoteDirPlaceHolder, remoteDir).replace("\r", "")
+                    println '>>> remote deploy OK...'
                 }
             }
         }
-
     }
-
-
 }
+
 //子項目docker 打包控制
 subprojects {
+    //docker  远程仓库
+    docker {
+        registryCredentials {
+            url = 'tcp://127.0.0.1:2371'
+        }
+    }
     if (!project.name.contains("croe") && !name.contains("generator")) {
         // Dockerfile文件存放地址
         String dockerFileDir = 'build/docker'
@@ -309,7 +287,6 @@ subprojects {
             }
         }
     }
-
 }
 /**
  * 生成gradlew文件,统一gradle版本,避免因为版本不同产生的问题
