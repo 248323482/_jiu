@@ -57,14 +57,10 @@ public abstract class AbstractTokenGranter implements TokenGranter {
         if (StrHelper.isAnyBlank(loginParam.getAccount(), loginParam.getPassword())) {
             return R.fail("请输入用户名或密码");
         }
-        String clientId="";
-        if(false) {
-            // 2.检测client是否可用
-            R<String[]> checkR = checkClient();
-            if (checkR.getIsError()) {
-                return R.fail(checkR.getMsg());
-            }
-            clientId=checkR.getData()[0];
+        // 2.检测client是否可用
+        R<String[]> checkR = checkClient();
+        if (checkR.getIsError()) {
+            return R.fail(checkR.getMsg());
         }
 
         // 3. 验证登录
@@ -73,14 +69,13 @@ public abstract class AbstractTokenGranter implements TokenGranter {
             return R.fail(result.getCode(), result.getMsg());
 
         }
-
         // 4.查询用户的权限
         User user = result.getData();
 
         // 5.生成 token
         AuthInfo authInfo = this.createToken(user);
 
-        UserToken userToken = getUserToken(clientId, authInfo);
+        UserToken userToken = getUserToken(checkR.getData()[0], authInfo);
         //成功登录事件
         SpringUtils.publishEvent(new LoginEvent(LoginStatusDTO.success(user.getId(), userToken)));
         return R.success(authInfo);

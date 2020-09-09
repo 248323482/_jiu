@@ -1,5 +1,6 @@
 package com.jiu.database.properties;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,10 +28,23 @@ public class DatabaseProperties {
      * @return
      */
     public Boolean isBlockAttack = false;
+
+    /**
+     * 是否启用  sql性能规范插件
+     */
+    public Boolean isIllegalSql = false;
     /**
      * 是否启用 seata
      */
     public Boolean isSeata = false;
+
+    /**
+     * 分页大小限制
+     */
+    protected long limit = -1;
+
+    protected DbType dbType = DbType.MYSQL;
+
     /**
      * 是否禁止写入
      */
@@ -44,10 +58,16 @@ public class DatabaseProperties {
      */
     private int txTimeout = 60 * 60;
 
+
     /**
      * 租户库 前缀
      */
     private String tenantDatabasePrefix = "jiu";
+
+    /**
+     * 多租户模式
+     */
+    private MultiTenantType multiTenantType = MultiTenantType.NONE;
 
     /**
      * 租户id 列名

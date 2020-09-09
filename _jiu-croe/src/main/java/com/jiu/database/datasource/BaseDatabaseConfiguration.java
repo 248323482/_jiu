@@ -3,6 +3,7 @@ package com.jiu.database.datasource;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ArrayUtil;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.p6spy.engine.spy.P6DataSource;
 import io.seata.rm.datasource.DataSourceProxy;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
@@ -23,6 +24,7 @@ import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.type.TypeHandler;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
@@ -43,6 +45,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
@@ -57,6 +60,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.sql.DataSource;
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * 数据库& 事务& MyBatis & Mp 配置
@@ -157,7 +161,6 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
         return dataSourceWrapper;
     }
 
-
     protected TransactionAttributeSource transactionAttributeSource() {
         /*当前存在事务就使用当前事务，当前不存在事务就创建一个新的事务*/
         RuleBasedTransactionAttribute requiredTx = new RuleBasedTransactionAttribute();
@@ -176,7 +179,6 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
         txTransactionAttributeSource.setNameMap(txMap);
         return txTransactionAttributeSource;
     }
-
     protected Advisor txAdviceAdvisor(TransactionInterceptor ti) {
         return new DefaultPointcutAdvisor(new Pointcut() {
             @Override
@@ -220,13 +222,14 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
     }
     @Bean
     protected SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+        // 使用 MybatisSqlSessionFactoryBean 而不是 SqlSessionFactoryBean
         MybatisSqlSessionFactoryBean factory = new MybatisSqlSessionFactoryBean();
         factory.setDataSource(dataSource);
         factory.setVfs(SpringBootVFS.class);
         if (StringUtils.hasText(this.properties.getConfigLocation())) {
             factory.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
         }
-        this.applyConfiguration(factory);
+        applyConfiguration(factory);
         if (this.properties.getConfigurationProperties() != null) {
             factory.setConfigurationProperties(this.properties.getConfigurationProperties());
         }
@@ -248,42 +251,49 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
         if (!ObjectUtils.isEmpty(this.typeHandlers)) {
             factory.setTypeHandlers(this.typeHandlers);
         }
-
-        if (!ObjectUtils.isEmpty(this.properties.resolveMapperLocations())) {
-            factory.setMapperLocations(this.properties.resolveMapperLocations());
+        Resource[] mapperLocations = this.properties.resolveMapperLocations();
+        if (!ObjectUtils.isEmpty(mapperLocations)) {
+            factory.setMapperLocations(mapperLocations);
         }
+        //  修改源码支持定义 TransactionFactory
+        this.getBeanThen(TransactionFactory.class, factory::setTransactionFactory);
 
-        // TODO 对源码做了一定的修改(因为源码适配了老旧的mybatis版本,但我们不需要适配)
+        //  对源码做了一定的修改(因为源码适配了老旧的mybatis版本,但我们不需要适配)
         Class<? extends LanguageDriver> defaultLanguageDriver = this.properties.getDefaultScriptingLanguageDriver();
         if (!ObjectUtils.isEmpty(this.languageDrivers)) {
             factory.setScriptingLanguageDrivers(this.languageDrivers);
         }
         Optional.ofNullable(defaultLanguageDriver).ifPresent(factory::setDefaultScriptingLanguageDriver);
 
-        // TODO 自定义枚举包
+        //  自定义枚举包
         if (StringUtils.hasLength(this.properties.getTypeEnumsPackage())) {
             factory.setTypeEnumsPackage(this.properties.getTypeEnumsPackage());
         }
-        // TODO 此处必为非 NULL
+        //  此处必为非 NULL
         GlobalConfig globalConfig = this.properties.getGlobalConfig();
-        // TODO 注入填充器
-        if (this.applicationContext.getBeanNamesForType(MetaObjectHandler.class, false, false).length > 0) {
-            MetaObjectHandler metaObjectHandler = this.applicationContext.getBean(MetaObjectHandler.class);
-            globalConfig.setMetaObjectHandler(metaObjectHandler);
-        }
-        // TODO 注入主键生成器
-        if (this.applicationContext.getBeanNamesForType(IKeyGenerator.class, false, false).length > 0) {
-            IKeyGenerator keyGenerator = this.applicationContext.getBean(IKeyGenerator.class);
-            globalConfig.getDbConfig().setKeyGenerator(keyGenerator);
-        }
-        // TODO 注入sql注入器
-        if (this.applicationContext.getBeanNamesForType(ISqlInjector.class, false, false).length > 0) {
-            ISqlInjector iSqlInjector = this.applicationContext.getBean(ISqlInjector.class);
-            globalConfig.setSqlInjector(iSqlInjector);
-        }
-        // TODO 设置 GlobalConfig 到 MybatisSqlSessionFactoryBean
+        //  注入填充器
+        this.getBeanThen(MetaObjectHandler.class, globalConfig::setMetaObjectHandler);
+        //  注入主键生成器
+        this.getBeanThen(IKeyGenerator.class, i -> globalConfig.getDbConfig().setKeyGenerator(i));
+        //  注入sql注入器
+        this.getBeanThen(ISqlInjector.class, globalConfig::setSqlInjector);
+        //  注入ID生成器
+        this.getBeanThen(IdentifierGenerator.class, globalConfig::setIdentifierGenerator);
+        //  设置 GlobalConfig 到 MybatisSqlSessionFactoryBean
         factory.setGlobalConfig(globalConfig);
         return factory.getObject();
+    }
+    /**
+     * 检查spring容器里是否有对应的bean,有则进行消费
+     *
+     * @param clazz    class
+     * @param consumer 消费
+     * @param <T>      泛型
+     */
+    private <T> void getBeanThen(Class<T> clazz, Consumer<T> consumer) {
+        if (this.applicationContext.getBeanNamesForType(clazz, false, false).length > 0) {
+            consumer.accept(this.applicationContext.getBean(clazz));
+        }
     }
 
     private void applyConfiguration(MybatisSqlSessionFactoryBean factory) {
@@ -298,6 +308,11 @@ public abstract class BaseDatabaseConfiguration implements InitializingBean {
             }
         }
         factory.setConfiguration(configuration);
+    }
+
+    @Bean
+    public DataSourceTransactionManager dsTransactionManager( DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 
 

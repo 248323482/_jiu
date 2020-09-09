@@ -123,7 +123,7 @@ subprojects {
                 entry 'jjwt-impl'
                 entry 'jjwt-api'
             }
-            dependencySet(group: 'com.baomidou', version: '3.3.1') {
+            dependencySet(group: 'com.baomidou', version: '3.4.0') {
                 entry 'mybatis-plus-core'
                 entry 'mybatis-plus-annotation'
                 entry 'mybatis-plus'
@@ -133,18 +133,6 @@ subprojects {
             dependencySet(group: 'com.plumelog', version: '2.2.2') {
                 entry 'plumelog-logback'
                 entry 'plumelog-trace'
-            }
-            dependencySet(group: 'com.fasterxml.jackson.core', version: '2.10.3') {
-                entry 'jackson-core'
-                entry 'jackson-databind'
-                entry 'jackson-annotations'
-            }
-            dependencySet(group: 'com.fasterxml.jackson.datatype', version: '2.10.3') {
-                entry 'jackson-datatype-jsr310'
-                entry 'jackson-datatype-jdk8'
-            }
-            dependencySet(group: 'com.fasterxml.jackson.module', version: '2.10.3') {
-                entry 'jackson-module-parameter-names'
             }
         }
     }
@@ -259,6 +247,7 @@ subprojects {
             arg "JAR_FILE"
 //            runCommand "cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 //                && echo 'Asia/Shanghai' > /etc/timezone"
+            runCommand  "apk add --update font-adobe-100dpi ttf-dejavu fontconfig"
             //编译时将jar包保存进去
             copyFile('${JAR_FILE}', "app.jar")
             defaultCommand("--spring.profiles.active=docker")

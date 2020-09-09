@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
-@Component
+//@Component
 @Slf4j
 public class RateLimitByCpuGatewayFilter implements GlobalFilter, Ordered {
  
@@ -22,7 +22,7 @@ public class RateLimitByCpuGatewayFilter implements GlobalFilter, Ordered {
     private MetricsEndpoint metricsEndpoint;
  
     private static final String METRIC_NAME = "system.cpu.usage";
-    private static final double MAX_USAGE = 0.90D;
+    private static final double MAX_USAGE = 0.99D;
  
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

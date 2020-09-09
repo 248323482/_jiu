@@ -35,6 +35,8 @@ spring:
             refresh: true
           - dataId: mysql.yml
             refresh: true
+          - dataId: redis.yml
+            refresh: true
         enabled: true
         username: ${jiu.nacos.username}
         password: ${jiu.nacos.password}

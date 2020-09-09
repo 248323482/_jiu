@@ -11,11 +11,16 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="account" jdbcType="VARCHAR" property="account"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="org_id" jdbcType="BIGINT" property="org"/>
+        <result column="station_id" jdbcType="BIGINT" property="station"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
         <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
         <result column="sex" jdbcType="VARCHAR" property="sex"/>
         <result column="status" jdbcType="BIT" property="status"/>
         <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="nation" jdbcType="VARCHAR" property="nation"/>
+        <result column="education" jdbcType="VARCHAR" property="education"/>
+        <result column="position_status" jdbcType="VARCHAR" property="positionStatus"/>
         <result column="work_describe" jdbcType="VARCHAR" property="workDescribe"/>
         <result column="password_error_last_time" jdbcType="TIMESTAMP" property="passwordErrorLastTime"/>
         <result column="password_error_num" jdbcType="INTEGER" property="passwordErrorNum"/>

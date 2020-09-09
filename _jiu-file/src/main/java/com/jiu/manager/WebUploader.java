@@ -14,8 +14,6 @@ import java.security.NoSuchAlgorithmException;
 /**
  * 分片上传工具类
  *
- * @author zuihou
- * @date 2019-06-14 11:50
  */
 @Service
 @Scope("prototype")

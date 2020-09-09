@@ -363,6 +363,7 @@ public class InjectionCore {
         }
 
         Object curField = ReflectUtil.getFieldValue(obj, field);
+        log.debug("字段[{}] 值 [{}]", field.getName(),curField);
         if (curField == null) {
             log.debug("字段[{}]为空,跳过", field.getName());
             return null;

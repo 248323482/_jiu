@@ -24,7 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static com.baomidou.mybatisplus.core.enums.WrapperKeyword.BRACKET;
+import static com.baomidou.mybatisplus.core.enums.WrapperKeyword.APPLY;
 import static com.jiu.database.mybatis.conditions.Wraps.replace;
 
 
@@ -38,8 +38,6 @@ import static com.jiu.database.mybatis.conditions.Wraps.replace;
  * 4，增加 leFooter 方法， 将日期参数值，强制转换成当天 23：59：59
  * 5，增加 geHeader 方法， 将日期参数值，强制转换成当天 00：00：00
  *
- * @author zuihou
- * @date Created on 2019/5/27 17:11
  * @description 查询构造器
  */
 public class LbqWrapper<T> extends AbstractLambdaWrapper<T, LbqWrapper<T>>
@@ -111,7 +109,7 @@ public class LbqWrapper<T> extends AbstractLambdaWrapper<T, LbqWrapper<T>>
         if (ArrayUtils.isNotEmpty(columns)) {
             this.sqlSelect.setStringValue(columnsToString(false, columns));
         }
-        return this.typedThis;
+        return typedThis;
     }
 
     /**
@@ -129,7 +127,7 @@ public class LbqWrapper<T> extends AbstractLambdaWrapper<T, LbqWrapper<T>>
     public LbqWrapper<T> select(Class<T> entityClass, Predicate<TableFieldInfo> predicate) {
         super.setEntityClass(entityClass);
         this.sqlSelect.setStringValue(TableInfoHelper.getTableInfo(getEntityClass()).chooseSelect(predicate));
-        return this.typedThis;
+        return typedThis;
     }
 
     @Override
@@ -159,7 +157,7 @@ public class LbqWrapper<T> extends AbstractLambdaWrapper<T, LbqWrapper<T>>
         final LbqWrapper<T> instance = instance();
         consumer.accept(instance);
         if (!instance.isEmptyOfWhere()) {
-            return doIt(true, BRACKET, instance);
+            return doIt(true, APPLY, instance);
         }
         return this;
     }
@@ -253,7 +251,6 @@ public class LbqWrapper<T> extends AbstractLambdaWrapper<T, LbqWrapper<T>>
      * 忽略实体中的某些字段，实体中的字段默认是会除了null以外的全部进行等值匹配
      * 再次可以进行忽略
      *
-     * @param   // 这个是传入的待忽略字段的set方法
      * @param column
      * @return
      */
@@ -267,7 +264,7 @@ public class LbqWrapper<T> extends AbstractLambdaWrapper<T, LbqWrapper<T>>
     //----------------以下为自定义方法---------
 
     /**
-     * 取消跳过空的字符串  不允许跳过空的字符串
+     * 取消跳过空的字符串
      *
      * @return
      */

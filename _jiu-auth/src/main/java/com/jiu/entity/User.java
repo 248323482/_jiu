@@ -69,7 +69,7 @@ public class User extends Entity<Long> {
      */
     @ApiModelProperty(value = "组织ID")
     @TableField("org_id")
-    @InjectionField(api = ORG_ID_CLASS, method = ORG_ID_METHOD, beanClass = Org.class)
+    @InjectionField(api = ORG_ID_CLASS, method = ORG_ID_METHOD)
     @Excel(name = "组织")
     @ExcelEntity(name = "")
     private RemoteData<Long, Org> org;
@@ -81,11 +81,13 @@ public class User extends Entity<Long> {
      * @InjectionField(api = STATION_ID_CLASS, method = STATION_ID_NAME_METHOD) RemoteData<Long, String>
      */
     @ApiModelProperty(value = "岗位ID")
-    @TableField("station_id")
+    @TableField(value="station_id")
     @InjectionField(api = STATION_ID_CLASS, method = STATION_ID_NAME_METHOD)
     @ExcelEntity(name = "station")
     @Excel(name = "岗位")
     private RemoteData<Long, String> station;
+
+
 
     /**
      * 邮箱

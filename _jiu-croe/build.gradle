@@ -35,7 +35,7 @@ dependencies {
     implementation "org.bitcoinj:bitcoinj-core:0.14.3"
     //<!-- seata-all 1.0.0 SeataHystrixConcurrencyStrategy 和 本项目中 ThreadLocalHystrixConcurrencyStrategy 冲突，导致事务回滚失效 -->
     implementation"io.seata:seata-all"
-    implementation "p6spy:p6spy"
+    compile "p6spy:p6spy"
     implementation  "com.plumelog:plumelog-logback"
     implementation  "com.plumelog:plumelog-trace"
     implementation "cn.afterturn:easypoi-base"
@@ -50,11 +50,7 @@ dependencies {
     implementation "org.springframework.amqp:spring-rabbit"
     implementation  "com.github.dozermapper:dozer-core"
     implementation  "com.github.dozermapper:dozer-spring4"
-    compile "com.fasterxml.jackson.core:jackson-core"
-    compile "com.fasterxml.jackson.core:jackson-databind"
-    compile "com.fasterxml.jackson.core:jackson-annotations"
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
-    compile "com.fasterxml.jackson.datatype:jackson-datatype-jdk8"
     compile "com.fasterxml.jackson.module:jackson-module-parameter-names"
 
 

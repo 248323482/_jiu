@@ -60,8 +60,8 @@ spring:
             fallbackUri: 'forward:/fallback'
         - name: RequestRateLimiter
           args:
-            redis-rate-limiter.replenishRate: 2  #流速 每秒
-            redis-rate-limiter.burstCapacity: 10   #令牌桶的容积
+            redis-rate-limiter.replenishRate: 30  #流速 每秒
+            redis-rate-limiter.burstCapacity: 100   #令牌桶的容积
             rate-limiter: "#{@defaultRedisRateLimiter}"  #SPEL表达式去的对应的bean
             key-resolver: "#{@apiKeyResolver}" #SPEL表达式去的对应的bean
     nacos:
@@ -73,6 +73,8 @@ spring:
           - dataId: common.yml
             refresh: true
           - dataId: mysql.yml
+            refresh: true
+          - dataId: redis.yml
             refresh: true
         enabled: true
         username: ${jiu.nacos.username}

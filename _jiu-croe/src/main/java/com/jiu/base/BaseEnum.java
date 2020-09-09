@@ -2,10 +2,6 @@ package com.jiu.base;
 
 import com.baomidou.mybatisplus.core.enums.IEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.jiu.base.converter.EnumDeserializer;
-import com.jiu.base.converter.EnumSerializer;
 import com.jiu.utils.MapHelper;
 
 import java.util.Arrays;
@@ -14,8 +10,6 @@ import java.util.Map;
 /**
  * 枚举类型基类
  */
-@JsonDeserialize(using = EnumDeserializer.class)
-@JsonSerialize(using = EnumSerializer.class)
 public interface BaseEnum extends IEnum<String> {
     /**
      * 将制定的枚举集合转成 map

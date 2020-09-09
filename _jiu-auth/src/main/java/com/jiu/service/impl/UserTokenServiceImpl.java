@@ -57,7 +57,6 @@ public class UserTokenServiceImpl extends SuperServiceImpl<UserTokenMapper, User
         } else if (ParameterKey.LoginPolicy.ONLY_ONE_CLIENT.eq(loginPolicy)) {
             String userIdKey = CacheKey.buildKey(model.getCreateUser(), model.getClientId());
             CacheObject user = channel.get(CacheKey.USER_CLIENT_TOKEN, userIdKey);
-
             evictPreviousToken(user);
             channel.set(CacheKey.USER_CLIENT_TOKEN, userIdKey, model.getToken());
         }

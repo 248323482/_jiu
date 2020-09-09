@@ -1,5 +1,6 @@
 package com.jiu.entity.enumeration;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jiu.base.BaseEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

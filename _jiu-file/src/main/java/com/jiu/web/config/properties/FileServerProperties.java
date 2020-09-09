@@ -29,7 +29,7 @@ public class FileServerProperties {
     /**
      * 文件访问前缀
      */
-    private String uriPrefix = "http://127.0.0.1:80/image/";
+    private String uriPrefix = "http://127.0.0.1:81/image/";
     /**
      * 文件存储路径
      */
