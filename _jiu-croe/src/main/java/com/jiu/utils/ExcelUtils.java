@@ -2,16 +2,21 @@ package com.jiu.utils;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -233,4 +238,27 @@ public class ExcelUtils {
         }
         return list;
     }
+    public static void hihdColumn(T t, String columnName, Boolean target) throws Exception {
+        if (t == null) {
+            throw new ClassNotFoundException("TARGET OBJECT NOT FOUNT");
+        }
+        if (StringUtils.isEmpty(columnName)) {
+            throw new NullPointerException("COLUMN NAME NOT NULL");
+        }
+        if (target == null) {
+            target = true;
+        }
+        //获取目标对象的属性值
+        Field field = t.getClass().getDeclaredField(columnName);
+        //获取注解反射对象
+        Excel excelAnnon = field.getAnnotation(Excel.class);
+        //获取代理
+        InvocationHandler invocationHandler = Proxy.getInvocationHandler(excelAnnon);
+        Field excelField = invocationHandler.getClass().getDeclaredField("memberValues");
+        excelField.setAccessible(true);
+        Map memberValues = (Map) excelField.get(invocationHandler);
+        memberValues.put("isColumnHidden", target);
+    }
+
+
 }
