@@ -52,7 +52,7 @@ dependencies {
     implementation  "com.github.dozermapper:dozer-spring4"
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     compile "com.fasterxml.jackson.module:jackson-module-parameter-names"
-
+    compile 'com.mxixm:fastboot-weixin:0.6.2' //快速创建微信公众号 https://gitee.com/kingshine/FastBootWeixin?_from=gitee_search
 
     configurations {
         all*.exclude module:"slf4j-simple"

@@ -6,3 +6,5 @@ include "_jiu-gateway"
 include "_jiu-job"
 include "_jiu-msgs"
 include "_jiu-generator"
+include "_jiu-wechat"
+

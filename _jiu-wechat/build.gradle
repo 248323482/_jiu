@@ -1,0 +1,10 @@
+mainClassName = "com.jiu.MsgsApplication"
+dependencies{
+    compile project(':_jiu-croe')
+    compile group: 'com.aliyun.oss', name: 'aliyun-sdk-oss', version: '3.8.1'
+    compile group: 'com.aliyun', name: 'aliyun-java-sdk-dysmsapi', version: '2.1.0'
+    compile group: 'com.github.qcloudsms', name: 'qcloudsms', version: '1.0.6'
+    compile group: 'com.baidubce', name: 'bce-java-sdk', version: '0.10.110'
+}
+
+

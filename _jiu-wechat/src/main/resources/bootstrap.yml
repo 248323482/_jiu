@@ -1,0 +1,68 @@
+##############################start############################
+jiu:
+  name: msgs-server
+  port: 7007
+  nacos:
+    ip: budongi.club
+    port: 8848
+    namespace: jiu_dev
+    username: nacos
+    password: www.5211314.com
+  swagger:
+    enabled: true
+    title: 消息
+    description: 消息
+  security:
+    enabled: true
+#############################end#################################
+server:
+  port: ${jiu.port}
+  websocket:
+    exporter:
+      enable: ${jiu.websocket}
+spring:
+  # 模板引擎
+  thymeleaf:
+    mode: HTML
+    encoding: utf-8
+  application:
+    name: ${jiu.name}
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+        file-extension: yml
+        namespace: ${jiu.nacos.namespace}
+        username: ${jiu.nacos.username}
+        password: ${jiu.nacos.password}
+        shared-configs:
+          - dataId: common.yml
+            refresh: true
+          - dataId: mysql.yml
+            refresh: true
+          - dataId: rabbitmq.yml
+            refresh: true
+          - dataId: redis.yml
+            refresh: true
+        enabled: true
+      discovery:
+        server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+        namespace: ${jiu.nacos.namespace}
+        username: ${jiu.nacos.username}
+        password: ${jiu.nacos.password}
+        metadata:
+          management.context-path: ${server.servlet.context-path:}${spring.mvc.servlet.path:}${management.endpoints.web.base-path:}
+          grayversion: jiu
+        #ip: 120.78.215.90
+logging:
+  config: classpath:log4j2-spring.xml
+
+
+
+
+wx:
+  app-id: wx3775c4b5b1298e44
+  token: asdxvdfgsdfsdfsd
+  appsecret: 11a545f0c96ea8c18e0051ec72eefdac
