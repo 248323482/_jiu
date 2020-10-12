@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  *
  **/
 @Configuration
-@ConditionalOnBean(CacheChannel.class)
+@ConditionalOnBean({CacheChannel.class,J2cacheAutoConfig.class})
 @EnableCaching
 public class SpringCacheConfig extends CachingConfigurerSupport {
  

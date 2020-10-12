@@ -30,7 +30,6 @@ import java.util.List;
  *
  */
 @AllArgsConstructor
-@Configuration
 public class RestTemplateConfiguration {
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
     private final ObjectMapper objectMapper;

@@ -9,11 +9,14 @@ import com.jiu.log.properties.OptLogProperties;
 import com.plumelog.core.TraceId;
 import com.plumelog.core.util.IdWorker;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -28,9 +31,11 @@ import javax.servlet.http.HttpServletResponse;
  * 1，存在web环境
  */
 @EnableAsync
+@Configuration
 @AllArgsConstructor
 @ConditionalOnWebApplication
 @ConditionalOnProperty(prefix = OptLogProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@EnableConfigurationProperties(OptLogProperties.class)
 public class LogAutoConfiguration {
 
     // IdWorker
@@ -57,7 +62,7 @@ public class LogAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnExpression("${jiu.log.enabled:true} && 'LOGGER'.equals('${zuihou.log.type:LOGGER}')")
+    @ConditionalOnExpression("${jiu.log.enabled:true} && 'LOGGER'.equals('${jiu.log.type:LOGGER}')")
     public SysLogListener sysLogListener() {
         return new SysLogListener((log) -> {
             PointUtil.debug("0", "OPT_LOG", "");

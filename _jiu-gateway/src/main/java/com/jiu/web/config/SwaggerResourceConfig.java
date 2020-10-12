@@ -1,5 +1,5 @@
 
-package com.jiu.config;
+package com.jiu.web.config;
 
 import com.alibaba.fastjson.JSONArray;
 import lombok.extern.slf4j.Slf4j;

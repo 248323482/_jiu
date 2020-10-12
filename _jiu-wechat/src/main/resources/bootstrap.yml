@@ -62,7 +62,15 @@ logging:
 
 
 
+
+
 wx:
-  app-id: wx3775c4b5b1298e44
-  token: asdxvdfgsdfsdfsd
-  appsecret: 11a545f0c96ea8c18e0051ec72eefdac
+  mp:
+    useRedis: false
+    redisConfig:
+      host: 127.0.0.1
+      port: 6379
+    configs:
+      - appId: wx3775c4b5b1298e44 # 第一个公众号的appid
+        secret: 11a545f0c96ea8c18e0051ec72eefdac
+        token: asdxvdfgsdfsdfsd  # 接口配置里的Token值

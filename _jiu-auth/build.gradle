@@ -6,8 +6,8 @@ dependencies{
     sourceSets {
         main {
             java {
-                srcDir  project.getRootDir().getAbsolutePath()+'/_jiu-msgs/src/main/java/com/jiu/entity/enumeration/'
-                srcDir  project.getRootDir().getAbsolutePath()+'/_jiu-file/src/main/java/com/jiu/entity/enumeration/'
+               // srcDir  project.getRootDir().getAbsolutePath()+'/_jiu-msgs/src/main/java/com/jiu/entity/enumeration/'
+               // srcDir  project.getRootDir().getAbsolutePath()+'/_jiu-file/src/main/java/com/jiu/entity/enumeration/'
                 sourceSets.all{set ->
                     println "${set.name}的文件是 ${set.java.srcDirs}"
                 }

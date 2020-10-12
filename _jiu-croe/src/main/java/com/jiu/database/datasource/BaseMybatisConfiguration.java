@@ -1,18 +1,19 @@
 package com.jiu.database.datasource;
 
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ReflectUtil;
+import com.baidu.fsg.uid.UidGenerator;
+import com.baidu.fsg.uid.buffer.RejectedPutBufferHandler;
+import com.baidu.fsg.uid.buffer.RejectedTakeBufferHandler;
+import com.baidu.fsg.uid.impl.CachedUidGenerator;
+import com.baidu.fsg.uid.impl.DefaultUidGenerator;
+import com.baidu.fsg.uid.impl.HutoolUidGenerator;
+import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.parser.ISqlParser;
-import com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
-import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.IllegalSQLInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantHandler;
-import com.baomidou.mybatisplus.extension.plugins.tenant.TenantSqlParser;
+import com.baomidou.mybatisplus.extension.plugins.inner.*;
 import com.jiu.api.UserApi;
 import com.jiu.context.BaseContextHandler;
 import com.jiu.database.injector.MySqlInjector;
@@ -21,15 +22,17 @@ import com.jiu.database.mybatis.auth.DataScopeInterceptor;
 import com.jiu.database.mybatis.typehandler.FullLikeTypeHandler;
 import com.jiu.database.mybatis.typehandler.LeftLikeTypeHandler;
 import com.jiu.database.mybatis.typehandler.RightLikeTypeHandler;
-import com.jiu.database.parsers.DynamicTableNameParser;
 import com.jiu.database.plugins.SchemaInterceptor;
 import com.jiu.database.properties.DatabaseProperties;
 import com.jiu.database.properties.MultiTenantType;
 import com.jiu.database.servlet.TenantWebMvcConfigurer;
+import com.jiu.uid.service.DisposableWorkerIdAssigner;
 import com.jiu.utils.SpringUtils;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +40,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -48,9 +51,7 @@ import java.util.List;
  *
  */
 @Slf4j
-@Import({DatabaseProperties.class})
-@Configuration
-public class BaseMybatisConfiguration {
+public abstract class BaseMybatisConfiguration {
     protected final DatabaseProperties databaseProperties;
 
     public BaseMybatisConfiguration(DatabaseProperties databaseProperties) {
@@ -61,7 +62,6 @@ public class BaseMybatisConfiguration {
     @Slf4j
     @Configuration
     @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
-    // @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, DruidDataSourceAutoConfigure.class})
     public static class DataSourceConfiguration {
         public DataSourceConfiguration() {
             log.warn("DataSource 已开启........");
@@ -174,9 +174,52 @@ public class BaseMybatisConfiguration {
     @Bean("myMetaObjectHandler")
     @ConditionalOnMissingBean
     public MetaObjectHandler getMyMetaObjectHandler() {
-        DatabaseProperties.Id id = databaseProperties.getId();
-        return new MyMetaObjectHandler(id.getWorkerId(), id.getDataCenterId());
+        return new MyMetaObjectHandler();
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnExpression("'DEFAULT'.equals('${jiu.database.id-typ:DEFAULT}') || 'CACHE'.equals('${jiu.database.id-typ:DEFAULT}')")
+    public DisposableWorkerIdAssigner disposableWorkerIdAssigner() {
+        return new DisposableWorkerIdAssigner();
+    }
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "id-type", havingValue = "DEFAULT", matchIfMissing = true)
+    public UidGenerator getDefaultUidGenerator(DisposableWorkerIdAssigner disposableWorkerIdAssigner) {
+        DefaultUidGenerator uidGenerator = new DefaultUidGenerator();
+        BeanUtil.copyProperties(databaseProperties.getDefaultId(), uidGenerator);
+        uidGenerator.setWorkerIdAssigner(disposableWorkerIdAssigner);
+        return uidGenerator;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "id-type", havingValue = "CACHE")
+    public UidGenerator getCacheUidGenerator(DisposableWorkerIdAssigner disposableWorkerIdAssigner) {
+        CachedUidGenerator uidGenerator = new CachedUidGenerator();
+        DatabaseProperties.CacheId cacheId = databaseProperties.getCacheId();
+        BeanUtil.copyProperties(cacheId, uidGenerator);
+        if (cacheId.getRejectedPutBufferHandlerClass() != null) {
+            RejectedPutBufferHandler rejectedPutBufferHandler = ReflectUtil.newInstance(cacheId.getRejectedPutBufferHandlerClass());
+            uidGenerator.setRejectedPutBufferHandler(rejectedPutBufferHandler);
+        }
+        if (cacheId.getRejectedTakeBufferHandlerClass() != null) {
+            RejectedTakeBufferHandler rejectedTakeBufferHandler = ReflectUtil.newInstance(cacheId.getRejectedTakeBufferHandlerClass());
+            uidGenerator.setRejectedTakeBufferHandler(rejectedTakeBufferHandler);
+        }
+        uidGenerator.setWorkerIdAssigner(disposableWorkerIdAssigner);
+        return uidGenerator;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "id-type", havingValue = "HUTOOL")
+    public UidGenerator getHutoolUidGenerator() {
+        DatabaseProperties.HutoolId id = databaseProperties.getHutoolId();
+        return new HutoolUidGenerator(id.getWorkerId(), id.getDataCenterId());
+    }
+
 
     /**
      * Mybatis 自定义的类型处理器： 处理XML中  #{name,typeHandler=leftLike} 类型的参数
@@ -230,5 +273,35 @@ public class BaseMybatisConfiguration {
     @Bean
     public TenantWebMvcConfigurer getTenantWebMvcConfigurer() {
         return new TenantWebMvcConfigurer();
+    }
+
+
+
+    /**
+     * 分页拦截器之前的插件
+     *
+     * @return
+     */
+    protected List<InnerInterceptor> getPaginationAfterInnerInterceptor() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * 分页拦截器之后的插件
+     *
+     * @return
+     */
+    protected List<InnerInterceptor> getPaginationBeforeInnerInterceptor() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * mybatis-plus 3.4.0开始采用新的分页插件,一缓和二缓遵循mybatis的规则,
+     * 需要设置 MybatisConfiguration#useDeprecatedExecutor = false 避免缓存出现问题
+     * (该属性会在旧插件移除后一同移除)
+     */
+    @Bean
+    public ConfigurationCustomizer configurationCustomizer() {
+        return configuration -> configuration.setUseDeprecatedExecutor(false);
     }
 }

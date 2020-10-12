@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Configuration;
  *
  */
 @Slf4j
-@Configuration
 @AllArgsConstructor
 @EnableConfigurationProperties(InjectionProperties.class)
 @ConditionalOnProperty(prefix = InjectionProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)

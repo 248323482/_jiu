@@ -33,20 +33,16 @@ import java.util.stream.Collectors;
 @Import({
         Swagger2Configuration.class
 })
+@ConditionalOnProperty(prefix = SwaggerProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(SwaggerProperties.class)
-@Configuration
 public class SwaggerAutoConfiguration implements BeanFactoryAware {
     @Autowired
     SwaggerProperties swaggerProperties;
     @Autowired
     protected ServletContext servletContext;
-
-
     private BeanFactory beanFactory;
-
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(name = "jiu.swagger.enabled", havingValue = "true", matchIfMissing = true)
     public List<Docket> createRestApi() {
         ConfigurableBeanFactory configurableBeanFactory = (ConfigurableBeanFactory) beanFactory;
         List<Docket> docketList = new LinkedList<>();

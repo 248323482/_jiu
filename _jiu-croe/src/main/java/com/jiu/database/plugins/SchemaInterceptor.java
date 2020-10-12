@@ -20,7 +20,7 @@ public class SchemaInterceptor extends DynamicTableNameInnerInterceptor {
 
     @Override
     protected String changeTable(String sql) {
-        // 想要 执行sql时， 不切换到 zuihou_base_{TENANT} 库, 请直接返回null
+        // 想要 执行sql时， 不切换到 {TENANT} 库, 请直接返回null
         String tenantCode = BaseContextHandler.getTenant();
         if (StrUtil.isEmpty(tenantCode)) {
             return sql;

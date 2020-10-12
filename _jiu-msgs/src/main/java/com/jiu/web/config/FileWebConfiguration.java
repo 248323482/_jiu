@@ -1,4 +1,4 @@
-package com.jiu.config;
+package com.jiu.web.config;
 
 import com.jiu.boot.config.BaseConfig;
 import com.jiu.websocket.event.WebSocketOnMessageListener;

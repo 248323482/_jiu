@@ -22,8 +22,6 @@ import java.util.stream.Stream;
 /**
  * 描述：日期工具类
  *
- * @author zuihou
- * 修改时间：2018/4/24
  */
 @Slf4j
 public class DateUtils {

@@ -32,6 +32,7 @@ dependencies {
     implementation "com.alibaba:druid-spring-boot-starter:1.1.22"
     implementation "com.alibaba:druid:1.1.22"
     implementation "org.web3j:core:4.5.17"
+    implementation 'io.github.qyvlik:io.eblock.eos-eos4j:1.0.1'
     implementation "org.bitcoinj:bitcoinj-core:0.14.3"
     //<!-- seata-all 1.0.0 SeataHystrixConcurrencyStrategy 和 本项目中 ThreadLocalHystrixConcurrencyStrategy 冲突，导致事务回滚失效 -->
     implementation"io.seata:seata-all"
@@ -52,7 +53,8 @@ dependencies {
     implementation  "com.github.dozermapper:dozer-spring4"
     compile "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     compile "com.fasterxml.jackson.module:jackson-module-parameter-names"
-    compile 'com.mxixm:fastboot-weixin:0.6.2' //快速创建微信公众号 https://gitee.com/kingshine/FastBootWeixin?_from=gitee_search
+  //  compile 'com.mxixm:fastboot-weixin:0.6.2' //快速创建微信公众号 https://gitee.com/kingshine/FastBootWeixin?_from=gitee_search
+    //https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index
 
     configurations {
         all*.exclude module:"slf4j-simple"

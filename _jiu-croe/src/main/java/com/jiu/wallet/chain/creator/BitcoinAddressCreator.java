@@ -1,13 +1,14 @@
-package com.jiu.wallet.btc;
+package com.jiu.wallet.chain.creator;
 
 import com.jiu.wallet.btc.utils.NumericUtil;
 import lombok.Data;
 import org.bitcoinj.core.*;
+
 @Data
-public class SegWitBitcoinAddressCreator {
+public class BitcoinAddressCreator {
     private NetworkParameters networkParameters;
 
-    public SegWitBitcoinAddressCreator(NetworkParameters network) {
+    public BitcoinAddressCreator(NetworkParameters network) {
         this.networkParameters=network;
     }
 

@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Primary;
 @Slf4j
 @ConditionalOnProperty(prefix = CustomCacheProperties.PREFIX, name = "type", havingValue = "CAFFEINE")
 @EnableConfigurationProperties({CustomCacheProperties.class})
-@Configuration
 public class CaffeineAutoConfigure {
 
     @Autowired

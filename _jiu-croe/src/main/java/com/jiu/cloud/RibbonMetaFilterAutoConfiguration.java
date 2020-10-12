@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Scope;
  * 配置ribbon 相关
  *
  */
-@Configuration
 @AutoConfigureBefore(RibbonClientConfiguration.class)
 public class RibbonMetaFilterAutoConfiguration {
 

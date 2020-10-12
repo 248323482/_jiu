@@ -1,4 +1,4 @@
-package com.jiu.config;
+package com.jiu.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

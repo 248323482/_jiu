@@ -20,8 +20,7 @@ import org.springframework.core.annotation.Order;
 @Order
 @AllArgsConstructor
 @EnableConfigurationProperties({SecurityProperties.class, ContextProperties.class})
-@Configuration
-public class SecureConfiguration {
+public class SecurityConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = SecurityProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)

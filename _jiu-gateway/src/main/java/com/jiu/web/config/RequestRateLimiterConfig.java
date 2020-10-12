@@ -1,4 +1,4 @@
-package com.jiu.config;
+package com.jiu.web.config;
 
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.context.annotation.Bean;

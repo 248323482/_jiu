@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import com.jiu.wallet.btc.utils.ByteUtil;
 import com.jiu.wallet.btc.utils.Hash;
 import com.jiu.wallet.btc.utils.NumericUtil;
+import com.jiu.wallet.chain.creator.BitcoinAddressCreator;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
@@ -562,7 +563,7 @@ public class BitcoinTransaction {
             DeterministicKey changeKey = HDKeyDerivation.deriveChildKey(xprvKey, ChildNumber.ONE);
             DeterministicKey indexKey = HDKeyDerivation.deriveChildKey(changeKey, new ChildNumber(getChangeIdx(), false));
             if ("P2WPKH".equals(segWit)) {
-                changeAddress = new SegWitBitcoinAddressCreator(network).fromPrivateKey(indexKey);
+                changeAddress = new BitcoinAddressCreator(network).fromPrivateKey(indexKey);
             } else {
                 changeAddress = indexKey.toAddress(network);
             }

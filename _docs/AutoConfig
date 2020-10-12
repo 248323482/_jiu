@@ -1,0 +1,10 @@
+1.SecurityConfiguration #权限
+2.SwaggerAutoConfiguration #文档
+3.OpenFeignAutoConfiguration #
+4.RibbonMetaFilterAutoConfiguration#
+5.RestTemplateConfiguration #
+6.CacheAutoConfigure #cache 缓存
+7.InjectionDataAutoConfiguration
+8.J2cacheAutoConfig  #二级缓存
+9.BaseMybatisConfiguration  #mybatis
+10.MyMetaObjectHandler #mybatis

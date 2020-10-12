@@ -1,4 +1,4 @@
-package com.jiu.config;
+package com.jiu.web.config;
 
 import feign.codec.Decoder;
 import org.springframework.beans.factory.ObjectFactory;

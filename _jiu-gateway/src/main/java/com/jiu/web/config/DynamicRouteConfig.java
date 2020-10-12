@@ -1,4 +1,4 @@
-package com.jiu.config;
+package com.jiu.web.config;
 
 import com.alibaba.cloud.nacos.NacosConfigProperties;
 import com.jiu.route.NacosRouteDefinitionRepository;

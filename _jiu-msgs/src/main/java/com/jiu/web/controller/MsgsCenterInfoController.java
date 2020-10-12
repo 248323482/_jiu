@@ -57,8 +57,6 @@ import java.util.Map;
  * 消息中心
  * </p>
  *
- * @author zuihou
- * @date 2019-08-01
  */
 @Slf4j
 @RestController

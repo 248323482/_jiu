@@ -1,26 +1,24 @@
 package com.jiu.j2cache;
- 
+
 import net.oschina.j2cache.J2CacheConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
- 
+
 import java.util.Properties;
- 
 /**
  * J2CacheConfig配置
  *
  **/
-@Configuration
 @ConditionalOnProperty(prefix = "jiu.j2cache", name = "enable", havingValue = "true", matchIfMissing = true)
-public class CacheConfig {
+@EnableConfigurationProperties({J2cacheProperties.class})
+public class J2cacheAutoConfig {
     private final J2cacheProperties j2cacheProperties;
 
     private final RedisProperties redisProperties;
  
-    public CacheConfig(J2cacheProperties j2cacheProperties, RedisProperties redisProperties) {
+    public J2cacheAutoConfig(J2cacheProperties j2cacheProperties, RedisProperties redisProperties) {
         this.j2cacheProperties = j2cacheProperties;
         this.redisProperties = redisProperties;
     }

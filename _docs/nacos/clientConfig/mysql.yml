@@ -17,6 +17,14 @@ jiu:
     worker-id: 0
     data-center-id: 0
     isSeata: false
+    id-type: CACHE
+    cache-id:
+      time-bits: 31
+      worker-bits: 22
+      seq-bits: 10
+      epochStr: '2020-09-15'
+      boost-power: 3
+      padding-factor: 50
 
 # mysql 通用配置
 spring:
@@ -83,3 +91,32 @@ mybatis-plus:
     cache-enabled: false
     #配置JdbcTypeForNull, oracle数据库必须配置
     jdbc-type-for-null: 'null'
+
+# 分布式事务相关
+seata:
+  enabled: ${jiu.database.isSeata}
+  enableAutoDataSourceProxy: true
+  tx-service-group: jiu_admin_seata_tx_group
+  registry:
+    type: nacos
+    nacos:
+      server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+      username: ${jiu.nacos.username}
+      password: ${jiu.nacos.password}
+      namespace: ${jiu.seata.namespace}
+  config:
+    type: nacos
+    nacos:
+      server-addr: ${jiu.nacos.ip}:${jiu.nacos.port}
+      username: ${jiu.nacos.username}
+      password: ${jiu.nacos.password}
+      namespace: ${jiu.seata.namespace}
+  service:
+    grouplist:
+      default: ${jiu.seata.ip:}:${jiu.seata.port:}
+    vgroup-mapping:
+      zuihou_admin_seata_tx_group: default
+    disable-global-transaction: false
+  client:
+    rm:
+      report-success-enable: false
