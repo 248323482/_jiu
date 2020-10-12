@@ -1,10 +1,9 @@
 package com.jiu;
 
-import com.jiu.swagger2.Swagger2Configuration;
+import com.jiu.database.datasource.BaseDatabaseConfiguration;
+import com.jiu.database.datasource.BaseMybatisConfiguration;
 import com.jiu.swagger2.SwaggerAutoConfiguration;
-import com.jiu.websocket.redis.EnableRedisWebSocketManager;
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -19,9 +18,8 @@ import java.net.UnknownHostException;
 
 @SpringBootApplication
 @Slf4j
-@MapperScan("com.jiu.dao")
 @EnableDiscoveryClient
-@Import(SwaggerAutoConfiguration.class)
+@Import({BaseDatabaseConfiguration.class, SwaggerAutoConfiguration.class, BaseMybatisConfiguration.class})
 public class FileServerApplication {
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(FileServerApplication.class, args);
