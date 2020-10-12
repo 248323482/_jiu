@@ -7,4 +7,4 @@
 7.InjectionDataAutoConfiguration
 8.J2cacheAutoConfig  #二级缓存
 9.BaseMybatisConfiguration  #mybatis
-10.MyMetaObjectHandler #mybatis
+10.BaseDatabaseConfiguration #数据源

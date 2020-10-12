@@ -64,20 +64,13 @@ import java.util.function.Consumer;
 
 /**
  * 数据库& 事务& MyBatis & Mp 配置
- * jiu.database.multiTenantType != DATASOURCE时， 子类需要继承它，并让程序启动时加载
- * <p>
- * 注意：BaseDatabaseConfiguration 和 DynamicDataSourceAutoConfiguration 只能同时加载一个
- * <p>
- * DynamicDataSourceAutoConfiguration 不开源！
- *
-
  */
 @Slf4j
-@EnableConfigurationProperties({MybatisPlusProperties.class})
+@EnableConfigurationProperties({MybatisPlusProperties.class,DatabaseProperties.class})
 @MapperScan(
-        basePackages = {"com.jiu.dao"},
+        basePackages = {"com.jiu.dao","com.jiu.uid.dao"},
         annotationClass = Repository.class )
-public abstract class BaseDatabaseConfiguration implements InitializingBean {
+public  class BaseDatabaseConfiguration implements InitializingBean {
     /**
      * 测试环境
      */

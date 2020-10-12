@@ -51,7 +51,7 @@ import java.util.List;
  *
  */
 @Slf4j
-public abstract class BaseMybatisConfiguration {
+public  class BaseMybatisConfiguration {
     protected final DatabaseProperties databaseProperties;
 
     public BaseMybatisConfiguration(DatabaseProperties databaseProperties) {
