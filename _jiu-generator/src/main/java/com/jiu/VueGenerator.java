@@ -3,7 +3,6 @@ package com.jiu;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
@@ -28,6 +27,7 @@ import com.jiu.ext.FreemarkerTemplateEngineExt;
 import com.jiu.ext.MySqlQueryExt;
 import com.jiu.ext.OracleQueryExt;
 import com.jiu.type.GenerateType;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
