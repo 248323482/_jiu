@@ -160,7 +160,7 @@ public class CodeGeneratorConfig {
     /**
      * 数据库连接密码
      */
-    private String password = "88888888";
+    private String password = "123456";
     /**
      * 仅仅在微服务架构下面才进行分包
      */

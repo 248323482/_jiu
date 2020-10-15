@@ -1,0 +1,6 @@
+elasticsearch:
+  cluster-name: my-application
+  cluster-nodes: 127.0.0.1:9200
+  index:
+    number-of-replicas: 0
+    number-of-shards: 1

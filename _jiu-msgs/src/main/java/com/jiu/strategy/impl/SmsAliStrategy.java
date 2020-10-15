@@ -41,11 +41,9 @@ public class SmsAliStrategy extends AbstractSmsStrategy {
 
         try {
             //初始化acsClient,暂不支持region化
-            IClientProfile profile = DefaultProfile.getProfile("cn-jiu", smsDO.getAppId(), smsDO.getAppSecret());
-           DefaultProfile.addEndpoint("cn-jiu", "cn-jiu", PRODUCT, DOMAIN);
-     //       DefaultProfile.addEndpoint("cn-jiu", PRODUCT, DOMAIN);
+            IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", smsDO.getAppId(), smsDO.getAppSecret());
+            DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", PRODUCT, DOMAIN);
             IAcsClient acsClient = new DefaultAcsClient(profile);
-
             //组装请求对象-具体描述见控制台-文档部分内容
             SendSmsRequest request = new SendSmsRequest();
             //必填:待发送手机号

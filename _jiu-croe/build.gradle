@@ -55,7 +55,8 @@ dependencies {
     compile "com.fasterxml.jackson.module:jackson-module-parameter-names"
   //  compile 'com.mxixm:fastboot-weixin:0.6.2' //快速创建微信公众号 https://gitee.com/kingshine/FastBootWeixin?_from=gitee_search
     //https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index
-
+    implementation "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.9.2"
+    implementation "org.elasticsearch:elasticsearch:7.9.2"
     configurations {
         all*.exclude module:"slf4j-simple"
         all*.exclude module:"spring-boot-starter-tomcat"
