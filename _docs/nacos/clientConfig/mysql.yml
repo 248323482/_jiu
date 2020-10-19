@@ -115,7 +115,7 @@ seata:
     grouplist:
       default: ${jiu.seata.ip:}:${jiu.seata.port:}
     vgroup-mapping:
-      zuihou_admin_seata_tx_group: default
+      jiu_admin_seata_tx_group: default
     disable-global-transaction: false
   client:
     rm:

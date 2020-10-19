@@ -3,9 +3,10 @@ package com.jiu.database.datasource;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ArrayUtil;
-import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
-import com.p6spy.engine.spy.P6DataSource;
-import io.seata.rm.datasource.DataSourceProxy;
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.stat.StatFilter;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.baomidou.mybatisplus.autoconfigure.ConfigurationCustomizer;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
@@ -15,9 +16,13 @@ import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import com.google.common.collect.Lists;
 import com.jiu.database.properties.DatabaseProperties;
+import com.p6spy.engine.spy.P6DataSource;
+import io.seata.rm.datasource.DataSourceProxy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
@@ -35,9 +40,9 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -46,7 +51,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.TransactionDefinition;
@@ -59,6 +63,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.lang.annotation.Annotation;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -138,8 +143,59 @@ public  class BaseDatabaseConfiguration implements InitializingBean {
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.druid")
     public DataSource druidDataSource() {
-        return DruidDataSourceBuilder.create().build();
+        // return DruidDataSourceBuilder.create().build();
+        return  new DefaultDataSource();
     }
+
+    private class DefaultDataSource extends DynamicDataSource<DruidDataSource> implements InitializingBean{
+        public void afterPropertiesSet() {
+            super.verifyAndInitDataSource();
+        }
+        @Override
+        public synchronized DruidDataSource createDataSource(String url, String username,
+                                                             String password) {
+            log.info("init 数据源中 ... [{}]", url);
+            DruidDataSource dataSource = new DruidDataSource();
+            dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+            dataSource.setUrl(url);
+            dataSource.setUsername(username);
+            dataSource.setPassword(password);
+            dataSource.setInitialSize(10);
+            dataSource.setMaxActive(500);
+            dataSource.setMinIdle(10);
+            dataSource.setMaxWait(60000);
+
+            try {
+                dataSource.setFilters("stat,wall");
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            dataSource.setTestOnBorrow(false);
+            dataSource.setTestWhileIdle(true);
+            dataSource.setTestOnReturn(false);
+            dataSource.setPoolPreparedStatements(true);
+            dataSource.setTimeBetweenEvictionRunsMillis(60000);
+            dataSource.setMinEvictableIdleTimeMillis(300000);
+            dataSource.setMaxPoolPreparedStatementPerConnectionSize(20);
+            dataSource.setRemoveAbandoned(true);
+            dataSource.setValidationQuery("SELECT 'x'");
+            try {
+                DruidPooledConnection connection = dataSource.getConnection();
+                log.info("init 数据源成功    [ {} ]", connection.getCatalog());
+            } catch (SQLException e) {
+
+                throw new RuntimeException("数据源初始化失败");
+            }
+            return dataSource;
+        }
+
+
+        @Override
+        protected Object determineCurrentLookupKey() {
+            return super.verifyAndInitDataSource();
+        }
+    }
+
 
 
     @Bean

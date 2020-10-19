@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.*;
 import com.jiu.api.UserApi;
 import com.jiu.context.BaseContextHandler;
 import com.jiu.database.injector.MySqlInjector;
+import com.jiu.database.mybatis.SqlExecuteTimeInterceptor;
 import com.jiu.database.mybatis.WriteInterceptor;
 import com.jiu.database.mybatis.auth.DataScopeInterceptor;
 import com.jiu.database.mybatis.typehandler.FullLikeTypeHandler;
@@ -79,6 +80,16 @@ public  class BaseMybatisConfiguration {
     public WriteInterceptor getWriteInterceptor() {
         log.warn("数据禁止写入........[{}}",databaseProperties.getIsNotWrite());
         return new WriteInterceptor();
+    }
+
+    /**
+     * 填充sql 内容并打印执行时间
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public SqlExecuteTimeInterceptor getSqlExecuteTimeInterceptor(){
+        return  new SqlExecuteTimeInterceptor();
     }
 
 
