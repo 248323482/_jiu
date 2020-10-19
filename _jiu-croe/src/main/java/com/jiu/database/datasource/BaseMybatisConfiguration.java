@@ -179,7 +179,7 @@ public  class BaseMybatisConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnExpression("'DEFAULT'.equals('${jiu.database.id-typ:DEFAULT}') || 'CACHE'.equals('${jiu.database.id-typ:DEFAULT}')")
+    @ConditionalOnExpression("'DEFAULT'.equals('${jiu.database.id-type:DEFAULT}')|| 'CACHE'.equals('${jiu.database.id-type:DEFAULT}')")
     public DisposableWorkerIdAssigner disposableWorkerIdAssigner() {
         return new DisposableWorkerIdAssigner();
     }
@@ -211,6 +211,7 @@ public  class BaseMybatisConfiguration {
         uidGenerator.setWorkerIdAssigner(disposableWorkerIdAssigner);
         return uidGenerator;
     }
+
 
     @Bean
     @ConditionalOnMissingBean
