@@ -44,6 +44,7 @@ public class ElasticsearchAutoConfiguration {
             }
         });
         RestClientBuilder builder = RestClient.builder(httpHosts.toArray(new HttpHost[0]));
+
         return getRestHighLevelClient(builder, elasticsearchProperties);
     }
 

@@ -2,6 +2,7 @@ package com.jiu;
 
 import com.jiu.database.datasource.BaseDatabaseConfiguration;
 import com.jiu.database.datasource.BaseMybatisConfiguration;
+import com.jiu.database.sync.BinlogClientRunner;
 import com.jiu.swagger2.SwaggerAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +20,7 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 @Slf4j
 @EnableDiscoveryClient
-@Import({BaseDatabaseConfiguration.class, SwaggerAutoConfiguration.class, BaseMybatisConfiguration.class})
+@Import({BaseDatabaseConfiguration.class, SwaggerAutoConfiguration.class, BaseMybatisConfiguration.class, BinlogClientRunner.class})
 public class FileServerApplication {
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(FileServerApplication.class, args);

@@ -1,5 +1,6 @@
 package com.jiu.entity;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -11,6 +12,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
 /**
@@ -234,6 +236,13 @@ public class File extends Entity<Long> {
         this.createMonth = createMonth;
         this.createWeek = createWeek;
         this.createDay = createDay;
+    }
+
+    public static void main(String[] args) {
+        Field[] fields =  File.class.getDeclaredFields();
+        for (Field field : fields){
+            System.err.println(field.getName());
+        }
     }
 
 }
