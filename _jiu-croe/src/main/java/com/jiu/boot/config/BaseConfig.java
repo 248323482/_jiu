@@ -181,6 +181,12 @@ public abstract class BaseConfig {
         return new SpringUtils();
     }
 
+    @Bean
+    @ConditionalOnClass
+    public GlobalMvcConfigurer getGlobalMvcConfigurer() {
+        return new GlobalMvcConfigurer();
+    }
+
 
     @Bean
     @ConditionalOnClass(Undertow.class)

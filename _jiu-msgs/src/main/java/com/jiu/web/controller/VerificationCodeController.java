@@ -6,7 +6,7 @@ import com.jiu.base.R;
 import com.jiu.base.entity.SuperEntity;
 import com.jiu.common.constant.CacheKey;
 import com.jiu.dto.VerificationCodeDTO;
-import com.jiu.eache.repository.CacheRepository;
+import com.jiu.cache.repository.CacheRepository;
 import com.jiu.entity.SmsTask;
 import com.jiu.entity.enumeration.SourceType;
 import com.jiu.entity.enumeration.TemplateCodeType;

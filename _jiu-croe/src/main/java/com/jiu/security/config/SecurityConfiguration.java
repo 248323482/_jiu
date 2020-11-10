@@ -33,10 +33,4 @@ public class SecurityConfiguration {
     public AuthFun getAuthFun(UserResolverService userResolverService) {
         return new AuthFun(userResolverService);
     }
-
-    @Bean
-    public GlobalMvcConfigurer getGlobalMvcConfigurer(ContextProperties contextProperties) {
-        return new GlobalMvcConfigurer(contextProperties);
-    }
-
 }

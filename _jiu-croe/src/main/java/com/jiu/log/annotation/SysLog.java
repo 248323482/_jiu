@@ -25,6 +25,12 @@ public @interface SysLog {
     String value() default "";
 
     /**
+     * 是否拼接Controller类上的描述值
+     * @return
+     */
+    boolean controllerApiValue() default true;
+
+    /**
      * 记录执行参数
      *
      * @return
@@ -32,7 +38,7 @@ public @interface SysLog {
     boolean request() default true;
 
     /**
-     * 当 request = false时， 需要方法报错是否记录请求参数
+     * 当 request = false时， 方法报错记录请求参数
      *
      * @return
      */

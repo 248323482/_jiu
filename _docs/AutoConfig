@@ -9,6 +9,7 @@
 9.BaseMybatisConfiguration  #mybatis
 10.BaseDatabaseConfiguration #数据源
 11.ElasticsearchAutoConfiguration  # es
+12.XssAuthConfiguration # xxs
 
 
 @Conditional(TestCondition.class)

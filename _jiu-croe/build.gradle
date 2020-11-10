@@ -58,6 +58,8 @@ dependencies {
     //https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?action=showinfo&t=sandbox/index
     implementation "org.elasticsearch.client:elasticsearch-rest-high-level-client:7.9.2"
     implementation "org.elasticsearch:elasticsearch:7.9.2"
+    compile "org.owasp.antisamy:antisamy:1.5.7"
+
     configurations {
         all*.exclude module:"slf4j-simple"
         all*.exclude module:"spring-boot-starter-tomcat"

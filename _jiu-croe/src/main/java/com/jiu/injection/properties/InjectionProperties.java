@@ -29,6 +29,10 @@ public class InjectionProperties {
      */
     private String dictSeparator = "###";
     /**
+     * 多个字典code 之间的的分隔符
+     */
+    private String dictItemSeparator = ",";
+    /**
      * 递归最大深度
      */
     private Integer maxDepth = 3;

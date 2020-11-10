@@ -261,7 +261,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         existsJobInfo.setEndExecuteTime(jobInfo.getEndExecuteTime());
         existsJobInfo.setIntervalSeconds(jobInfo.getIntervalSeconds());
         xxlJobInfoDao.update(existsJobInfo);
-
+        try {
         if (JobTypeEnum.TIMES.eq(jobInfo.getType())) {
             return ReturnT.SUCCESS;
         }
@@ -269,7 +269,6 @@ public class XxlJobServiceImpl implements XxlJobService {
         // update quartz-cron if started
         String qzGroup = String.valueOf(existsJobInfo.getJobGroup());
         String qzName = String.valueOf(existsJobInfo.getId());
-        try {
             XxlJobDynamicScheduler.updateJobCron(qzGroup, qzName, existsJobInfo.getJobCron());
         } catch (SchedulerException e) {
             logger.error(e.getMessage(), e);

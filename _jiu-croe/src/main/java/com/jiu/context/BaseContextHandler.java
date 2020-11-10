@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -39,7 +40,7 @@ public class BaseContextHandler {
     public static Map<String, String> getLocalMap() {
         Map<String, String> map = THREAD_LOCAL.get();
         if (map == null) {
-            map = new HashMap<>(10);
+            map = new ConcurrentHashMap<>(10);
             THREAD_LOCAL.set(map);
         }
         return map;

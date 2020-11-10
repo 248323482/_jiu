@@ -1,5 +1,6 @@
 package com.jiu.service.common.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
 import com.google.common.collect.ImmutableMap;
@@ -48,8 +49,7 @@ public class OrgServiceImpl extends SuperCacheServiceImpl<OrgMapper, Org> implem
             return Collections.emptyList();
         }
         // MySQL 全文索引
-        String applySql = String.format(" MATCH(tree_path) AGAINST('%s' IN BOOLEAN MODE) ", StringUtils.join(ids, " "));
-//.or(query -> query.apply(applySql))
+        String applySql = String.format(" MATCH(tree_path) AGAINST('%s' IN BOOLEAN MODE) ", CollUtil.join(ids, " "));
         return super.list(Wraps.<Org>lbQ().in(Org::getId, ids));
     }
 

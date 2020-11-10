@@ -1,5 +1,7 @@
 package com.jiu.injection.core;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -22,10 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import static com.baomidou.mybatisplus.core.toolkit.StringPool.EMPTY;
 
 /**
  * 字典数据注入工具类
@@ -35,7 +41,7 @@ import java.util.function.Consumer;
  */
 @Slf4j
 public class InjectionCore {
-
+    private final static int DEF_MAP_SIZE = 20;
     /**
      * 动态配置参数
      */
@@ -56,38 +62,52 @@ public class InjectionCore {
             this.backgroundRefreshPools = MoreExecutors.listeningDecorator(
                     new ThreadPoolExecutor(guavaCache.getRefreshThreadPoolSize(), guavaCache.getRefreshThreadPoolSize(),
                             0L, TimeUnit.MILLISECONDS,
-                            new LinkedBlockingQueue<Runnable>())
+                            new LinkedBlockingQueue<>())
             );
+
+            CacheLoader<InjectionFieldExtPo, Map<Serializable, Object>> cacheLoader = new CacheLoader<InjectionFieldExtPo, Map<Serializable, Object>>() {
+                /**
+                 * 内存缓存不存在时， 调用时触发加载数据
+                 *
+                 * @param type 扩展参数
+                 * @return 加载后的数据
+                 */
+                @Override
+                public Map<Serializable, Object> load(InjectionFieldExtPo type) {
+                    log.info("首次读取缓存: " + type);
+                    return loadMap(type);
+                }
+
+                /**
+                 * 重新载入数据
+                 *
+                 * @param key      扩展参数
+                 * @param oldValue 原来的值
+                 * @return 重新加载后的数据
+                 */
+                @Override
+                public ListenableFuture<Map<Serializable, Object>> reload(InjectionFieldExtPo key, Map<Serializable, Object> oldValue) {
+                    return backgroundRefreshPools.submit(() -> {
+                        BaseContextHandler.setTenant(key.getTenant());
+                        return load(key);
+                    });
+                }
+            };
             this.caches = CacheBuilder.newBuilder()
                     .maximumSize(guavaCache.getMaximumSize())
                     .refreshAfterWrite(guavaCache.getRefreshWriteTime(), TimeUnit.MINUTES)
-                    .build(new CacheLoader<InjectionFieldExtPo, Map<Serializable, Object>>() {
-                        @Override
-                        public Map<Serializable, Object> load(InjectionFieldExtPo type) throws Exception {
-                            log.info("首次读取缓存: " + type);
-                            return loadMap(type);
-                        }
-
-                        // 自动刷新缓存，防止脏数据
-                        @Override
-                        public ListenableFuture<Map<Serializable, Object>> reload(final InjectionFieldExtPo key, Map<Serializable, Object> oldValue) throws Exception {
-                            return backgroundRefreshPools.submit(() -> {
-                                BaseContextHandler.setTenant(key.getTenant());
-                                return load(key);
-                            });
-                        }
-                    });
+                    .build(cacheLoader);
         }
     }
 
     /**
      * 加载数据
      *
-     * @param type
-     * @return
+     * @param type 扩展参数
+     * @return 查询指定接口后得到的值
      */
     private Map<Serializable, Object> loadMap(InjectionFieldExtPo type) {
-        Object bean = null;
+        Object bean;
         if (StrUtil.isNotEmpty(type.getApi())) {
             bean = SpringUtils.getBean(type.getApi());
             log.info("建议在方法： [{}.{}]，上加入缓存，加速查询", type.getApi(), type.getMethod());
@@ -95,8 +115,7 @@ public class InjectionCore {
             bean = SpringUtils.getBean(type.getApiClass());
             log.info("建议在方法： [{}.{}]，上加入缓存，加速查询", type.getApiClass().toString(), type.getMethod());
         }
-        Map<Serializable, Object> value = ReflectUtil.invoke(bean, type.getMethod(), type.getKeys());
-        return value;
+        return ReflectUtil.invoke(bean, type.getMethod(), type.getKeys());
     }
 
     /**
@@ -108,19 +127,23 @@ public class InjectionCore {
      * <p>
      * 注意：若对象中需要注入的字段之间出现循环引用，很可能发生异常，所以请保证不要出现循环引用！！！
      *
-     * @param obj        需要注入的对象、集合、IPage
-     * @param isUseCache 是否使用guava缓存
-     * @throws Exception
+     * @param obj          需要注入的对象、集合、IPage
+     * @param isUseCache   是否使用guava缓存
+     * @param ignoreFields 忽略字段
      */
-    public void injection(Object obj, boolean isUseCache) {
+    public void injection(Object obj, boolean isUseCache, String... ignoreFields) {
         try {
-            // key 为远程查询的对象
-            // value 为 待查询的数据
-            Map<InjectionFieldPo, Map<Serializable, Object>> typeMap = new HashMap();
+             /*
+             InjectionFieldPo 为远程查询的对象
+             Map<Serializable, Object> 为 待查询的数据
+             Serializable 为待查询数据的唯一标示（可以是id、code等唯一健）
+             Object 为查询后的值
+             */
+            Map<InjectionFieldPo, Map<Serializable, Object>> typeMap = new ConcurrentHashMap<>(DEF_MAP_SIZE);
 
             long parseStart = System.currentTimeMillis();
             //1. 通过反射将obj的字段上标记了@InjectionFiled注解的字段解析出来
-            parse(obj, typeMap, 1);
+            parse(obj, typeMap, 1, ignoreFields);
             long parseEnd = System.currentTimeMillis();
 
             log.info("解析耗时={} ms", (parseEnd - parseStart));
@@ -156,21 +179,36 @@ public class InjectionCore {
         }
     }
 
-    public void injection(Object obj) {
-        injection(obj, true);
+    /**
+     * 将obj中标记InjectionField注解的字段，注入新值
+     *
+     * @param obj          对象、集合、IPage
+     * @param ignoreFields obj中需要忽略的字段
+     */
+    public void injection(Object obj, String... ignoreFields) {
+        injection(obj, false, ignoreFields);
     }
 
 
     /**
-     * 判断是否为基本类型
+     * 判断字段是否不为基本类型
      *
-     * @param obj
      * @param field 字段
-     * @return
+     * @return 是基本类型返回false
      */
-    private boolean isNotBaseType(Object obj, Field field) {
+    private boolean isNotBaseType(Field field) {
+        return !isBaseType(field);
+    }
+
+    /**
+     * 判断字段是否为基本类型
+     *
+     * @param field 字段
+     * @return 是基本类型返回true
+     */
+    private boolean isBaseType(Field field) {
         String typeName = field.getType().getName();
-        if ("java.lang.Integer".equals(typeName) ||
+        return "java.lang.Integer".equals(typeName) ||
                 "java.lang.Byte".equals(typeName) ||
                 "java.lang.Long".equals(typeName) ||
                 "java.lang.Double".equals(typeName) ||
@@ -179,12 +217,7 @@ public class InjectionCore {
                 "java.lang.Short".equals(typeName) ||
                 "java.lang.Boolean".equals(typeName) ||
                 "java.lang.String".equals(typeName) ||
-                "com.jiu.base.model.RemoteData".equals(typeName)
-        ) {
-            return false;
-        } else {
-            return true;
-        }
+                "com.jiu.base.model.RemoteData".equals(typeName);
     }
 
 
@@ -192,12 +225,12 @@ public class InjectionCore {
      * 1，遍历字段，解析出数据
      * 2，遍历字段，设值
      *
-     * @param obj     对象
-     * @param typeMap 数据
-     * @param depth   当前递归深度
-     * @throws Exception
+     * @param obj          对象
+     * @param typeMap      数据
+     * @param depth        当前递归深度
+     * @param ignoreFields 忽略注入的字段
      */
-    private void parse(Object obj, Map<InjectionFieldPo, Map<Serializable, Object>> typeMap, int depth) {
+    private void parse(Object obj, Map<InjectionFieldPo, Map<Serializable, Object>> typeMap, int depth, String... ignoreFields) {
         if (obj == null) {
             return;
         }
@@ -206,16 +239,16 @@ public class InjectionCore {
             return;
         }
         if (typeMap == null) {
-            typeMap = new HashMap();
+            typeMap = new ConcurrentHashMap<>(DEF_MAP_SIZE);
         }
 
         if (obj instanceof IPage) {
-            List records = ((IPage) obj).getRecords();
-            parseList(records, typeMap, depth);
+            List<?> records = ((IPage<?>) obj).getRecords();
+            parseList(records, typeMap, depth, ignoreFields);
             return;
         }
         if (obj instanceof Collection) {
-            parseList((Collection) obj, typeMap, depth);
+            parseList((Collection<?>) obj, typeMap, depth, ignoreFields);
             return;
         }
 
@@ -224,15 +257,16 @@ public class InjectionCore {
 
         for (Field field : fields) {
             FieldParam fieldParam = getFieldParam(obj, field, typeMap,
-                    (innerTypeMap) -> parse(ReflectUtil.getFieldValue(obj, field), innerTypeMap, depth + 1)
+                    innerTypeMap -> parse(ReflectUtil.getFieldValue(obj, field), innerTypeMap, depth + 1, ignoreFields),
+                    ignoreFields
             );
             if (fieldParam == null) {
                 continue;
             }
 
-            InjectionFieldPo type = new InjectionFieldPo(fieldParam.getAnno());
-            Map<Serializable, Object> valueMap = typeMap.getOrDefault(type, new HashMap());
-            valueMap.put(fieldParam.getQueryKey(), null);
+            InjectionFieldPo type = new InjectionFieldPo(fieldParam.getInjection());
+            Map<Serializable, Object> valueMap = typeMap.getOrDefault(type, new ConcurrentHashMap<>(DEF_MAP_SIZE));
+            valueMap.put(fieldParam.getQueryKey(), Collections.emptyMap());
             typeMap.put(type, valueMap);
         }
     }
@@ -240,26 +274,26 @@ public class InjectionCore {
     /**
      * 解析 list
      *
-     * @param list
-     * @param typeMap
-     * @throws Exception
+     * @param list         数据集合
+     * @param typeMap      待查询的参数
+     * @param ignoreFields 忽略注入的字段
      */
-    private void parseList(Collection list, Map typeMap, int depth) {
+    private void parseList(Collection<?> list, Map<InjectionFieldPo, Map<Serializable, Object>> typeMap, int depth, String... ignoreFields) {
         for (Object item : list) {
-            parse(item, typeMap, depth);
+            parse(item, typeMap, depth, ignoreFields);
         }
     }
 
     /**
      * 向obj对象的字段中注入值
      *
-     * @param obj     当前对象
-     * @param typeMap 数据
-     * @param depth   当前递归深度
-     * @throws Exception
+     * @param obj          当前对象
+     * @param typeMap      数据
+     * @param depth        当前递归深度
+     * @param ignoreFields 忽略注入的字段
      */
     @SneakyThrows
-    private void injection(Object obj, Map<InjectionFieldPo, Map<Serializable, Object>> typeMap, int depth) {
+    private void injection(Object obj, Map<InjectionFieldPo, Map<Serializable, Object>> typeMap, int depth, String... ignoreFields) {
         if (obj == null) {
             return;
         }
@@ -272,12 +306,12 @@ public class InjectionCore {
         }
 
         if (obj instanceof IPage) {
-            List records = ((IPage) obj).getRecords();
-            injectionList((Collection) records, typeMap);
+            List<?> records = ((IPage<?>) obj).getRecords();
+            injectionList(records, typeMap, ignoreFields);
             return;
         }
         if (obj instanceof Collection) {
-            injectionList((Collection) obj, typeMap);
+            injectionList((Collection<?>) obj, typeMap, ignoreFields);
             return;
         }
 
@@ -285,32 +319,30 @@ public class InjectionCore {
         Field[] fields = ReflectUtil.getFields(obj.getClass());
         for (Field field : fields) {
             FieldParam fieldParam = getFieldParam(obj, field, typeMap,
-                    (innerTypeMap) -> injection(ReflectUtil.getFieldValue(obj, field), innerTypeMap, depth + 1));
+                    innerTypeMap -> injection(ReflectUtil.getFieldValue(obj, field), innerTypeMap, depth + 1, ignoreFields),
+                    ignoreFields);
             if (fieldParam == null) {
                 continue;
             }
-            InjectionField anno = fieldParam.getAnno();
+            InjectionField inField = fieldParam.getInjection();
             Object queryKey = fieldParam.getQueryKey();
-            Object curField = fieldParam.getCurField();
+            Object fieldValue = fieldParam.getFieldValue();
 
-            InjectionFieldPo type = new InjectionFieldPo(anno);
-            Map<Serializable, Object> valueMap = typeMap.get(type);
-
-            if (valueMap == null || valueMap.isEmpty()) {
+            Object newVal = getNewVal(inField, queryKey, typeMap);
+            if (newVal == null) {
+                continue;
+            }
+            if (newVal instanceof Map && ((Map<?, ?>) newVal).isEmpty()) {
                 continue;
             }
 
-            Object newVal = valueMap.get(queryKey);
-            if (ObjectUtil.isNull(newVal) && ObjectUtil.isNotEmpty(queryKey)) {
-                newVal = valueMap.get(queryKey.toString());
-            }
-
-            if (curField instanceof RemoteData) {
-                RemoteData remoteData = (RemoteData) curField;
+            // 将新的值 反射 到指定字段
+            if (fieldValue instanceof RemoteData) {
+                RemoteData remoteData = (RemoteData) fieldValue;
 
                 // feign 接口序列化 丢失类型
-                if (newVal != null && newVal instanceof Map && !Object.class.equals(type.getBeanClass())) {
-                    newVal = JsonUtil.parse(JsonUtil.toJson(newVal), type.getBeanClass());
+                if (newVal instanceof Map && !Object.class.equals(inField.beanClass())) {
+                    newVal = JsonUtil.parse(JsonUtil.toJson(newVal), inField.beanClass());
                 }
                 remoteData.setData(newVal);
             } else {
@@ -319,83 +351,124 @@ public class InjectionCore {
         }
     }
 
+    /**
+     * 从 valueMap
+     *
+     * @param queryKey 处理后的查询值
+     * @param typeMap  已查询后的集合
+     * @return 已查询后的值
+     */
+    private Object getNewVal(InjectionField inField, Object queryKey, Map<InjectionFieldPo, Map<Serializable, Object>> typeMap) {
+        InjectionFieldPo type = new InjectionFieldPo(inField);
+
+        Map<Serializable, Object> valueMap = typeMap.get(type);
+
+        if (CollUtil.isEmpty(valueMap)) {
+            return null;
+        }
+
+        Object newVal = valueMap.get(queryKey);
+        // 可能由于序列化原因导致 get 失败，重新尝试get
+        if (ObjectUtil.isNull(newVal) && ObjectUtil.isNotEmpty(queryKey)) {
+            newVal = valueMap.get(queryKey.toString());
+
+            // 可能由于是多key原因导致get失败
+            if (ObjectUtil.isNull(newVal) && StrUtil.contains(queryKey.toString(), ips.getDictItemSeparator())) {
+                String[] typeCodes = StrUtil.split(queryKey.toString(), ips.getDictSeparator());
+                String[] codes = StrUtil.split(typeCodes[1], ips.getDictItemSeparator());
+
+                newVal = Arrays.stream(codes).map(item -> {
+                    String val = valueMap.getOrDefault(typeCodes[0] + ips.getDictSeparator() + item, EMPTY).toString();
+                    return val == null ? EMPTY : val;
+                }).collect(Collectors.joining(ips.getDictItemSeparator()));
+            }
+        }
+        return newVal;
+    }
 
     /**
      * 注入 集合
      *
-     * @param list
-     * @param typeMap
+     * @param list         数据集合
+     * @param typeMap      待查询的参数
+     * @param ignoreFields 忽略注入的字段
      */
-    private void injectionList(Collection list, Map typeMap) {
+    private void injectionList(Collection<?> list, Map<InjectionFieldPo, Map<Serializable, Object>> typeMap, String... ignoreFields) {
         for (Object item : list) {
-            injection(item, typeMap, 1);
+            injection(item, typeMap, 1, ignoreFields);
         }
     }
 
     /**
      * 提取参数
      *
-     * @param obj
-     * @param field
-     * @param typeMap
-     * @param consumer
-     * @return
+     * @param obj          当前对象
+     * @param field        当前字段
+     * @param typeMap      待查询的集合
+     * @param consumer     字段为复杂类型时的回调处理
+     * @param ignoreFields 忽略注入的字段
+     * @return 字段参数
      */
-    private FieldParam getFieldParam(Object obj, Field field, Map<InjectionFieldPo, Map<Serializable, Object>> typeMap, Consumer<Map<InjectionFieldPo, Map<Serializable, Object>>> consumer) {
-        //是否使用MyAnno注解
-        InjectionField anno = field.getDeclaredAnnotation(InjectionField.class);
-        if (anno == null) {
+    private FieldParam getFieldParam(Object obj, Field field, Map<InjectionFieldPo, Map<Serializable, Object>> typeMap,
+                                     Consumer<Map<InjectionFieldPo, Map<Serializable, Object>>> consumer, String... ignoreFields) {
+        //是否标记@InjectionField注解
+        InjectionField inField = field.getDeclaredAnnotation(InjectionField.class);
+        if (inField == null) {
+            return null;
+        }
+        // 是否排除
+        if (ArrayUtil.contains(ignoreFields, field.getName())) {
+            log.debug("已经忽略{}字段的解析", field.getName());
             return null;
         }
         field.setAccessible(true);
         //类型
-        if (isNotBaseType(obj, field)) {
+        if (isNotBaseType(field)) {
             consumer.accept(typeMap);
             return null;
         }
 
-        String api = anno.api();
-        Class<?> feign = anno.apiClass();
+        String api = inField.api();
+        Class<?> feign = inField.apiClass();
 
         if (StrUtil.isEmpty(api) && Object.class.equals(feign)) {
             log.warn("忽略注入字段: {}.{}", field.getType(), field.getName());
             return null;
         }
 
-        Object curField = ReflectUtil.getFieldValue(obj, field);
-        log.debug("字段[{}] 值 [{}]", field.getName(),curField);
-        if (curField == null) {
+        Object fieldValue = ReflectUtil.getFieldValue(obj, field);
+        if (fieldValue == null) {
             log.debug("字段[{}]为空,跳过", field.getName());
             return null;
         }
 
-        Serializable queryKey = getQueryKey(anno, curField);
+        Serializable queryKey = getQueryKey(inField, fieldValue);
         if (ObjectUtil.isEmpty(queryKey)) {
             return null;
         }
-        return new FieldParam(anno, queryKey, curField);
+        return new FieldParam(inField, queryKey, fieldValue);
     }
 
 
     /**
      * 获取查询用的key
      *
-     * @param anno
-     * @param curField
-     * @return
+     * @param injectionField 当前字段标记的注解
+     * @param fieldValue     当前字段的具体值
+     * @return 从当前字段的值构造出，调用api#method方法的参数
      */
-    private Serializable getQueryKey(InjectionField anno, Object curField) {
-        String key = anno.key();
-        String dictType = anno.dictType();
+    private Serializable getQueryKey(InjectionField injectionField, Object fieldValue) {
+        String key = injectionField.key();
+        String dictType = injectionField.dictType();
         Serializable queryKey;
         if (StrUtil.isNotEmpty(key)) {
             queryKey = key;
         } else {
-            if (curField instanceof RemoteData) {
-                RemoteData remoteData = (RemoteData) curField;
+            if (fieldValue instanceof RemoteData) {
+                RemoteData remoteData = (RemoteData) fieldValue;
                 queryKey = (Serializable) remoteData.getKey();
             } else {
-                queryKey = (Serializable) curField;
+                queryKey = (Serializable) fieldValue;
             }
         }
         if (ObjectUtil.isNotEmpty(queryKey) && StrUtil.isNotEmpty(dictType)) {
@@ -403,6 +476,4 @@ public class InjectionCore {
         }
         return queryKey;
     }
-
-
 }

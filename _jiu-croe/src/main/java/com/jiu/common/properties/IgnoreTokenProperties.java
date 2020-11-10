@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.AntPathMatcher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,24 +17,39 @@ import java.util.List;
 @Data
 @ConfigurationProperties(prefix = IgnoreTokenProperties.PREFIX)
 public class IgnoreTokenProperties {
+    private List<String> tenant = CollUtil.newArrayList();
+    private List<String> token = CollUtil.newArrayList();
     public static final String PREFIX = "ignore.token";
     private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
-    private List<String> url = CollUtil.newArrayList(
-            "/error",
-            "/actuator/**",
-            "/gate/**",
-            "/static/**",
-            "/anno/**",
-            "/**/anno/**",
-            "/**/swagger-ui.html",
-            "/**/doc.html",
+    private List<String> baseUri = CollUtil.newArrayList(
+            "/**/*.css",
+            "/**/*.js",
+            "/**/*.html",
+            "/**/*.ico",
+            "/**/*.jpg",
+            "/**/*.jpeg",
+            "/**/*.png",
+            "/**/*.gif",
+            "/**/v2/**",
+            "/**/swagger-resources/**",
             "/**/webjars/**",
-            "/**/v2/api-docs/**",
-            "/**/v2/api-docs-ext/**",
-            "/**/swagger-resources/**"
+            "/actuator/**",
+            "/error",
+            "/**/anno/**",
+            "/**/static/**",
+            "/**/login"
     );
 
     public boolean isIgnoreToken(String path) {
-        return getUrl().stream().anyMatch((url) -> path.startsWith(url) || ANT_PATH_MATCHER.match(url, path));
+        List<String> all = new ArrayList<>();
+        all.addAll(getBaseUri());
+        all.addAll(getToken());
+        return all.stream().anyMatch(url -> path.startsWith(url) || ANT_PATH_MATCHER.match(url, path));
+    }
+    public boolean isIgnoreTenant(String path) {
+        List<String> all = new ArrayList<>();
+        all.addAll(getBaseUri());
+        all.addAll(getTenant());
+        return all.stream().anyMatch(url -> path.startsWith(url) || ANT_PATH_MATCHER.match(url, path));
     }
 }
