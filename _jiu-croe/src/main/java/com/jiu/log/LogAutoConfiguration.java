@@ -3,7 +3,6 @@ package com.jiu.log;
 
 import com.jiu.log.aspect.SysLogAspect;
 import com.jiu.log.event.SysLogListener;
-import com.jiu.log.interceptor.MdcMvcConfigurer;
 import com.jiu.log.monitor.PointUtil;
 import com.jiu.log.properties.OptLogProperties;
 import com.plumelog.core.TraceId;
@@ -55,10 +54,6 @@ public class LogAutoConfiguration {
         return new SysLogAspect();
     }
 
-    @Bean
-    public MdcMvcConfigurer getMdcMvcConfigurer() {
-        return new MdcMvcConfigurer();
-    }
 
     @Bean
     @ConditionalOnMissingBean

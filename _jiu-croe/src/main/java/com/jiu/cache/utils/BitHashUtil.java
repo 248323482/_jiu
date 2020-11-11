@@ -13,7 +13,7 @@ public class BitHashUtil  {
 
     /**
      * 使用Redis的MurmurHash进行多次Hash获取bit的offset值
-     * 2的32次方的Bitmap，8次Hash，错误率在万分之5以下，大约可以对4亿左右的32位字符串去重，对2亿左右的64位字符串去重
+     * 2的32次方的Bitmap，8次Hash，错误率在万分之5以下，大约可以对4亿Function左右的32位字符串去重，对2亿左右的64位字符串去重
      * @param value Hash的值
      */
     public static <T> long[] getBitOffsets(T value) {

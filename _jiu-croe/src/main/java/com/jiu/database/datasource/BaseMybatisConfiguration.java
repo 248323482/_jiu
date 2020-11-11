@@ -41,6 +41,7 @@ import org.springframework.core.annotation.Order;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Mybatis 常用重用拦截器，jiu.database.multiTenantType=任意模式 都需要实例出来
@@ -311,5 +312,17 @@ public  class BaseMybatisConfiguration {
     @Bean
     public ConfigurationCustomizer configurationCustomizer() {
         return configuration -> configuration.setUseDeprecatedExecutor(false);
+    }
+
+    public static void main(String[] args) {
+        Function<Integer, Integer> name = e -> e * 2;
+        Function<Integer, Integer> square = e -> e * e;
+        int value = square.andThen(name).apply(3);
+        System.out.println("andThen value=" + value);
+        int value2 = name.compose(square).apply(3);
+        System.out.println("compose value2=" + value2);
+        //返回一个执行了apply()方法之后只会返回输入参数的函数对象
+        Object identity = Function.identity().apply("huohuo");
+        System.out.println(identity);
     }
 }
