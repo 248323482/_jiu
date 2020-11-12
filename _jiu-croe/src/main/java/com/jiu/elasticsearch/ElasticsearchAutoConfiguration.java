@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ public class ElasticsearchAutoConfiguration {
     private final ElasticsearchProperties elasticsearchProperties;
 
     private List<HttpHost> httpHosts = new ArrayList<>();
+
 
     @Bean
     @ConditionalOnMissingBean

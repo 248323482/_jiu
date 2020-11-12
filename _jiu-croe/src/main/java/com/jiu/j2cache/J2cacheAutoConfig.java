@@ -5,13 +5,15 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 /**
  * J2CacheConfig配置
  *
  **/
-@ConditionalOnProperty(prefix = "jiu.j2cache", name = "enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "jiu.j2cache", name = "enabled", havingValue = "true", matchIfMissing = true)
+@Component
 @EnableConfigurationProperties({J2cacheProperties.class})
 public class J2cacheAutoConfig {
     private final J2cacheProperties j2cacheProperties;

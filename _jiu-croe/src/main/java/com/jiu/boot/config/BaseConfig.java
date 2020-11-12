@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -181,17 +182,26 @@ public abstract class BaseConfig {
         return new SpringUtils();
     }
 
-    @Bean
-    @ConditionalOnClass
-    public GlobalMvcConfigurer getGlobalMvcConfigurer() {
-        return new GlobalMvcConfigurer();
-    }
 
 
-    @Bean
-    @ConditionalOnClass(Undertow.class)
-    public UndertowServerFactoryCustomizer getUndertowServerFactoryCustomizer() {
-        return new UndertowServerFactoryCustomizer();
+
+
+    /**
+     * gateway 网关模块需要禁用 spring-webmvc 相关配置，必须通过在类上面加限制条件方式来实现， 不能直接Bean上面加
+     */
+    @ConditionalOnProperty(prefix = "jiu.webmvc", name = "enabled", havingValue = "true", matchIfMissing = true)
+    public static class WebMvcConfig {
+        @Bean
+        @ConditionalOnClass(Undertow.class)
+        public UndertowServerFactoryCustomizer getUndertowServerFactoryCustomizer() {
+            return new UndertowServerFactoryCustomizer();
+        }
+
+        @Bean
+        @ConditionalOnClass
+        public GlobalMvcConfigurer getGlobalMvcConfigurer() {
+            return new GlobalMvcConfigurer();
+        }
     }
 
 

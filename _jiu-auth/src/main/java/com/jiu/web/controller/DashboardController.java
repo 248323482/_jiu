@@ -63,7 +63,7 @@ public class DashboardController {
      */
     @GetMapping("/common/generateId")
     public R<Long> generate() {
-        DatabaseProperties.Id id = databaseProperties.getId();
+        DatabaseProperties.HutoolId id = databaseProperties.getHutoolId();
         return R.success(IdUtil.getSnowflake(id.getWorkerId(), id.getDataCenterId()).nextId());
     }
 }

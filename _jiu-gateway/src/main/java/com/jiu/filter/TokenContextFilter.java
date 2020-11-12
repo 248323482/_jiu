@@ -57,7 +57,7 @@ public class TokenContextFilter implements WebFilter, Ordered {
 
 
 
-    @Autowired
+    @Autowired(required = false)
     private CacheChannel channel;
 
     protected boolean isDev(String token) {

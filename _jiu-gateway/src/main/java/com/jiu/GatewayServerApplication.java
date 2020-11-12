@@ -1,19 +1,16 @@
 package com.jiu;
 
 
-import com.jiu.cloud.RibbonMetaFilterAutoConfiguration;
+import com.jiu.cache.CacheAutoConfigure;
+import com.jiu.cloud.http.RestTemplateConfiguration;
 import com.jiu.database.datasource.BaseMybatisConfiguration;
-import com.jiu.security.config.SecureConfiguration;
+import com.jiu.j2cache.J2cacheAutoConfig;
+import com.jiu.security.config.SecurityConfiguration;
 import com.jiu.swagger2.SwaggerAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.gateway.filter.NettyRoutingFilter;
-import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
-import org.springframework.cloud.gateway.filter.WebClientHttpRoutingFilter;
-import org.springframework.cloud.gateway.filter.WebClientWriteResponseFilter;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -29,7 +26,8 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 @EnableDiscoveryClient
 @Slf4j
-@ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = {SwaggerAutoConfiguration.class, SecureConfiguration.class, BaseMybatisConfiguration.class})})
+@Import(RestTemplateConfiguration.class)
+@ComponentScan(excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = {SwaggerAutoConfiguration.class, SecurityConfiguration.class, BaseMybatisConfiguration.class})})
 public class GatewayServerApplication {
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(GatewayServerApplication.class, args);

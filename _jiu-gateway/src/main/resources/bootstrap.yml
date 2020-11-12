@@ -3,6 +3,10 @@ jiu:
   name: gateway
   port: 80
   context-path: /api
+  webmvc:
+    enabled: false
+  j2cache:
+    enabled: false
   nacos:
     ip: budongi.club
     port: 8848
