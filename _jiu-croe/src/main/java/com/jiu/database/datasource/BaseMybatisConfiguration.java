@@ -31,6 +31,7 @@ import com.jiu.utils.SpringUtils;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.StringValue;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -38,6 +39,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +63,7 @@ public  class BaseMybatisConfiguration {
 
     @Slf4j
     @Configuration
+    @ConditionalOnBean(DataSource.class)
     @ConditionalOnProperty(prefix = DatabaseProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
     public static class DataSourceConfiguration {
         public DataSourceConfiguration() {
