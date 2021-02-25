@@ -1,6 +1,7 @@
 package com.jiu.web.controller;
 
 import com.jiu.base.R;
+import com.jiu.base.response.IgnoreResponseBodyAdvice;
 import com.jiu.security.feign.UserQuery;
 import com.jiu.security.model.SysUser;
 import com.jiu.service.UserService;
@@ -27,6 +28,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/user")
 @Api(value = "User", tags = "用户")
+@IgnoreResponseBodyAdvice
 public class OauthUserController {
     @Autowired
     private UserService userService;

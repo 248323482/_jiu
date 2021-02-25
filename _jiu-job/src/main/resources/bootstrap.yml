@@ -17,7 +17,7 @@ xxl.job:
     ssl: false
     username: ovono802302@163.com
     password: asdfzxcv
-    sendNick: 《任务调度平台ZUIHOU-JOB》
+    sendNick: 《任务调度平台JOB》
   login:
     username: jiu
     password: jiu

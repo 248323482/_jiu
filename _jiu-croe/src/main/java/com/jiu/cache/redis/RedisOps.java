@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
  * <p>
  * 加锁解决缓存击穿， 缓存空值解决缓存穿透。参考：
  *
- * @author zuihou
  * @see https://blog.csdn.net/haoxin963/article/details/83245113
  */
 @Getter

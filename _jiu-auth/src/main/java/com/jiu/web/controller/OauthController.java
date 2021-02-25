@@ -2,6 +2,7 @@ package com.jiu.web.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.jiu.base.R;
+import com.jiu.base.response.IgnoreResponseBodyAdvice;
 import com.jiu.context.BaseContextHandler;
 import com.jiu.dto.LoginParamDTO;
 import com.jiu.exception.BizException;
@@ -44,7 +45,6 @@ public class OauthController {
     private AdminService authManager;
 
     /**
-     * 租户登录 zuihou-ui 系统
      *
      * @param login
      * @return
@@ -79,6 +79,7 @@ public class OauthController {
 
     @ApiOperation(value = "验证码", notes = "验证码")
     @GetMapping(value = "/captcha", produces = "image/png")
+    @IgnoreResponseBodyAdvice
     public void captcha(@RequestParam(value = "key") String key, HttpServletResponse response) throws IOException {
         this.validateCodeService.create(key, response);
     }
