@@ -284,7 +284,7 @@ subprojects {
  * 生成gradlew文件,统一gradle版本,避免因为版本不同产生的问题
  */
 task wrapper(type: Wrapper) {
-    gradleVersion = "5.1.1"
+  //  gradleVersion = "5.1.1"
 }
 /**
  * 生成构建分析报告.
