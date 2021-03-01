@@ -218,6 +218,7 @@ subprojects {
     docker {
         registryCredentials {
             url = 'tcp://127.0.0.1:2371'
+            
         }
     }
     if (!project.name.contains("croe") && !name.contains("generator")) {
